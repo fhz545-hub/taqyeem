@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <title>نموذج تقييم الاداء الوظيفي للمعلمين للعام ١٤٤٧هـ</title>
 
 <!-- خطوط -->
@@ -64,21 +64,16 @@ header .schooltitle h1{font-size:14.5px;color:var(--teal);margin:0}
 /* المؤشر */
 .bar-row{display:flex;align-items:center;gap:6px;margin:6px 0 2px}
 .chip{background:#f2f7f6;border:1px solid var(--border);padding:6px 8px;border-radius:10px;font-weight:700;color:#09312d;min-width:135px;text-align:center;font-size:11.5px}
-.meter{position:relative;height:24px;flex:1;background:#eaf1ef;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.fill{position:absolute;inset:3px;border-radius:10px;
+.meter{position:relative;height:26px;flex:1;background:#eaf1ef;border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.fill{position:absolute;inset:3px;border-radius:11px;
 /* ١ = أحمر (يسار) → ٥ = أخضر (يمين) */
 background:linear-gradient(90deg,#ff3b30 0%, #ff7a59 25%, #f5b000 50%, #7ad957 75%, #22c55e 100%);}
 .thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #b36a18;box-shadow:0 1px 5px rgba(0,0,0,.15)}
-/* أرقام داخل الشريط */
+/* أرقام داخل الشريط (أسود ليتباين مع الألوان ومع الطباعة) */
 .ticks{position:absolute;inset:0;pointer-events:none}
-.ticks span{position:absolute;top:50%;transform:translate(-50%,-50%);font-weight:800;font-size:11.5px;letter-spacing:.5px;
-  /* تحسين القراءة فوق التدرج */
-  text-shadow:0 0 2px rgba(0,0,0,.35), 0 0 6px rgba(0,0,0,.25);}
-.ticks .t1{left:3%; color:#ff3b30}
-.ticks .t2{left:25%; color:#ff7a59}
-.ticks .t3{left:50%; color:#f5b000}
-.ticks .t4{left:75%; color:#7ad957}
-.ticks .t5{left:97%; color:#22c55e}
+.ticks span{position:absolute;top:50%;transform:translate(-50%,-50%);font-weight:800;font-size:12px;color:#111;
+  text-shadow:0 0 2px rgba(255,255,255,.6), 0 0 6px rgba(255,255,255,.6);}
+.ticks .t1{left:3%}.ticks .t2{left:25%}.ticks .t3{left:50%}.ticks .t4{left:75%}.ticks .t5{left:97%}
 
 /* الجدول */
 table{width:100%;border-collapse:collapse}
@@ -125,6 +120,13 @@ select.grade[data-g="1"]{background:#ffe8e6}
 .footer{margin:6px 0 2px;text-align:center;font-size:10.5px;color:#6a8682}
 .footer:before{content:"© ";}
 
+/* إخفاء أدوات الواجهة عند الطباعة/الحفظ */
+.no-print{ }
+.for-pdf .no-print{display:none !important}
+@media print{
+  .no-print{display:none !important}
+}
+
 /* طباعة A4 */
 @page{size:A4 portrait;margin:4mm 5mm 5mm 5mm}
 @media print{
@@ -135,7 +137,6 @@ select.grade[data-g="1"]{background:#ffe8e6}
   td.brief{font-size:10.4px;line-height:1.4}
   th,td{padding:3.5px 5px}
   .card{min-height:44px}
-  .no-print{display:none!important}
   body.bw-print{filter:grayscale(100%) contrast(1.05)}
 }
 
@@ -155,7 +156,9 @@ select.grade[data-g="1"]{background:#ffe8e6}
     <!-- الهيدر -->
     <header>
       <div class="topline">
-        الإدارة العامة للتعليم بالمنطقة الشرقية • قطاع التعليم بالخبر • <span id="schoolNameDisplay">مدرسة اليعقوبي الثانوية</span>
+        الإدارة العامة للتعليم بالمنطقة الشرقية •
+        <span id="sectorNameDisplay">قطاع التعليم بالخبر</span> •
+        <span id="schoolNameDisplay">مدرسة اليعقوبي الثانوية</span>
       </div>
       <div class="schooltitle">
         <h1>تقييم الأداء الوظيفي للمعلمين للعام ١٤٤٧هـ</h1>
@@ -170,7 +173,7 @@ select.grade[data-g="1"]{background:#ffe8e6}
           <button class="small-action" id="editSchoolBtn">تعديل</button>
         </div>
         <div class="tool-box">
-          <span class="badge-mini">القطاع/الإدارة:</span>
+          <span class="badge-mini">القطاع/المحافظة:</span>
           <div id="sectorName" class="editable" contenteditable="false">قطاع التعليم بالخبر</div>
           <button class="small-action" id="editSectorBtn">تعديل</button>
         </div>
@@ -181,7 +184,7 @@ select.grade[data-g="1"]{background:#ffe8e6}
       </div>
     </header>
 
-    <!-- وصف جذّاب -->
+    <!-- وصف -->
     <div class="note">
       هذا <b>نموذج قبلي</b> موجّه للمعلم بهدف <b>تعريف عناصر التقييم بدقة</b> وتيسير <b>الحوار المهني</b> بين المعلم والإدارة وفقًا لممارسات وزارة التعليم.
       حدّد درجة لكل عنصر (<b>١–٥</b>) بالاستناد إلى الأمثلة الموضّحة؛ ليُحتسب تلقائيًا <b>مؤشر الإنجاز</b> وتظهر <b>نقاط القوة</b> و<b>فرص التطوير</b> بصياغات تربوية قابلة للمشاركة.
@@ -230,7 +233,7 @@ select.grade[data-g="1"]{background:#ffe8e6}
       <span class="idchip">المرحلة: <b id="s_stage">الأولى</b></span>
     </div>
 
-    <!-- المؤشر مع الأرقام داخل الشريط -->
+    <!-- المؤشر مع أرقام سوداء -->
     <div class="bar-row">
       <div class="chip" id="scoreChip">مؤشر الإنجاز: 0.00 / 5</div>
       <div class="meter">
@@ -267,7 +270,7 @@ select.grade[data-g="1"]{background:#ffe8e6}
       <div id="dev" class="card"><h3>مجالات التطوير</h3><div id="devBody">—</div></div>
     </div>
 
-    <!-- أسفل الصفحة -->
+    <!-- أسفل الصفحة (مخفية في الطباعة/الحفظ) -->
     <div class="actions no-print">
       <div class="tool-box" title="يؤثر على الطباعة فقط">
         <span class="badge-mini">وضع الطباعة:</span>
@@ -327,14 +330,19 @@ function hijriUmmAlQura(){
 const hijriToday=hijriUmmAlQura();
 
 /* ===== إعدادات الرأس ===== */
-const LS_SETTINGS='yaqubi_settings_v11';
+const LS_SETTINGS='yaqubi_settings_v12';
 function applyHeaderTexts(){
-  const display=document.getElementById('schoolName').textContent.trim()||'مدرسة اليعقوبي الثانوية';
-  document.getElementById('schoolNameDisplay').textContent=display;
+  const school=document.getElementById('schoolName').textContent.trim()||'مدرسة اليعقوبي الثانوية';
+  const sector=document.getElementById('sectorName').textContent.trim()||'قطاع التعليم بالخبر';
+  document.getElementById('schoolNameDisplay').textContent=school;
+  document.getElementById('sectorNameDisplay').textContent=sector;
 }
 (function initHeader(){
   const s=localStorage.getItem(LS_SETTINGS);
-  if(s){try{const o=JSON.parse(s); if(o.schoolName)document.getElementById('schoolName').textContent=o.schoolName; if(o.sectorName)document.getElementById('sectorName').textContent=o.sectorName;}catch{}}
+  if(s){try{const o=JSON.parse(s);
+    if(o.schoolName)document.getElementById('schoolName').textContent=o.schoolName;
+    if(o.sectorName)document.getElementById('sectorName').textContent=o.sectorName;
+  }catch{}}
   applyHeaderTexts();
   document.getElementById('editSchoolBtn').onclick=()=>toggleEditable('schoolName');
   document.getElementById('editSectorBtn').onclick=()=>toggleEditable('sectorName');
@@ -414,7 +422,6 @@ function recalc(){
   const avg=weighted/100, pct=Math.round(per);
   scoreChip.textContent=`مؤشر الإنجاز: ${avg.toFixed(2)} / 5`;
   percentChip.textContent=`المجموع: %${pct}`;
-  /* موضع المؤشر: ١ (يسار) → ٥ (يمين) */
   const pos=((avg-1)/4)*100; thumb.style.left=`${pos}%`;
   thumb.style.borderColor = avg>=4.5? '#1c7f4d' : (avg<=2? '#b32828' : '#a86a19');
   strengthBody.innerHTML=strengths.length?strengths.join('<br>'):'—';
@@ -453,16 +460,25 @@ function validate(){
   if(!spec){ alert('رجاءً اكتب التخصص.'); document.getElementById('tSpec').focus(); return false; }
   return true;
 }
-function doPrint(){ fitOnce(); setTimeout(()=>window.print(),60); }
-window.addEventListener('afterprint',unfit);
+function doPrint(){
+  document.body.classList.add('for-pdf');      // إخفاء الأدوات
+  fitOnce();
+  setTimeout(()=>window.print(),60);
+}
+window.addEventListener('afterprint',()=>{
+  unfit();
+  document.body.classList.remove('for-pdf');
+});
 
 function sanitizeForFile(s){ return (s||'').replace(/[\\/:*?"<>|]/g,'-').replace(/\s+/g,' ').trim(); }
 async function savePDF(){
   try{
+    document.body.classList.add('for-pdf');    // إخفاء الأدوات في صورة PDF
     document.getElementById('saveBtn').disabled=true;
+    const school=document.getElementById('schoolNameDisplay').textContent.trim();
     const name=sanitizeForFile(document.getElementById('tName').value||'غير مسمى');
     const stage=document.getElementById('tStage').value;
-    const filename=`تقييم الأداء الوظيفي - ${name} - مرحلة ${stage} - ${hijriToday}.pdf`;
+    const filename=`تقييم الأداء الوظيفي - ${school} - ${name} - مرحلة ${stage} - ${hijriToday}.pdf`;
     fitOnce(); await new Promise(r=>setTimeout(r,120));
     const node=document.getElementById('page');
     const canvas=await html2canvas(node,{useCORS:true,scale:2,background:'#ffffff',scrollX:0,scrollY:0});
@@ -474,7 +490,7 @@ async function savePDF(){
     const x=margin+(pdfW-w)/2, y=margin+(pdfH-h)/2;
     pdf.addImage(imgData,'PNG',x,y,w,h,'','FAST'); pdf.save(filename);
   }catch(err){ alert('تعذّر الحفظ PDF.'); console.error(err);
-  }finally{ unfit(); document.getElementById('saveBtn').disabled=false; }
+  }finally{ unfit(); document.body.classList.remove('for-pdf'); document.getElementById('saveBtn').disabled=false; }
 }
 
 /* ===== واتساب (الترس) ===== */
@@ -514,17 +530,19 @@ waSave.addEventListener('click',()=>{
 
 function sendWhatsApp(phoneDigits){
   if(!validate()) return;
+  const school=document.getElementById('schoolNameDisplay').textContent.trim();
+  const sector=document.getElementById('sectorNameDisplay').textContent.trim();
   const name=document.getElementById('tName').value.trim();
   const stage=document.getElementById('tStage').value;
   const S=recalc();
   const msg =
 `السلام عليكم،
-ملخص قبلي من المعلم ب${document.getElementById('schoolNameDisplay').textContent.trim()}:
+ملخص قبلي للمعلم في ${school} — ${sector}:
 الاسم: ${name}
 مرحلة التقييم: ${stage}
 ${document.getElementById('scoreChip').textContent} | ${document.getElementById('percentChip').textContent}
 التقدير العام: ${S.overall}
-(سيتم لاحقًا إرسال ملف PDF الكامل إلى المدير.)
+(سيتم لاحقًا إرسال ملف PDF الكامل.)
 التاريخ الهجري: ${hijriToday}`;
   const encoded=encodeURIComponent(msg);
   const url=`https://api.whatsapp.com/send?phone=${phoneDigits}&text=${encoded}`;
@@ -533,7 +551,7 @@ ${document.getElementById('scoreChip').textContent} | ${document.getElementById(
 }
 
 /* ===== استيراد/تصدير Excel ===== */
-const LS_TEACHERS='yaqubi_teachers_v11';
+const LS_TEACHERS='yaqubi_teachers_v12';
 let teachers=[]; // لا قائمة افتراضية
 const datalist=document.getElementById('teachersList');
 const tSelect=document.getElementById('tSelect');
@@ -661,7 +679,7 @@ document.getElementById('importTemplateBtn').addEventListener('click', ()=>{
   saveAs(new Blob([wbout],{type:'application/octet-stream'}),'قالب_المعلمين.xlsx');
 });
 
-/* تحسين للجوال */
+/* تهيئة مبدئية */
 (function mobileTune(){ if(window.innerWidth<640){ document.documentElement.style.fontSize='14px'; }})();
 </script>
 </body>
