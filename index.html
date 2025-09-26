@@ -85,7 +85,7 @@ header{margin:0 0 6px}
 /* لوحات المراحل (نصائح فقط) */
 .stage-panel{overflow:hidden;max-height:0;opacity:0;background:#fbfdfc;border:1px dashed var(--border);border-radius:12px;margin:6px 0;padding:0 8px;transition:max-height .28s ease, opacity .2s ease}
 .stage-panel.open{opacity:1;padding:8px 10px;max-height:420px}
-.tips{margin:0;background:#f7fbfa;border:1px solid #e6ف0ed;border-radius:10px;padding:8px 10px}
+.tips{margin:0;background:#f7fbfa;border:1px solid #e6f0ed;border-radius:10px;padding:8px 10px}
 .tips ul{margin:0;padding:0 1.25em;line-height:1.7;font-size:12.7px}
 .tips li{margin:2px 0}
 
@@ -120,6 +120,13 @@ th:last-child,td:last-child{border-radius:0 8px 8px 0}
 th .sub{display:block;font-size:9.8px;opacity:.92;margin-top:1px}
 select.grade{width:56px;height:24px;text-align:center;border:1px solid #cfe1dd;border-radius:9px;background:#fff;font-size:11.6px}
 td.brief{font-size:11.6px;color:#1d3f3b;line-height:1.38}
+
+/* القوة/التطوير */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px 10px;min-height:50px}
+.card h3{margin:0 0 4px;font-size:13.2px}
+#strength h3{color:#136b3e} #dev h3{color:#b4372d}
+#strengthBody,#devBody{font-family:"Cairo",Tahoma,sans-serif;font-size:12.1px;line-height:1.45}
 
 /* صف الأسماء أسفل الصفحة (صف واحد) */
 .names-row{
@@ -340,6 +347,18 @@ body.capture .no-print{display:none!important}
       <tbody id="rows"></tbody>
     </table>
 
+    <!-- القوة/التطوير (مرتبطة تلقائيًا بالدرجات) -->
+    <div class="cards">
+      <div id="strength" class="card">
+        <h3>نقاط القوة</h3>
+        <div id="strengthBody">—</div>
+      </div>
+      <div id="dev" class="card">
+        <h3>مجالات التطوير</h3>
+        <div id="devBody">—</div>
+      </div>
+    </div>
+
     <!-- صف الأسماء أسفل الصفحة -->
     <div class="names-row" id="namesRow">
       <div class="cell">
@@ -376,7 +395,7 @@ body.capture .no-print{display:none!important}
         <span class="icon"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg></span>
       </button>
       <button class="icon-btn" id="exportExcelBtn" title="تنزيل قائمة المعلمين (Excel)">
-        <span class="icon"><svg viewBox="0 0 24 24"><path d="M4 17h16v3H4z"/><path d="M12 4v11"/></svg></span>
+        <span class="icon"><svg viewBox="0 0 24 24"><path d="M4 17h16v3H4z"/><path d="M12 4ف11"/></svg></span>
       </button>
       <button class="icon-btn" id="clearTeachersBtn" title="مسح بيانات المعلمين">
         <span class="icon"><svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14"/></svg></span>
@@ -518,18 +537,50 @@ const items=[
   });
 })();
 
-/* المؤشر */
+/* المؤشر + توليد القوة/التطوير */
 const chipScore=$('#scoreChip'), chipPct=$('#percentChip'), thumb=$('#thumb');
+const strengthBody=$('#strengthBody'), devBody=$('#devBody');
+
+function updateInsights(grades){
+  // حساب الأثر = الدرجة × الوزن
+  const enriched = items.map((it,i)=>({
+    ...it, g: grades[i], impact: grades[i]*it.weight
+  }));
+  // نقاط القوة: g >= 4
+  const strengths = enriched.filter(x=>x.g>=4).sort((a,b)=>b.impact-a.impact);
+  // مجالات التطوير: g <= 2
+  const devs = enriched.filter(x=>x.g<=2).sort((a,b)=>b.weight-a.weight||a.g-b.g);
+
+  if(strengths.length){
+    strengthBody.innerHTML = '<ul style="margin:0;padding:0 1.2em">' +
+      strengths.map(x=>`<li><b>${x.name}</b> — درجة ${x.g}/5 بوزن ${x.weight}% (أثر: ${Math.round(x.impact)}). </li>`).join('') +
+      '</ul>';
+  }else{
+    strengthBody.textContent = '—';
+  }
+
+  if(devs.length){
+    devBody.innerHTML = '<ul style="margin:0;padding:0 1.2em">' +
+      devs.map(x=>`<li><b>${x.name}</b> — درجة ${x.g}/5 بوزن ${x.weight}%؛ توصية: ${x.brief}</li>`).join('') +
+      '</ul>';
+  }else{
+    devBody.textContent = '—';
+  }
+}
+
 function recalc(){
   let weighted=0, per=0;
-  $$('.grade').forEach((sel,i)=>{ const g=Number(sel.value); const w=items[i].weight; weighted+=g*w; per+=(g/5)*w; });
+  const grades = $$('.grade').map((sel,i)=> Number(sel.value));
+  grades.forEach((g,i)=>{ const w=items[i].weight; weighted+=g*w; per+=(g/5)*w; });
   const avg=weighted/100, pct=Math.round(per);
   chipScore.textContent=`مؤشر الإنجاز: ${avg.toFixed(2)} / 5`;
   chipPct.textContent=`المجموع: %${pct}`;
   thumb.style.left=`${((avg-1)/4)*100}%`;
+  updateInsights(grades);
   return {avg,pct};
 }
-$$('.grade').forEach(el=>el.addEventListener('change',recalc)); recalc();
+$$('.grade').forEach(el=>el.addEventListener('change',recalc)); 
+recalc();
 
 /* بيانات المعلم */
 function vName(){return collapse($('#tName').value)} function vId(){return digits($('#tId').value)} function vSpec(){return collapse($('#tSpec').value)}
@@ -555,7 +606,9 @@ function setStage(key, toggle=false){
   const isPlanning=(currentStage==='planning');
   $$('.grade').forEach(s=>s.disabled=isPlanning);
   $('#barRow').style.opacity=(isPlanning?0.45:1);
-  if(!isOpen){ chipScore.textContent='—'; chipPct.textContent='—'; } else if(!isPlanning) recalc(); else {chipScore.textContent='وضع التخطيط: المؤشر غير مُفعّل'; chipPct.textContent='—';}
+  if(!isOpen){ chipScore.textContent='—'; chipPct.textContent='—'; } 
+  else if(!isPlanning) recalc(); 
+  else {chipScore.textContent='وضع التخطيط: المؤشر غير مُفعّل'; chipPct.textContent='—';}
 }
 stageBtns.forEach(b=>b.addEventListener('click',()=>setStage(b.dataset.stage,true)));
 setStage('planning');
