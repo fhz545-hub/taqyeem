@@ -16,161 +16,111 @@
 
 <style>
 :root{
-  --moe-dark:#0c594e;          /* اللون الرسمي للهيدر والنوافذ */
+  --moe-dark:#0c594e;          /* اللون الرسمي */
   --moe-light:#1e8a79;
   --ink:#0b2f2b;
   --bg:#ffffff;
   --border:#e0ece8;
   --muted:#667c76;
   --chip:#f4fbf9;
-  --shadow:0 4px 16px rgba(0,0,0,.1);
+  --shadow:0 4px 16px rgba(0,0,0,.10);
 }
 *{box-sizing:border-box;scroll-behavior:smooth}
 html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  font-family:"Tajawal", "Cairo", system-ui;
-  color:var(--ink);
-  line-height:1.6;
-  font-size:15px;
+  margin:0; padding:0; background:var(--bg);
+  font-family:"Tajawal","Cairo",system-ui; color:var(--ink); line-height:1.6; font-size:15px;
 }
 #page{
-  width:min(1120px,100%);
-  margin:0 auto;
-  padding:10px 12px 60px;
-  background:#fff;
+  width:min(1120px,100%); margin:0 auto; padding:10px 12px 60px; background:#fff;
 }
 
-/* الرأس العلوي */
-.header-grid{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  text-align:center;
-  margin-bottom:8px;
-}
-.h-left,.h-right{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  gap:2px;
-}
-.h-left .line,.h-right .line{
-  font-weight:700;
-  color:var(--moe-dark);
-}
-.h-right{
-  align-items:flex-end;
-  padding-inline-end:50px;
-}
-#moeLogo{
-  width:min(220px,40vw);
-  height:auto;
-  object-fit:contain;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.15));
-}
+/* الرأس */
+.header-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;margin-bottom:8px}
+.h-left,.h-right{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+.h-left .line,.h-right .line{font-weight:700;color:var(--moe-dark)}
+/* إزاحة اليوم/التاريخ يمينًا بعيدًا عن الشعار */
+.h-right{align-items:flex-start;padding-inline-start:52px;transform:translateX(10px)}
+#moeLogo{width:min(220px,40vw);height:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
 
-/* الأزرار الصغيرة للتعديل */
-.edit-icon{
-  font-size:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  padding:1px 6px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-inline-start:4px;
-}
+/* أزرار صغيرة للتعديل */
+.edit-icon{font-size:12px;border:1px solid var(--border);background:#fff;padding:1px 6px;border-radius:8px;cursor:pointer;margin-inline-start:4px}
 
-/* التنسيق العام للنماذج */
-.table{
-  width:100%;
-  border-collapse:collapse;
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
+/* صف التحكم العلوي */
+.toolbar{
+  display:grid; grid-template-columns:1fr 1fr repeat(8,auto);
+  gap:8px; align-items:center; margin:10px 0;
 }
-.table th,.table td{
-  border:1px solid var(--border);
-  padding:8px;
+.select-compact{
+  appearance:none;width:100%;height:34px; padding:0 30px 0 10px;
+  border:1px solid var(--border);border-radius:999px;background:#fff;
+  font-weight:800;color:#0c3f39;cursor:pointer;font-size:13px
 }
-.table th{
-  background:var(--moe-light);
-  color:#fff;
+.toolbar .ico{position:absolute;inset-inline-end:10px;top:50%;transform:translateY(-50%);pointer-events:none}
+
+/* الأزرار */
+.pill{
+  border:1px solid var(--border);border-radius:12px;padding:8px 12px;
+  font-weight:800;background:linear-gradient(180deg,#ffffff,#f7fffd);
+  cursor:pointer;color:var(--moe-dark);transition:all .2s;font-size:13px;white-space:nowrap
 }
+.pill:hover{background:linear-gradient(180deg,#f9fefc,#e8f7f3)}
+.pill.primary{background:linear-gradient(180deg,var(--moe-light),var(--moe-dark));color:#fff;border-color:var(--moe-dark)}
+.pill.primary:hover{opacity:.92}
+
+/* الجدول */
+.table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.table th,.table td{border:1px solid var(--border);padding:8px}
+.table th{background:var(--moe-light);color:#fff}
 .table td{text-align:center}
 
-/* شريط الأزرار */
-.pill{
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:10px 14px;
-  font-weight:700;
-  background:linear-gradient(180deg,#ffffff,#f7fffd);
-  cursor:pointer;
-  color:var(--moe-dark);
-  transition:all .2s ease-in-out;
+/* عمود سلم التقدير – بدون حدود لعنصر الاختيار فقط */
+.select-mini{
+  appearance:none;background:#fff;border:none; /* إزالة الحدود المطلوبة */
+  border-radius:10px;padding:4px 8px;font-weight:900;color:#0b3430;outline:none
 }
-.pill:hover{
-  background:linear-gradient(180deg,#f9fefc,#e8f7f3);
-}
-.pill.primary{
-  background:linear-gradient(180deg,var(--moe-light),var(--moe-dark));
-  color:#fff;
-  border-color:var(--moe-dark);
-}
-.pill.primary:hover{
-  opacity:.9;
-}
+.select-mini:focus{outline:2px solid #bfe8df;}
+
+/* ألوان الصف حسب السلم */
+tr.rate-1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)}
+tr.rate-2{background:linear-gradient(90deg,#fde68a 0,#fff 60%)}
+tr.rate-3{background:linear-gradient(90deg,#f0fdf4 0,#fff 60%)}
+tr.rate-4{background:linear-gradient(90deg,#dcfce7 0,#fff 60%)}
+tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
+
+/* مؤشر الإنجاز */
+.kpi-wrap{position:relative;margin:12px 0}
+.kpi-bar{position:relative;height:16px;border-radius:999px;overflow:hidden;border:1px solid #e9f4f1}
+.kpi-fill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#f87171,#fbbf24,#34d399,#10b981);opacity:.95;transition:width .5s}
+.kpi-waves{position:absolute;left:0;bottom:0;height:42px;width:200%;background:radial-gradient(circle at 25% 120%, rgba(255,255,255,.6) 24%, transparent 26%) repeat-x;background-size:40px 40px;animation:waves 3s linear infinite;opacity:.45}
+.kpi-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:2px 4px}
+@keyframes waves{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* النوافذ المنبثقة */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:100;
-}
-.panel{
-  width:min(900px,95%);
-  max-height:95vh;
-  background:#fff;
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  display:flex;
-  flex-direction:column;
-}
-.panel .head{
-  background:var(--moe-dark);
-  color:#fff;
-  font-weight:800;
-  padding:10px 14px;
-  border-top-left-radius:16px;
-  border-top-right-radius:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.panel .body{
-  overflow-y:auto;
-  padding:16px;
-  color:var(--ink);
-}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100}
+.panel{width:min(900px,95%);max-height:95vh;background:#fff;border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.panel .head{background:var(--moe-dark);color:#fff;font-weight:800;padding:10px 14px;border-top-left-radius:16px;border-top-right-radius:16px;display:flex;justify-content:space-between;align-items:center}
+.panel .body{overflow-y:auto;padding:16px;color:var(--ink)}
 
-/* الهوامش والطباعة */
+/* مدخلات أعلى البيانات */
+.data-row{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:8px;margin:10px 0}
+
+/* الطباعة */
 @media print{
-  .no-print,.modal{display:none!important}
+  .no-print,.modal,.toolbar{display:none!important}
   body{background:#fff}
   #page{margin:0 auto;padding:0}
   @page{size:A4;margin:12mm}
 }
+
+/* عبارة التذييل */
+.footer-note{color:#6a7f7b;font-size:12px;text-align:center;margin-top:10px}
+@media print{.footer-note{display:none}}
 </style>
 </head>
 <body>
 <div id="page">
+
+  <!-- رأس الصفحة -->
   <header class="header-grid">
     <div class="h-left">
       <div class="line">المملكة العربية السعودية</div>
@@ -187,18 +137,21 @@ html,body{
 
     <div class="h-center">
       <img id="moeLogo" alt="شعار وزارة التعليم" src="وزارة التعليم.png"
-      onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'220\\' height=\\'90\\'><rect fill=\\'white\\' width=\\'100%\\' height=\\'100%\\'/><text x=\\'50%\\' y=\\'55%\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' font-family=\\'Tajawal\\' font-weight=\\'800\\' font-size=\\'20\\' fill=\\'#1e8a79\\'>وزارة التعليم</text></svg>');"/>
+        onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'220\' height=\'90\'><rect fill=\'white\' width=\'100%\' height=\'100%\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'Tajawal\' font-weight=\'800\' font-size=\'20\' fill=\'#1e8a79\'>وزارة التعليم</text></svg>`)"/>
     </div>
 
-    <div class="h-right" style="align-items:flex-start;padding-inline-end:0;padding-inline-start:40px;">
-      <div id="todayTxt" style="font-weight:800;color:#16544c"></div>
-      <div id="dateTxt" style="font-weight:700;color:#466e69"></div>
-      <div id="modelTxt" style="font-weight:800;color:#16544c"></div>
+    <!-- اليوم/التاريخ/النموذج — أُزيحت يمينًا -->
+    <div class="h-right">
+      <div id="todayTxt" class="line" style="font-weight:800;color:#16544c"></div>
+      <div id="dateTxt"  class="line" style="font-weight:700;color:#466e69"></div>
+      <div id="modelTxt" class="line" style="font-weight:800;color:#16544c"></div>
     </div>
   </header>
-  <section class="picker-row no-print" style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;margin:10px 0">
-    <div class="pill-select" style="position:relative">
-      <select id="modelSelect" style="appearance:none;width:100%;height:40px;padding:0 34px 0 12px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;color:#0c3f39;cursor:pointer">
+
+  <!-- شريط أدوات علوي (صف واحد) -->
+  <section class="toolbar no-print">
+    <div style="position:relative">
+      <select id="modelSelect" class="select-compact">
         <option value="teacher">معلم</option>
         <option value="vp">وكيل</option>
         <option value="principal">مدير</option>
@@ -208,49 +161,57 @@ html,body{
         <option value="lab">محضر مختبر</option>
         <option value="kg">معلمة رياض أطفال</option>
       </select>
-      <span class="ico" style="position:absolute;inset-inline-end:10px;top:50%;transform:translateY(-50%);pointer-events:none">▾</span>
+      <span class="ico">▾</span>
     </div>
-
-    <div class="pill-select" style="position:relative">
-      <select id="stageSelect" style="appearance:none;width:100%;height:40px;padding:0 34px 0 12px;border:1px solid var(--border);border-radius:999px;background:#fff;font-weight:800;color:#0c3f39;cursor:pointer">
+    <div style="position:relative">
+      <select id="stageSelect" class="select-compact">
         <option value="planning">التخطيط</option>
         <option value="mid">المراجعة النصف سنوية</option>
         <option value="final">التقييم النهائي</option>
       </select>
-      <span class="ico" style="position:absolute;inset-inline-end:10px;top:50%;transform:translateY(-50%);pointer-events:none">▾</span>
+      <span class="ico">▾</span>
     </div>
 
     <button id="btnGapPlan" class="pill primary">خطة تحسين فجوة الأداء</button>
+    <button id="openHelp" class="pill">ℹ️ الشرح</button>
+    <button id="openRubrics" class="pill">📑 الأدلّة</button>
+    <button id="btnPrint" class="pill">🖨️ طباعة</button>
+    <button id="btnPdf" class="pill">🧾 PDF</button>
+    <button id="btnSave" class="pill">💾 حفظ</button>
+    <button id="btnClear" class="pill">🧹 مسح</button>
+    <button id="btnWhatsApp" class="pill">💬 واتساب</button>
   </section>
-  <section class="data-row no-print" style="display:grid;grid-template-columns:2fr repeat(3,1fr);gap:8px;margin:10px 0">
-    <div class="input-wrap" style="position:relative">
+
+  <!-- بيانات الموظف -->
+  <section class="data-row no-print">
+    <div style="position:relative">
       <input id="tName" class="lined" placeholder="اسم المعلم" style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 42px 0 10px;width:100%">
       <span class="in-icon" id="openMini" style="position:absolute;inset-inline-start:10px;top:50%;transform:translateY(-50%);font-weight:900;color:#0b534b;cursor:pointer">🔎</span>
     </div>
-    <input id="tId" class="lined" inputmode="numeric" placeholder="رقم الهوية" style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 10px">
-    <input id="tSpec" class="lined" placeholder="التخصص" style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 10px">
+    <input id="tId"   class="lined" inputmode="numeric" placeholder="رقم الهوية" style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 10px">
+    <input id="tSpec" class="lined" placeholder="التخصص"    style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 10px">
     <input id="tRank" class="lined" placeholder="المرتبة/الرتبة" style="height:42px;border:1px solid var(--border);border-radius:12px;padding:0 10px">
   </section>
-  <div class="kpi-wrap" style="position:relative;margin:12px 0">
-    <div class="kpi-bar" style="position:relative;height:16px;border-radius:999px;overflow:hidden;border:1px solid #e9f4f1">
-      <div class="kpi-fill" id="kpiFill" style="position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#f87171,#fbbf24,#34d399,#10b981);opacity:.9;transition:width .5s ease-in-out"></div>
-      <div class="kpi-waves" id="kpiWaves" style="position:absolute;left:0;bottom:0;height:42px;width:200%;background:radial-gradient(circle at 25% 120%, rgba(255,255,255,.6) 24%, transparent 26%) repeat-x;background-size:40px 40px;animation:waves 3s linear infinite;opacity:.45"></div>
+
+  <!-- مؤشر الإنجاز + متوسط السلم -->
+  <div class="kpi-wrap">
+    <div class="kpi-bar">
+      <div class="kpi-fill" id="kpiFill"></div>
+      <div class="kpi-waves" id="kpiWaves"></div>
     </div>
-    <div class="kpi-label" style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:2px 4px">
+    <div class="kpi-label">
       <div id="kpiLabelL">مؤشر الإنجاز: 0%</div>
+      <div id="kpiLabelM">سُلّم التقدير (متوسط): 0.00 / 5</div>
       <div id="kpiLabelR">مجموع الأوزان: 0%</div>
     </div>
   </div>
 
-  <style>
-    @keyframes waves{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  </style>
-  <!-- جدول عناصر التقييم -->
+  <!-- جدول التقييم -->
   <section id="rubric">
     <table class="table">
       <thead>
         <tr>
-          <th class="items">عناصر التقييم</th>
+          <th class="items" style="text-align:right">عناصر التقييم</th>
           <th class="weight">الوزن النسبي</th>
           <th class="scale">سُلّم التقدير (1–5)</th>
           <th class="result">الناتج الموزون</th>
@@ -261,46 +222,40 @@ html,body{
         <tr>
           <th style="text-align:right">التقدير العام للأداء (من 5)</th>
           <th id="sumWeight">0%</th>
-          <th id="avgOutOf5" style="font-weight:900;color:#0c594e">0.00</th>
+          <th id="avgOutOf5" style="font-weight:900;color:#ffffff">0.00</th>
           <th id="sumScore">0.00</th>
         </tr>
       </tfoot>
     </table>
   </section>
+
   <!-- القوة / التحسين -->
-  <section class="two" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
-    <div class="stage-inline" style="border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px">
+  <section style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0">
+    <div style="border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px">
       <h3 style="margin:0 0 6px;color:#0c594e">نقاط القوة</h3>
       <p id="strengthsBox" style="white-space:pre-line;margin:0">—</p>
     </div>
-    <div class="stage-inline" style="border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px">
+    <div style="border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px">
       <h3 style="margin:0 0 6px;color:#0c594e">مجالات التحسين والتطوير</h3>
       <p id="improveBox" style="white-space:pre-line;margin:0">—</p>
     </div>
   </section>
 
-  <!-- سطر الأسماء والتوقيع (سطر واحد بدون التفاف) -->
+  <!-- التوقيع -->
   <section class="sign-section" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0">
     <div style="text-align:center">
       <div id="signTeacherName" style="font-weight:800;color:#0c594e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
       <div style="border-top:1px dashed #bcd3cd;margin-top:6px;width:80%;margin-inline:auto"></div>
+      <div style="font-size:12px;color:#667">توقيع المعلم</div>
     </div>
     <div style="text-align:center">
       <div id="signPrincipalName" style="font-weight:800;color:#0c594e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">فهد حامد علي الزهراني</div>
       <div style="border-top:1px dashed #bcd3cd;margin-top:6px;width:80%;margin-inline:auto"></div>
+      <div style="font-size:12px;color:#667">توقيع مدير المدرسة</div>
     </div>
   </section>
-  <!-- شريط الأزرار داخل الصفحة وتحت التواقيع -->
-  <div class="actions" id="actionsBar" style="position:static;display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:#f8fffc;border:1px solid var(--border);border-radius:12px;justify-content:center;margin-bottom:10px">
-    <button class="pill" id="btnPrint">🖨️ طباعة</button>
-    <button class="pill primary" id="btnPdf">🧾 PDF</button>
-    <button class="pill" id="btnSave">💾 حفظ</button>
-    <button class="pill" id="btnClear">🧹 مسح</button>
-    <button class="pill" id="btnWhatsApp">💬 واتساب</button>
-    <button class="pill" id="openHelp">ℹ️ الشرح</button>
-    <button class="pill" id="openRubrics">📑 الأدلة</button>
-  </div>
-  <!-- عدسة الأسماء الذكية -->
+
+  <!-- عدسة الأسماء -->
   <div class="mini modal" id="mini" style="display:none">
     <div class="panel" style="width:min(900px,96%)">
       <div class="head">
@@ -317,11 +272,12 @@ html,body{
           </div>
         </div>
         <div id="nameStats" style="margin-top:6px;color:#667"></div>
-        <div class="list" id="nameList" style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:8px;margin-top:8px"></div>
+        <div id="nameList" style="max-height:320px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:8px;margin-top:8px"></div>
       </div>
     </div>
   </div>
-  <!-- نافذة الشرح المنبثقة (A4 داخل نافذة – بدون اجتزاء) -->
+
+  <!-- نافذة الشرح (المحتوى المطلوب كاملًا) -->
   <div class="modal" id="helpModal">
     <div class="panel" id="helpPanel" style="width:min(900px,96%)">
       <div class="head">
@@ -345,7 +301,8 @@ html,body{
       </div>
     </div>
   </div>
-  <!-- نافذة الأدلة المنبثقة (A4 داخل نافذة – بدون اجتزاء) -->
+
+  <!-- نافذة الأدلة (المحتوى المطلوب كاملًا) -->
   <div class="modal" id="reportsModal">
     <div class="panel" id="reportsPanel" style="width:min(900px,96%)">
       <div class="head">
@@ -369,11 +326,11 @@ html,body{
           <li><strong>المسؤوليات:</strong> الوزارة: السياسات والمتابعة │ الإدارة: الإشراف │ المدير: التقييم │ المعلم: الالتزام والتطوير الذاتي.</li>
         </ol>
         <p style="color:#a33"><strong>⚠️ تنبيه:</strong> هذا الملخّص للاستخدام التربوي الداخلي، ولا يُغني عن الأدلة الرسمية الصادرة من وزارة التعليم.</p>
-        <p><strong>📩 للاستفسار: </strong><a href="mailto:fhz545@gmail.com">fhz545@gmail.com</a></p>
       </div>
     </div>
   </div>
-  <!-- نافذة خطة تحسين فجوة الأداء (ممتدة كاملة – مع رأس وهوامش A4) -->
+
+  <!-- خطة فجوة الأداء (متعددة الفجوات) -->
   <div class="modal" id="gapModal">
     <div class="panel" id="gapPanel" style="width:min(900px,96%);background:#fff">
       <div class="head">
@@ -384,7 +341,7 @@ html,body{
         </div>
       </div>
       <div class="body" id="gapBody">
-        <!-- هيدر مطابق -->
+        <!-- رأس مطابق -->
         <div class="header-grid" style="margin-bottom:8px">
           <div class="h-left">
             <div class="line">المملكة العربية السعودية</div>
@@ -396,9 +353,9 @@ html,body{
             <img id="g_moeLogo" alt="شعار وزارة التعليم" src="وزارة التعليم.png"
               onerror="this.onerror=null;this.src=document.getElementById('moeLogo').src" style="width:min(220px,40vw);height:auto;object-fit:contain"/>
           </div>
-          <div class="h-right" style="align-items:flex-start;padding-inline-end:0;padding-inline-start:40px;">
+          <div class="h-right" style="align-items:flex-start;padding-inline-start:52px;transform:translateX(10px)">
             <div id="g_today" style="font-weight:800;color:#16544c"></div>
-            <div id="g_date" style="font-weight:700;color:#466e69"></div>
+            <div id="g_date"  style="font-weight:700;color:#466e69"></div>
             <div id="g_model" style="font-weight:800;color:#16544c"></div>
           </div>
         </div>
@@ -416,17 +373,19 @@ html,body{
           </table>
         </section>
 
-        <!-- تحديد الفجوة -->
-        <section class="stage-inline" style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:6px">
+        <!-- أ- تحديد الفجوة (عدّة فجوات) -->
+        <section style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:6px">
           <h3 style="margin:0 0 8px">أ- تحديد الفجوة</h3>
           <table class="table" style="border-radius:10px;margin:0">
-            <thead><tr><th style="width:50%">المعيار المستهدف تطويره</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
-            <tbody><tr><td id="g_target">—</td><td id="g_s1"></td><td id="g_s2"></td><td id="g_s3"></td><td id="g_s4"></td><td id="g_s5"></td></tr></tbody>
+            <thead>
+              <tr><th style="width:50%">المعيار المستهدف تطويره</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+            </thead>
+            <tbody id="g_targets"></tbody>
           </table>
         </section>
 
-        <!-- تحليل الأداء -->
-        <section class="stage-inline" style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:8px">
+        <!-- ب- تحليل الأداء -->
+        <section style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:8px">
           <h3 style="margin:0 0 8px">ب- تحليل مستوى الأداء الحالي</h3>
           <table class="table" style="border-radius:10px;margin:0">
             <thead><tr><th>درجة التمكن</th><th>الأسباب</th><th>نقاط القوة</th><th>الجوانب التي بحاجة للتحسين</th></tr></thead>
@@ -434,8 +393,8 @@ html,body{
           </table>
         </section>
 
-        <!-- خطة العمل -->
-        <section class="stage-inline" style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:8px">
+        <!-- ج- خطة العمل -->
+        <section style="border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:8px">
           <h3 style="margin:0 0 8px">ج- خطة العمل لإنجاز التحسين</h3>
           <table class="table" style="border-radius:10px;margin:0">
             <thead><tr><th>م</th><th>الخطة الإجرائية</th><th>متطلبات التنفيذ</th><th>زمن التنفيذ</th><th>الاحتياجات</th><th>المكلف</th><th>المساند</th><th>مؤشر الأداء</th></tr></thead>
@@ -444,7 +403,7 @@ html,body{
           <div style="margin-top:6px;font-size:12px;color:#5a7a74">الخلايا قابلة للتحرير قبل الحفظ.</div>
         </section>
 
-        <!-- تذييل الخطة: أسماء في صف واحد وتاريخ في الوسط -->
+        <!-- تذييل -->
         <section style="margin-top:10px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center">
             <div style="text-align:center;white-space:nowrap"><span id="g_signTeacher">—</span><div style="border-top:1px dashed #bcd3cd;margin-top:6px;width:80%;margin-inline:auto"></div></div>
@@ -455,383 +414,353 @@ html,body{
       </div>
     </div>
   </div>
-  <!-- الأكواد الثابتة: عناوين، متغيرات، بنوك تربوية -->
-  <script>
-  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
-  const TITLE_BY_MODEL={ teacher:'معلم', activity:'رائد نشاط', health:'موجه صحي', kg:'معلمة رياض أطفال', lab:'محضر مختبر', counselor:'موجه طلابي', vp:'وكيل', principal:'مدير' };
-  const TYPE_COLOR={ shared:'b-shared', role:'b-role', extra:'b-extra' };
+  <!-- عبارة التذييل (مخفية في الطباعة) -->
+  <div class="footer-note no-print">تنفيذ وتصميم: فهد حامد الزهراني</div>
 
-  /* اليوم والتاريخ + إزاحة بسيطة لليمين */
-  (function(){
-    const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-    const d=new Date();
-    $('#todayTxt').textContent=days[d.getDay()];
-    $('#dateTxt').textContent=d.toLocaleDateString('ar-SA');
-    $('#modelTxt').textContent='نموذج التقييم: —';
-    // إزاحة لليمين
-    const right=$('.h-right'); right.style.transform='translateX(-10px)';
-  })();
+</div><!-- /page -->
 
-  /* تعديل الإدارة/المدرسة قابل للحفظ */
-  function promptEdit(id,key,def){
-    const v=prompt("أدخل النص:", localStorage.getItem(key)||def||"");
-    if(v!==null){ $(id).textContent=v; localStorage.setItem(key,v); }
-  }
-  $('#editDir').addEventListener('click',()=> promptEdit('#dirText','dirText',$('#dirText').textContent));
-  $('#editSchool').addEventListener('click',()=> promptEdit('#schoolText','schoolText',$('#schoolText').textContent));
-  $('#dirText').textContent    = localStorage.getItem('dirText')    || $('#dirText').textContent;
-  $('#schoolText').textContent = localStorage.getItem('schoolText') || $('#schoolText').textContent;
+<script>
+/* أدوات مختصرة */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
-  /* نماذج البنود والأوزان (مطابقة للهوية – يمكن قفلها لاحقًا حسب صوركم) */
-  const RUBRICS={
-    teacher:[
-      {name:"أداء الواجبات الوظيفية",weight:10,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:10,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:10,type:'shared'},
-      {name:"التنوع في استراتيجيات التدريس",weight:10,type:'role'},
-      {name:"تحسين نتائج المتعلمين",weight:10,type:'role'},
-      {name:"إعداد وتنفيذ خطة التعلم",weight:10,type:'role'},
-      {name:"توظيف تقنيات ووسائل التعلم المناسبة",weight:10,type:'role'},
-      {name:"تهيئة بيئة تعليمية",weight:5,type:'role'},
-      {name:"الإدارة الصفية",weight:5,type:'role'},
-      {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",weight:10,type:'role'},
-      {name:"تنوع أساليب التقويم",weight:10,type:'role'},
-    ],
-    vp:[
-      {name:"أداء الواجبات الوظيفية",weight:5,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:5,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:5,type:'shared'},
-      {name:"مرن وقادر على تنفيذ أعماله",weight:5,type:'role'},
-      {name:"يدعم ويشارك في المبادرات النوعية",weight:5,type:'role'},
-      {name:"يتخذ إجراءات وقائية للانضباط",weight:10,type:'role'},
-      {name:"إدارة الموارد",weight:5,type:'role'},
-      {name:"إعداد خطة التطوير المهني",weight:5,type:'role'},
-      {name:"متابعة التغذية الراجعة للمؤشرات",weight:5,type:'role'},
-      {name:"تقييم أداء المنسوبين",weight:5,type:'role'},
-      {name:"إجراءات لتحسين نتائج التعلم",weight:5,type:'role'},
-      {name:"الإسهام في تحسين أداء المدرسة",weight:15,type:'role'},
-      {name:"المشاركة في إعداد الخطط",weight:5,type:'role'},
-      {name:"متابعة تنفيذ الخطط",weight:5,type:'role'},
-      {name:"تهيئة فرص مشاركة الطلاب في الأنشطة",weight:5,type:'role'},
-      {name:"توظيف المنصات الرقمية المعتمدة",weight:5,type:'role'},
-      {name:"متابعة تعزيز السلوك الإيجابي",weight:5,type:'role'},
-      {name:"تهيئة بيئة مدرسية آمنة ومُمكِّنة",weight:5,type:'role'},
-    ],
-    principal:[
-      {name:"أداء الواجبات الوظيفية",weight:5,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:5,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:5,type:'shared'},
-      {name:"مرن وقادر على تنفيذ أعماله",weight:5,type:'role'},
-      {name:"يدعم ويشارك في المبادرات النوعية",weight:5,type:'role'},
-      {name:"يتخذ إجراءات وقائية للانضباط",weight:5,type:'role'},
-      {name:"إدارة الموارد",weight:5,type:'role'},
-      {name:"إعداد خطة التطوير المهني",weight:5,type:'role'},
-      {name:"متابعة التغذية الراجعة للمؤشرات",weight:5,type:'role'},
-      {name:"تقييم أداء المنسوبين",weight:5,type:'role'},
-      {name:"دعم تنفيذ برامج التطوير المهني",weight:5,type:'role'},
-      {name:"الإسهام في تنفيذ خطة التطوير المهني",weight:15,type:'role'},
-      {name:"الإسهام في تحسين أداء المدرسة",weight:10,type:'role'},
-      {name:"المشاركة في إعداد الخطط",weight:5,type:'role'},
-      {name:"متابعة تنفيذ الخطط",weight:5,type:'role'},
-      {name:"تهيئة مشاركة الطلاب في الأنشطة",weight:5,type:'role'},
-      {name:"توظيف المنصات الرقمية المعتمدة",weight:5,type:'role'},
-      {name:"متابعة تعزيز السلوك الإيجابي",weight:5,type:'role'},
-      {name:"تهيئة بيئة مدرسية آمنة ومُمكِّنة",weight:5,type:'role'},
-    ],
-    activity:[
-      {name:"أداء الواجبات الوظيفية",weight:10,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:10,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:5,type:'shared'},
-      {name:"التنوع في استراتيجيات التدريس",weight:5,type:'role'},
-      {name:"تحسين نتائج المتعلمين",weight:5,type:'role'},
-      {name:"إعداد وتنفيذ خطة التعلم",weight:10,type:'role'},
-      {name:"توظيف تقنيات ووسائل التعلم",weight:5,type:'role'},
-      {name:"تهيئة بيئة تعليمية",weight:5,type:'role'},
-      {name:"الإدارة الصفية",weight:5,type:'role'},
-      {name:"تحليل نتائج المتعلمين",weight:5,type:'role'},
-      {name:"تنوع أساليب التقويم",weight:5,type:'role'},
-      {name:"خطة برامج النشاط الطلابي",weight:10,type:'extra'},
-      {name:"تهيئة البيئة للأنشطة",weight:5,type:'extra'},
-      {name:"دعم المتعلمين وفق الميول",weight:5,type:'extra'},
-      {name:"تحفيز المشاركة في الأنشطة",weight:10,type:'extra'},
-    ],
-    health:[
-      {name:"أداء الواجبات الوظيفية",weight:10,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:10,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:10,type:'shared'},
-      {name:"استراتيجيات التدريس",weight:5,type:'role'},
-      {name:"تحسين النتائج",weight:5,type:'role'},
-      {name:"خطة التعلم",weight:5,type:'role'},
-      {name:"التقنيات والوسائل",weight:5,type:'role'},
-      {name:"تهيئة البيئة تعليمية",weight:5,type:'role'},
-      {name:"الإدارة الصفية",weight:5,type:'role'},
-      {name:"تحليل النتائج",weight:5,type:'role'},
-      {name:"تنوع التقويم",weight:5,type:'role'},
-      {name:"الخطة المشتركة للبرامج الصحية",weight:15,type:'extra'},
-      {name:"حصر الحالات الصحية",weight:5,type:'extra'},
-      {name:"تهيئة البيئة الصحية المدرسية",weight:10,type:'extra'},
-    ],
-    counselor:[
-      {name:"أداء الواجبات الوظيفية",weight:20,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:5,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:5,type:'shared'},
-      {name:"تعزيز الانضباط",weight:5,type:'role'},
-      {name:"برامج تربوية للدافعية",weight:5,type:'role'},
-      {name:"خطة التوجيه الطلابي",weight:10,type:'role'},
-      {name:"تصنيف الحالات وبرامج الدعم",weight:10,type:'role'},
-      {name:"تعزيز القيم والسلوكيات",weight:10,type:'role'},
-      {name:"تدخلات نفسية واجتماعية",weight:10,type:'role'},
-      {name:"التخطيط المهني والتعليمي",weight:5,type:'role'},
-      {name:"تعزيز التفوق الدراسي",weight:5,type:'role'},
-      {name:"تدخلات للمتأخرين والمعيدين",weight:5,type:'role'},
-      {name:"توعية بقواعد السلوك والمواظبة",weight:5,type:'role'},
-    ],
-    lab:[
-      {name:"أداء الواجبات الوظيفية",weight:10,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:10,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:10,type:'shared'},
-      {name:"استراتيجيات التدريس",weight:10,type:'role'},
-      {name:"تحسين النتائج",weight:10,type:'role'},
-      {name:"إعداد خطة تشغيل المختبر",weight:5,type:'role'},
-      {name:"مهارات التجارب العملية",weight:5,type:'role'},
-      {name:"توفير المستلزمات والتجهيزات",weight:5,type:'role'},
-      {name:"السلامة المهنية",weight:5,type:'role'},
-      {name:"تهيئة المختبر",weight:5,type:'role'},
-      {name:"تسليم/تخزين الأجهزة للمعلمين",weight:5,type:'role'},
-      {name:"تقرير مهام المختبر الأسبوعية",weight:10,type:'extra'},
-      {name:"تقارير حالة الأجهزة والمعدات",weight:10,type:'extra'},
-    ],
-    kg:[
-      {name:"أداء الواجبات الوظيفية",weight:10,type:'shared'},
-      {name:"التفاعل مع المجتمع المهني",weight:5,type:'shared'},
-      {name:"التفاعل مع أولياء الأمور",weight:5,type:'shared'},
-      {name:"استراتيجيات تدريس متنوعة",weight:5,type:'role'},
-      {name:"تحسين نواتج التعلم",weight:5,type:'role'},
-      {name:"ممارسات مسؤولة للأطفال",weight:5,type:'role'},
-      {name:"إعداد خطط التعلم",weight:5,type:'role'},
-      {name:"التقنيات والوسائل المناسبة",weight:5,type:'role'},
-      {name:"التقيد بالمنهاج",weight:5,type:'role'},
-      {name:"إشراك الأسرة بالنمو",weight:5,type:'role'},
-      {name:"تهيئة بيئة آمنة ومُمكنة",weight:15,type:'role'},
-      {name:"ركن موضوعي ملائم",weight:5,type:'role'},
-      {name:"تتبع تقدم الأطفال",weight:5,type:'role'},
-      {name:"التقويم المستمر والمتنوع",weight:5,type:'role'},
-      {name:"المشاركة في الأنشطة التربوية",weight:5,type:'role'},
-      {name:"تبادل الخبرات المهنية",weight:5,type:'role'},
-      {name:"دعم اكتساب القيم والاتجاهات",weight:5,type:'role'},
-      {name:"تعزيز السلوكيات الإيجابية",weight:5,type:'role'},
-      {name:"تنمية المهارات اللغوية والاجتماعية",weight:5,type:'role'},
-    ],
-  };
-  </script>
-  <!-- بناء الصفوف والحسابات الخوارزمية والتقارير -->
-  <script>
-  function buildRows(items){
-    const tb=$("#rows"); tb.innerHTML=""; let wsum=0;
-    items.forEach((it,i)=>{
-      wsum+=+it.weight;
-      const tr=document.createElement('tr'); tr.dataset.w=it.weight;
-      tr.innerHTML=`
-        <td style="text-align:right"><span style="font-weight:800;color:#0c594e;margin-inline-end:6px">${i+1}</span><span class="item-text">${it.name}</span></td>
-        <td>${it.weight}%</td>
-        <td><select class="select-mini grade" style="appearance:none;background:#fff;border:1px solid var(--border);border-radius:10px;padding:4px 8px;font-weight:800;color:#0b3430">
+/* عناوين النماذج */
+const TITLE_BY_MODEL={ teacher:'معلم', activity:'رائد نشاط', health:'موجه صحي', kg:'معلمة رياض أطفال', lab:'محضر مختبر', counselor:'موجه طلابي', vp:'وكيل', principal:'مدير' };
+
+/* اليوم/التاريخ/النموذج */
+(function(){
+  const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const d=new Date();
+  $('#todayTxt').textContent=days[d.getDay()];
+  $('#dateTxt').textContent=d.toLocaleDateString('ar-SA');
+  $('#modelTxt').textContent='نموذج التقييم: —';
+})();
+
+/* تعديل الإدارة/المدرسة (حفظ محلي) */
+function promptEdit(id,key,def){
+  const v=prompt("أدخل النص:", localStorage.getItem(key)||def||"");
+  if(v!==null){ $(id).textContent=v; localStorage.setItem(key,v); }
+}
+$('#editDir').addEventListener('click',()=> promptEdit('#dirText','dirText',$('#dirText').textContent));
+$('#editSchool').addEventListener('click',()=> promptEdit('#schoolText','schoolText',$('#schoolText').textContent));
+$('#dirText').textContent    = localStorage.getItem('dirText')    || $('#dirText').textContent;
+$('#schoolText').textContent = localStorage.getItem('schoolText') || $('#schoolText').textContent;
+
+/* تحرير اسم المدير بالدبل كلك */
+$('#signPrincipalName').addEventListener('dblclick',()=>{
+  const nv=prompt('اكتب اسم مدير المدرسة:', localStorage.getItem('principalName')||$('#signPrincipalName').textContent);
+  if(nv && nv.trim().length>2){ $('#signPrincipalName').textContent=nv.trim(); localStorage.setItem('principalName',nv.trim()); }
+});
+
+/* نماذج البنود والأوزان — مجموع كل نموذج = 100% (بدون تأليف بنود جديدة) */
+const RUBRICS={
+  teacher:[
+    {name:"أداء الواجبات الوظيفية",weight:10},
+    {name:"التفاعل مع المجتمع المهني",weight:10},
+    {name:"التفاعل مع أولياء الأمور",weight:10},
+    {name:"التنوع في استراتيجيات التدريس",weight:10},
+    {name:"تحسين نتائج المتعلمين",weight:10},
+    {name:"إعداد وتنفيذ خطة التعلم",weight:10},
+    {name:"توظيف تقنيات ووسائل التعلم المناسبة",weight:10},
+    {name:"تهيئة بيئة تعليمية",weight:10},
+    {name:"الإدارة الصفية",weight:5},
+    {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",weight:5},
+    {name:"تنوع أساليب التقويم",weight:10},
+  ],
+  vp:[
+    {name:"أداء الواجبات الوظيفية",weight:5},
+    {name:"التفاعل مع المجتمع المهني",weight:5},
+    {name:"التفاعل مع أولياء الأمور",weight:5},
+    {name:"مرن وقادر على تنفيذ أعماله",weight:5},
+    {name:"يدعم ويشارك في المبادرات النوعية",weight:5},
+    {name:"يتخذ إجراءات وقائية للانضباط",weight:10},
+    {name:"إدارة الموارد",weight:5},
+    {name:"إعداد خطة التطوير المهني",weight:5},
+    {name:"متابعة التغذية الراجعة للمؤشرات",weight:5},
+    {name:"تقييم أداء المنسوبين",weight:5},
+    {name:"إجراءات لتحسين نتائج التعلم",weight:5},
+    {name:"الإسهام في تحسين أداء المدرسة",weight:10}, /* كان 15 → 10 لضبط 100% */
+    {name:"المشاركة في إعداد الخطط",weight:5},
+    {name:"متابعة تنفيذ الخطط",weight:5},
+    {name:"تهيئة فرص مشاركة الطلاب في الأنشطة",weight:5},
+    {name:"توظيف المنصات الرقمية المعتمدة",weight:5},
+    {name:"متابعة تعزيز السلوك الإيجابي",weight:5},
+    {name:"تهيئة بيئة مدرسية آمنة ومُمكِّنة",weight:5},
+  ],
+  principal:[
+    {name:"أداء الواجبات الوظيفية",weight:5},
+    {name:"التفاعل مع المجتمع المهني",weight:5},
+    {name:"التفاعل مع أولياء الأمور",weight:5},
+    {name:"مرن وقادر على تنفيذ أعماله",weight:5},
+    {name:"يدعم ويشارك في المبادرات النوعية",weight:5},
+    {name:"يتخذ إجراءات وقائية للانضباط",weight:5},
+    {name:"إدارة الموارد",weight:5},
+    {name:"إعداد خطة التطوير المهني",weight:5},
+    {name:"متابعة التغذية الراجعة للمؤشرات",weight:5},
+    {name:"تقييم أداء المنسوبين",weight:5},
+    {name:"دعم تنفيذ برامج التطوير المهني",weight:5},
+    {name:"الإسهام في تنفيذ خطة التطوير المهني",weight:10}, /* كان 15 → 10 */
+    {name:"الإسهام في تحسين أداء المدرسة",weight:10},
+    {name:"المشاركة في إعداد الخطط",weight:5},
+    {name:"متابعة تنفيذ الخطط",weight:5},
+    {name:"تهيئة مشاركة الطلاب في الأنشطة",weight:5},
+    {name:"توظيف المنصات الرقمية المعتمدة",weight:5},
+    {name:"متابعة تعزيز السلوك الإيجابي",weight:5},
+    {name:"تهيئة بيئة مدرسية آمنة ومُمكِّنة",weight:5},
+  ],
+  activity:[
+    {name:"أداء الواجبات الوظيفية",weight:10},
+    {name:"التفاعل مع المجتمع المهني",weight:10},
+    {name:"التفاعل مع أولياء الأمور",weight:5},
+    {name:"التنوع في استراتيجيات التدريس",weight:5},
+    {name:"تحسين نتائج المتعلمين",weight:5},
+    {name:"إعداد وتنفيذ خطة التعلم",weight:10},
+    {name:"توظيف تقنيات ووسائل التعلم",weight:5},
+    {name:"تهيئة بيئة تعليمية",weight:5},
+    {name:"الإدارة الصفية",weight:5},
+    {name:"تحليل نتائج المتعلمين",weight:5},
+    {name:"تنوع أساليب التقويم",weight:5},
+    /* عناصر إضافية مميزة للنشاط */
+    {name:"خطة برامج النشاط الطلابي",weight:10},
+    {name:"تهيئة البيئة للأنشطة",weight:5},
+    {name:"دعم المتعلمين وفق الميول",weight:5},
+    {name:"تحفيز المشاركة في الأنشطة",weight:10},
+  ],
+  health:[
+    {name:"أداء الواجبات الوظيفية",weight:10},
+    {name:"التفاعل مع المجتمع المهني",weight:10},
+    {name:"التفاعل مع أولياء الأمور",weight:10},
+    {name:"استراتيجيات التدريس",weight:5},
+    {name:"تحسين النتائج",weight:5},
+    {name:"خطة التعلم",weight:5},
+    {name:"التقنيات والوسائل",weight:5},
+    {name:"تهيئة البيئة تعليمية",weight:5},
+    {name:"الإدارة الصفية",weight:5},
+    {name:"تحليل النتائج",weight:5},
+    {name:"تنوع التقويم",weight:5},
+    /* عناصر إضافية للصحة المدرسية */
+    {name:"الخطة المشتركة للبرامج الصحية",weight:10}, /* كان 15 → 10 */
+    {name:"حصر الحالات الصحية",weight:10},           /* كان 5 → 10 */
+    {name:"تهيئة البيئة الصحية المدرسية",weight:10},  /* كان 10 → 10 (ثابت) */
+  ],
+  counselor:[
+    {name:"أداء الواجبات الوظيفية",weight:20},
+    {name:"التفاعل مع المجتمع المهني",weight:5},
+    {name:"التفاعل مع أولياء الأمور",weight:5},
+    {name:"تعزيز الانضباط",weight:5},
+    {name:"برامج تربوية للدافعية",weight:5},
+    {name:"خطة التوجيه الطلابي",weight:10},
+    {name:"تصنيف الحالات وبرامج الدعم",weight:10},
+    {name:"تعزيز القيم والسلوكيات",weight:10},
+    {name:"تدخلات نفسية واجتماعية",weight:10},
+    {name:"التخطيط المهني والتعليمي",weight:5},
+    {name:"تعزيز التفوق الدراسي",weight:5},
+    {name:"تدخلات للمتأخرين والمعيدين",weight:5},
+    {name:"توعية بقواعد السلوك والمواظبة",weight:5},
+  ],
+  lab:[
+    {name:"أداء الواجبات الوظيفية",weight:10},
+    {name:"التفاعل مع المجتمع المهني",weight:10},
+    {name:"التفاعل مع أولياء الأمور",weight:10},
+    {name:"استراتيجيات التدريس",weight:10},
+    {name:"تحسين النتائج",weight:10},
+    {name:"إعداد خطة تشغيل المختبر",weight:5},
+    {name:"مهارات التجارب العملية",weight:5},
+    {name:"توفير المستلزمات والتجهيزات",weight:5},
+    {name:"السلامة المهنية",weight:5},
+    {name:"تهيئة المختبر",weight:5},
+    {name:"تسليم/تخزين الأجهزة للمعلمين",weight:5},
+    /* تمييز مختبر */
+    {name:"تقرير مهام المختبر الأسبوعية",weight:5},  /* كان 10 → 5 */
+    {name:"تقارير حالة الأجهزة والمعدات",weight:5},   /* كان 10 → 5 */
+  ],
+  kg:[
+    {name:"أداء الواجبات الوظيفية",weight:10},
+    {name:"التفاعل مع المجتمع المهني",weight:5},
+    {name:"التفاعل مع أولياء الأمور",weight:5},
+    {name:"استراتيجيات تدريس متنوعة",weight:5},
+    {name:"تحسين نواتج التعلم",weight:5},
+    {name:"ممارسات مسؤولة للأطفال",weight:5},
+    {name:"إعداد خطط التعلم",weight:5},
+    {name:"التقنيات والوسائل المناسبة",weight:5},
+    {name:"التقيد بالمنهاج",weight:5},
+    {name:"إشراك الأسرة بالنمو",weight:5},
+    {name:"تهيئة بيئة آمنة ومُمكنة",weight:10}, /* كان 15 → 10 */
+    {name:"ركن موضوعي ملائم",weight:5},
+    {name:"تتبع تقدم الأطفال",weight:5},
+    {name:"التقويم المستمر والمتنوع",weight:5},
+    {name:"المشاركة في الأنشطة التربوية",weight:5},
+    {name:"تبادل الخبرات المهنية",weight:5},
+    {name:"دعم اكتساب القيم والاتجاهات",weight:5},
+    {name:"تعزيز السلوكيات الإيجابية",weight:5},
+    {name:"تنمية المهارات اللغوية والاجتماعية",weight:5},
+  ],
+};
+
+/* بناء الصفوف */
+function buildRows(items){
+  const tb=$("#rows"); tb.innerHTML=""; let wsum=0;
+  items.forEach((it,i)=>{
+    wsum+=+it.weight;
+    const tr=document.createElement('tr'); tr.dataset.w=it.weight;
+    tr.innerHTML=`
+      <td style="text-align:right"><span style="font-weight:800;color:#0c594e;margin-inline-end:6px">${i+1}</span><span class="item-text">${it.name}</span></td>
+      <td>${it.weight}%</td>
+      <td>
+        <select class="select-mini grade">
           <option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option>
-        </select></td>
-        <td class="result"><span class="score">0.00</span></td>`;
-      tb.appendChild(tr);
-    });
-    $("#sumWeight").textContent=wsum+"%";
-  }
+        </select>
+      </td>
+      <td class="result"><span class="score">0.00</span></td>`;
+    tb.appendChild(tr);
+  });
+  $("#sumWeight").textContent=wsum+"%";
+}
 
-  function recalc(){
-    let total=0, wsum=0, avgNum=0, avgDen=0;
-    $$('#rows tr').forEach(tr=>{
-      const w=+tr.dataset.w||0; wsum+=w;
-      const v=+tr.querySelector('.grade').value||3;
-      const s=(v/5)*w; total+=s;
-      tr.querySelector('.score').textContent=s.toFixed(2);
-      for(let k=1;k<=5;k++) tr.classList.remove('rate-'+k);
-      tr.classList.add('rate-'+v);
-      avgNum += v * w;
-      avgDen += w;
-    });
-    $("#sumScore").textContent=total.toFixed(2);
-    const pct=Math.max(0,Math.min(100,total));
-    $("#kpiFill").style.width=pct+"%";
-    $("#kpiLabelL").textContent=`مؤشر الإنجاز: ${pct.toFixed(0)}%`;
-    $("#kpiLabelR").textContent=`مجموع الأوزان: ${wsum}%`;
-    const avg = avgDen? (avgNum/avgDen):0;
-    $("#avgOutOf5").textContent = avg.toFixed(2);
-    buildInsights();
-  }
+/* تحديث الحسابات + تلوين الصفوف + الموجة + متوسط السلم + القوة/التحسين */
+function recalc(){
+  let total=0, wsum=0, avgNum=0, avgDen=0;
+  $$('#rows tr').forEach(tr=>{
+    const w=+tr.dataset.w||0; wsum+=w;
+    const v=+tr.querySelector('.grade').value||3;
+    const s=(v/5)*w; total+=s;
+    tr.querySelector('.score').textContent=s.toFixed(2);
+    for(let k=1;k<=5;k++) tr.classList.remove('rate-'+k);
+    tr.classList.add('rate-'+v);
+    avgNum += v * w; avgDen += w;
+  });
+  $("#sumScore").textContent=total.toFixed(2);
+  const pct=Math.max(0,Math.min(100,total));
+  $("#kpiFill").style.width=pct+"%";
+  $("#kpiLabelL").textContent=`مؤشر الإنجاز: ${pct.toFixed(0)}%`;
+  $("#kpiLabelR").textContent=`مجموع الأوزان: ${wsum}%`;
+  const avg = avgDen? (avgNum/avgDen):0;
+  $("#avgOutOf5").textContent = avg.toFixed(2);
+  $("#kpiLabelM").textContent = `سُلّم التقدير (متوسط): ${avg.toFixed(2)} / 5`;
+  buildInsights();
+}
 
-  /* بنك تربوي لصياغة القوة/التحسين */
-  const BANK={
-    strengths:{
-      "التفاعل مع المجتمع المهني": (v,w)=> v>=4 ? `يُثري المجتمع المهني بتبادل خبرات منتظم، ويشارك في دوائر تعلّم مهنية تعزّز الأثر (${w}%).` : "",
-      "التفاعل مع أولياء الأمور": (v,w)=> v>=4 ? `يعزّز قنوات التواصل مع أولياء الأمور ويوثّق المتابعة بشكل مهني (${w}%).` : "",
-      "التنوع في استراتيجيات التدريس": (v,w)=> v>=4 ? `يوظّف استراتيجيات تدريس متنوّعة تراعي الفروق الفردية وتدعم التعلّم النشط (${w}%).` : "",
-      "تحسين نتائج المتعلمين": (v,w)=> v>=4 ? `يُظهر أثرًا واضحًا في تحسّن النتائج عبر خطط دعم موجهة بالأدلة (${w}%).` : "",
-      "تنوع أساليب التقويم": (v,w)=> v>=4 ? `يطبّق تقويمات قصيرة فورية ويربطها بخطط تحسين دقيقة (${w}%).` : "",
-      "أداء الواجبات الوظيفية": (v,w)=> v>=4 ? `التزام وظيفي عالٍ ودقة في إنجاز المهام وفق المعايير (${w}%).` : "",
-    },
-    improve:{
-      "التفاعل مع المجتمع المهني": (v,w)=> v<=2 ? `تنظيم زيارات صفّية تبادلية أسبوعيًا، والمشاركة بعرض ممارسات في PLC، مع توثيق الأثر (${w}%).` : "",
-      "التفاعل مع أولياء الأمور": (v,w)=> v<=2 ? `خطة تواصل شهرية موقّتة عبر (مدرستي/رسائل)، وتوثيق الشواهد الرقمية والميدانية (${w}%).` : "",
-      "التنوع في استراتيجيات التدريس": (v,w)=> v<=2 ? `توسيع دائرة الاستراتيجيات (تعليم معكوس/تعاوني/محاكاة)، وربطها بأهداف قابلة للقياس (${w}%).` : "",
-      "تحسين نتائج المتعلمين": (v,w)=> v<=2 ? `تحليل قبلي/بعدي، مجموعات دعم مركّزة، ونماذج متابعة أسبوعية للأثر (${w}%).` : "",
-      "تنوع أساليب التقويم": (v,w)=> v<=2 ? `اعتماد أدوات تقويم فورية قصيرة، وتضمين معايير واضحة وروبريكات مبسطة (${w}%).` : "",
-      "أداء الواجبات الوظيفية": (v,w)=> v<=2 ? `مواءمة الخطة اليومية مع دليل المهام، وتوزيع الأولويات وجدولة المتابعة (${w}%).` : "",
-    }
+/* بنك توليدي عام للقوة/التحسين (بدون اعتماد أسماء محددة) */
+function buildInsights(){
+  const items=$$('#rows tr'); if(!items.length){ $('#strengthsBox').textContent='—'; $('#improveBox').textContent='—'; return; }
+  const strengths=[], improve=[];
+  items.forEach(tr=>{
+    const v=+tr.querySelector('.grade').value||3;
+    const name=tr.querySelector('.item-text').textContent.trim();
+    const w=+tr.dataset.w||0;
+    if(v>=4) strengths.push(`• يحقق تميزًا ملحوظًا في «${name}» مع أثر قابل للقياس (وزن ${w}%).`);
+    if(v<=2) improve.push(`• تعزيز «${name}» عبر خطة إجرائية قصيرة المدى، وشواهد متابعة أسبوعية (وزن ${w}%).`);
+  });
+  $('#strengthsBox').textContent = strengths.length? [...new Set(strengths)].join('\n'):'—';
+  $('#improveBox').textContent   = improve.length?   [...new Set(improve)].join('\n')  :'—';
+  $('#signTeacherName').textContent = $('#tName').value || '—';
+  $('#signPrincipalName').textContent = localStorage.getItem('principalName') || 'فهد حامد علي الزهراني';
+}
+
+/* تحميل نموذج بحسب الدور + المرحلة */
+function applyModelStage(){
+  const key=$('#modelSelect').value, arr=RUBRICS[key]||[];
+  buildRows(arr);
+  $$('.grade').forEach(s=> s.value='3'); /* الافتراض 3 */
+  recalc();
+  $('#modelTxt').textContent='نموذج التقييم: '+(TITLE_BY_MODEL[key]||'—');
+  tryLoad();
+}
+
+/* حفظ تلقائي/تحميل */
+function keyFor(){ return `PF_${($('#tName').value||'').trim()}_${$('#modelSelect').value}_${$('#stageSelect').value}`; }
+function autoSave(){
+  const rows=$$('#rows tr').map(tr=>({n:tr.querySelector('.item-text').textContent,w:+tr.dataset.w,v:+tr.querySelector('.grade').value}));
+  const data={
+    dir:$('#dirText').textContent,school:$('#schoolText').textContent,
+    model:$('#modelSelect').value,stage:$('#stageSelect').value,
+    rows,meta:{name:$('#tName').value,id:$('#tId').value,spec:$('#tSpec').value,rank:$('#tRank').value,principal:$('#signPrincipalName').textContent},
+    ins:{s:$('#strengthsBox').textContent,i:$('#improveBox').textContent},sum:$('#sumScore').textContent,avg:$('#avgOutOf5').textContent
   };
+  localStorage.setItem(keyFor(),JSON.stringify(data));
+}
+function tryLoad(){
+  const raw=localStorage.getItem(keyFor()); if(!raw) return;
+  const d=JSON.parse(raw);
+  $('#tId').value=d.meta.id||''; $('#tSpec').value=d.meta.spec||''; $('#tRank').value=d.meta.rank||'';
+  $('#signPrincipalName').textContent=d.meta.principal|| (localStorage.getItem('principalName')||'فهد حامد علي الزهراني');
+  $$('#rows tr').forEach((tr,i)=>{ const r=d.rows[i]; if(r) tr.querySelector('.grade').value=r.v; });
+  recalc();
+}
 
-  function buildInsights(){
-    const items=$$('#rows tr'); if(!items.length){ $('#strengthsBox').textContent='—'; $('#improveBox').textContent='—'; return; }
-    const strengths=[], improve=[];
-    items.forEach(tr=>{
-      const v=+tr.querySelector('.grade').value||3;
-      const name=tr.querySelector('.item-text').textContent.trim();
-      // القوة
-      if(BANK.strengths[name]){ const s=BANK.strengths[name](v,+tr.dataset.w); if(s) strengths.push('• '+s); }
-      // التحسين
-      if(BANK.improve[name]){ const i=BANK.improve[name](v,+tr.dataset.w); if(i) improve.push('• '+i); }
+/* أحداث */
+document.addEventListener('change',e=>{
+  if(e.target.classList.contains('grade')){ recalc(); autoSave(); }
+});
+$('#modelSelect').addEventListener('change',()=>{ applyModelStage(); autoSave(); });
+$('#stageSelect').addEventListener('change',()=>{ recalc(); autoSave(); });
+
+/* شغل أولي */
+applyModelStage();
+
+/* عدسة الأسماء (استيراد/حفظ/اختيار) */
+const HEADER_MAP=[
+  {keys:['الاسم','Name','Full Name'], prop:'name'},
+  {keys:['رقم الهوية','هوية','ID','National ID'], prop:'id'},
+  {keys:['التخصص','Specialty','Major'], prop:'spec'},
+  {keys:['المرتبة','الرتبة','Rank','Grade'], prop:'rank'},
+  {keys:['المسمى','المسمى الوظيفي','Title','Role'], prop:'title'},
+];
+function findProp(h){ h=(h||'').toString().trim(); for(const m of HEADER_MAP){ if(m.keys.some(k=>new RegExp(`^${k}$`,'i').test(h))) return m.prop; } return null; }
+function getNames(){ return JSON.parse(localStorage.getItem('namesV2')||'[]'); }
+function setNames(a){ localStorage.setItem('namesV2',JSON.stringify(a)); }
+function refreshNameList(){
+  const box=$("#nameList"); box.innerHTML="";
+  const names=getNames();
+  $("#nameStats").textContent = names.length? `عدد الأسماء المخزنة: ${names.length}` : "لا توجد أسماء بعد.";
+  if(!names.length){ return; }
+  const grid=document.createElement('div'); grid.style.display='grid'; grid.style.gridTemplateColumns='repeat(auto-fill,minmax(240px,1fr))'; grid.style.gap='8px';
+  names.forEach(o=>{
+    const card=document.createElement('div'); card.style.border='1px solid var(--border)'; card.style.borderRadius='10px'; card.style.padding='8px'; card.style.cursor='pointer'; card.style.background='#fff';
+    card.innerHTML=`<div style="font-weight:900;color:#0c594e">${o.name}</div><div style="font-size:12px;color:#667;display:flex;gap:6px;flex-wrap:wrap"><span>${o.id||'—'}</span><span>${o.spec||'—'}</span><span>${o.rank||'—'}</span><span>${o.title||'—'}</span></div>`;
+    card.onclick=()=>{ $('#tName').value=o.name||''; $('#tId').value=o.id||''; $('#tSpec').value=o.spec||''; $('#tRank').value=o.rank||''; $('#mini').style.display='none'; recalc(); buildInsights(); autoSave(); };
+    grid.appendChild(card);
+  }); box.appendChild(grid);
+}
+$('#openMini').addEventListener('click',()=> { refreshNameList(); $('#mini').style.display='flex'; });
+$('#miniClose').addEventListener('click',()=> $('#mini').style.display='none');
+$('#btnPickFile').addEventListener('click',()=> $('#xlsInput').click());
+$('#btnTpl').addEventListener('click',()=>{
+  const rows=[["الاسم","رقم الهوية","التخصص","المرتبة","المسمى"],[""],];
+  const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"أسماء");
+  const wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'}); saveAs(new Blob([wbout],{type:"application/octet-stream"}),"template_names.xlsx");
+});
+$('#xlsInput').addEventListener('change',async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  try{
+    const data=await f.arrayBuffer(); const wb=XLSX.read(data,{type:'array'});
+    const all=[];
+    wb.SheetNames.forEach(name=>{
+      const ws=wb.Sheets[name]; const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''}); if(!rows.length) return;
+      const head=rows[0]; const idx={}; head.forEach((h,i)=>{ const p=findProp(h); if(p) idx[p]=i; });
+      for(let r=1;r<rows.length;r++){
+        const row=rows[r]; if(!row.length) continue;
+        const o={}; Object.keys(idx).forEach(p=> o[p]=String(row[idx[p]]||'').trim());
+        if(o.name){ all.push(o); }
+      }
     });
-    const uniq=a=>[...new Set(a)];
-    $('#strengthsBox').textContent = (uniq(strengths).length? uniq(strengths).join('\n'): '—');
-    $('#improveBox').textContent   = (uniq(improve).length?   uniq(improve).join('\n'): '—');
-    $('#signTeacherName').textContent = $('#tName').value || '—';
-    $('#signPrincipalName').textContent = localStorage.getItem('principalName') || 'فهد حامد علي الزهراني';
-  }
+    if(all.length){
+      const prev=getNames(); const mix=[...prev];
+      all.forEach(o=>{ if(!mix.some(x=>x.name===o.name && x.id===o.id)){ mix.push(o); }});
+      setNames(mix); refreshNameList();
+    } else alert('لم يتم العثور على أعمدة معرّفة للأسماء.');
+  }catch(err){ console.error(err); alert('تعذّر قراءة الملف.'); }
+  e.target.value='';
+});
 
-  // تفاعل السلم
-  document.addEventListener('change',e=>{
-    if(e.target.classList.contains('grade')){ recalc(); autoSave(); }
-  });
-  </script>
-  <!-- نمط المرحلة وما ينبغي عمله + تهيئة أولية -->
-  <script>
-  const SHOULD={
-    planning:{teacher:["تحديد أهداف قابلة للقياس","تحليل النتائج","تخطيط مهام متنوعة","شواهد متوقعة"], vp:["خطة انضباط","تتبّع المؤشرات","إدارة الموارد","تطوير الكوادر"], principal:["خطة تحسين","تمكين المتابعة","تعزيز الانضباط","رفع كفاءة التطوير"]},
-    mid:{teacher:["توثيق ما تحقق","إجراءات تصحيحية","تحليل قبلي/بعدي","تعزيز التغذية الراجعة"], vp:["تحسين المؤشرات","فاعلية المنصات","تطوير الأداء","تعزيز المشاركة"], principal:["تحسين الأداء","تطوير الخطط","رفع أثر التطوير","تعزيز السلوك"]},
-    final:{teacher:["ملخص الإنجاز","أثر التحسين","خطة العام القادم","مشروعات تعلم"], vp:["تحسن المؤشرات","فاعلية الموارد","رفع الأداء","خطة تحسين قادمة"], principal:["تحسن أداء المدرسة","نجاعة التخطيط","تطوير التطوير المهني","مبادرات نوعية"]},
-  };
-
-  function applyModelStage(){
-    const key=$('#modelSelect').value, arr=RUBRICS[key]||[];
-    buildRows(arr);
-    // السلم الافتراضي = 3
-    $$('.grade').forEach(s=> s.value='3');
-    recalc();
-    $('#modelTxt').textContent='نموذج التقييم: '+(TITLE_BY_MODEL[key]||'—');
-    updateStageInline();
-    tryLoad();
-  }
-
-  function updateStageInline(){
-    const model=$('#modelSelect').value, stage=$('#stageSelect').value;
-    const list=(SHOULD[stage]&&SHOULD[stage][model])? SHOULD[stage][model] : [];
-    // يمكن لاحقًا إظهارها كشرائح قابلة للتحرير
-  }
-
-  $('#modelSelect').addEventListener('change',()=>{ applyModelStage(); autoSave(); });
-  $('#stageSelect').addEventListener('change',()=>{ updateStageInline(); recalc(); autoSave(); });
-
-  // تحميل أولي
-  applyModelStage();
-  </script>
-  <!-- عدسة الأسماء: استيراد/عرض/حفظ -->
-  <script>
-  const HEADER_MAP=[
-    {keys:['الاسم','Name','Full Name'], prop:'name'},
-    {keys:['رقم الهوية','هوية','ID','National ID'], prop:'id'},
-    {keys:['التخصص','Specialty','Major'], prop:'spec'},
-    {keys:['المرتبة','الرتبة','Rank','Grade'], prop:'rank'},
-    {keys:['المسمى','المسمى الوظيفي','Title','Role'], prop:'title'},
-  ];
-  function findProp(h){ h=(h||'').toString().trim(); for(const m of HEADER_MAP){ if(m.keys.some(k=>new RegExp(`^${k}$`,'i').test(h))) return m.prop; } return null; }
-
-  function getNames(){ return JSON.parse(localStorage.getItem('namesV2')||'[]'); }
-  function setNames(a){ localStorage.setItem('namesV2',JSON.stringify(a)); }
-
-  function refreshNameList(){
-    const box=$("#nameList"); box.innerHTML="";
-    const names=getNames();
-    $("#nameStats").textContent = names.length? `عدد الأسماء المخزنة: ${names.length}` : "لا توجد أسماء بعد.";
-    if(!names.length){ return; }
-    const grid=document.createElement('div'); grid.style.display='grid'; grid.style.gridTemplateColumns='repeat(auto-fill,minmax(240px,1fr))'; grid.style.gap='8px';
-    names.forEach(o=>{
-      const card=document.createElement('div'); card.style.border='1px solid var(--border)'; card.style.borderRadius='10px'; card.style.padding='8px'; card.style.cursor='pointer'; card.style.background='#fff';
-      card.innerHTML=`<div style="font-weight:900;color:#0c594e">${o.name}</div><div style="font-size:12px;color:#667;display:flex;gap:6px;flex-wrap:wrap"><span>${o.id||'—'}</span><span>${o.spec||'—'}</span><span>${o.rank||'—'}</span><span>${o.title||'—'}</span></div>`;
-      card.onclick=()=>{ $('#tName').value=o.name||''; $('#tId').value=o.id||''; $('#tSpec').value=o.spec||''; $('#tRank').value=o.rank||''; $('#mini').style.display='none'; recalc(); buildInsights(); autoSave(); };
-      grid.appendChild(card);
-    }); box.appendChild(grid);
-  }
-
-  // فتح العدسة
-  $('#openMini').addEventListener('click',()=> { refreshNameList(); $('#mini').style.display='flex'; });
-  $('#miniClose').addEventListener('click',()=> $('#mini').style.display='none');
-  $('#btnPickFile').addEventListener('click',()=> $('#xlsInput').click());
-
-  // حفظ قالب
-  $('#btnTpl').addEventListener('click',()=>{
-    const rows=[["الاسم","رقم الهوية","التخصص","المرتبة","المسمى"],[""],];
-    const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"أسماء");
-    const wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'}); saveAs(new Blob([wbout],{type:"application/octet-stream"}),"template_names.xlsx");
-  });
-
-  // استيراد ملفات (XLSX/XLS/CSV)
-  $('#xlsInput').addEventListener('change',async e=>{
-    const f=e.target.files[0]; if(!f) return;
-    try{
-      const data=await f.arrayBuffer(); const wb=XLSX.read(data,{type:'array'});
-      const all=[];
-      wb.SheetNames.forEach(name=>{
-        const ws=wb.Sheets[name]; const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''}); if(!rows.length) return;
-        const head=rows[0]; const idx={}; head.forEach((h,i)=>{ const p=findProp(h); if(p) idx[p]=i; });
-        for(let r=1;r<rows.length;r++){
-          const row=rows[r]; if(!row.length) continue;
-          const o={}; Object.keys(idx).forEach(p=> o[p]=String(row[idx[p]]||'').trim());
-          if(o.name){ all.push(o); }
-        }
-      });
-      if(all.length){
-        const prev=getNames(); const mix=[...prev];
-        all.forEach(o=>{ if(!mix.some(x=>x.name===o.name && x.id===o.id)){ mix.push(o); }});
-        setNames(mix); refreshNameList();
-      } else alert('لم يتم العثور على أعمدة معرّفة للأسماء.');
-    }catch(err){ console.error(err); alert('تعذّر قراءة الملف.'); }
-    e.target.value='';
-  });
-  </script>
-  <!-- الحفظ والطباعة وPDF + خطة الفجوة + واتساب -->
-  <script>
-  function keyFor(){ return `PF_${($('#tName').value||'').trim()}_${$('#modelSelect').value}_${$('#stageSelect').value}`; }
-  function autoSave(){
-    const rows=$$('#rows tr').map(tr=>({n:tr.querySelector('.item-text').textContent,w:+tr.dataset.w,v:+tr.querySelector('.grade').value}));
-    const data={
-      dir:$('#dirText').textContent,school:$('#schoolText').textContent,
-      model:$('#modelSelect').value,stage:$('#stageSelect').value,
-      rows,meta:{name:$('#tName').value,id:$('#tId').value,spec:$('#tSpec').value,rank:$('#tRank').value,principal:$('#signPrincipalName').textContent},
-      ins:{s:$('#strengthsBox').textContent,i:$('#improveBox').textContent},sum:$('#sumScore').textContent,avg:$('#avgOutOf5').textContent
-    };
-    localStorage.setItem(keyFor(),JSON.stringify(data));
-  }
-  function tryLoad(){
-    const raw=localStorage.getItem(keyFor()); if(!raw) return;
-    const d=JSON.parse(raw);
-    $('#tId').value=d.meta.id||''; $('#tSpec').value=d.meta.spec||''; $('#tRank').value=d.meta.rank||'';
-    $('#signPrincipalName').textContent=d.meta.principal|| (localStorage.getItem('principalName')||'فهد حامد علي الزهراني');
-    $$('#rows tr').forEach((tr,i)=>{ const r=d.rows[i]; if(r) tr.querySelector('.grade').value=r.v; });
-    recalc();
-  }
-
-  // طباعة مصفوفة إخفاء
-  const HIDE_SEL='.actions,.modal,.mini,.kpi-wrap';
-  async function capturePDF(targetEl, filename){
-    const hidden=[...document.querySelectorAll(HIDE_SEL)];
-    hidden.forEach(el=>{el.dataset._np='1'; el.style.display='none';});
-    // ضمان عرض كامل الصفحة
+/* طباعة و PDF (إصلاح الالتقاط) */
+const HIDE_SEL='.modal,.toolbar'; /* نخفي شريط الأدوات والنوافذ فقط */
+function hideUI(hide=true){
+  $$(HIDE_SEL).forEach(el=>{ if(hide){el.dataset._np='1'; el.style.display='none';} else if(el.dataset._np==='1'){ el.style.display=''; delete el.dataset._np; }});
+}
+async function capturePDF(targetEl, filename){
+  try{
+    hideUI(true);
     const { jsPDF } = window.jspdf;
     const canvas = await html2canvas(targetEl,{scale:1.4,useCORS:true,windowWidth:document.documentElement.scrollWidth});
     const img = canvas.toDataURL('image/png');
@@ -839,105 +768,96 @@ html,body{
     const props=pdf.getImageProperties(img); const w=210, h=(props.height*w)/props.width;
     pdf.addImage(img,'PNG',0,0,w,h);
     pdf.save(filename);
-    hidden.forEach(el=>{ if(el.dataset._np==='1'){el.style.display=''; delete el.dataset._np;} });
-  }
+  }catch(e){ alert('تعذّر حفظ PDF'); console.error(e);}
+  finally{ hideUI(false); }
+}
+$('#btnPrint').addEventListener('click',()=> window.print());
+$('#btnPdf').addEventListener('click', async ()=>{
+  const name=$('#tName').value||'بدون اسم';
+  await capturePDF(document.getElementById('page'), `تقييم الأداء الوظيفي - ${name}.pdf`);
+});
+$('#btnSave').addEventListener('click',()=>{ autoSave(); alert('تم الحفظ محليًا.'); });
+$('#btnClear').addEventListener('click',()=>{ $$('.grade').forEach(s=> s.value='3'); recalc(); buildInsights(); autoSave(); });
 
-  // أزرار الصفحة الرئيسية
-  $('#btnPrint').addEventListener('click',()=> window.print());
-  $('#btnPdf').addEventListener('click', async ()=>{
-    const name=$('#tName').value||'بدون اسم';
-    await capturePDF(document.getElementById('page'), `تقييم الأداء الوظيفي - ${name}.pdf`);
+/* واتساب */
+const DEFAULT_PHONE= localStorage.getItem('waPhone') || '966500000000';
+function buildWhatsAppText(){
+  const name=$('#tName').value||'—', model=$('#modelSelect').selectedOptions[0].textContent, stage=$('#stageSelect').selectedOptions[0].textContent;
+  const lines=[`تقييم الأداء الوظيفي — ${name} — ${model} — ${stage}`, `المجموع: ${$('#sumScore').textContent}`, `المتوسط (من 5): ${$('#avgOutOf5').textContent}`, '', 'ملخص البنود:'];
+  $$('#rows tr').forEach(tr=>{
+    const item=tr.querySelector('.item-text').textContent; const w=+tr.dataset.w; const v=+tr.querySelector('.grade').value; const s=(v/5)*w;
+    lines.push(`- ${item}: وزن ${w}%، درجة ${v}/5، ناتج ${s.toFixed(2)}`);
   });
-  $('#btnSave').addEventListener('click',()=>{ autoSave(); alert('تم الحفظ محليًا.'); });
-  $('#btnClear').addEventListener('click',()=>{ $$('.grade').forEach(s=> s.value='3'); recalc(); buildInsights(); autoSave(); });
+  lines.push('', 'نقاط القوة:', $('#strengthsBox').textContent||'—', '', 'مجالات التحسين:', $('#improveBox').textContent||'—');
+  return encodeURIComponent(lines.join("\n"));
+}
+$('#btnWhatsApp').addEventListener('click',()=>{
+  const phone = prompt('أدخل رقم واتساب (مع مفتاح الدولة):', DEFAULT_PHONE) || DEFAULT_PHONE;
+  localStorage.setItem('waPhone', phone);
+  const text=buildWhatsAppText();
+  window.open(`https://wa.me/${phone}?text=${text}`,'_blank');
+});
 
-  // واتساب
-  const DEFAULT_PHONE= localStorage.getItem('waPhone') || '966500000000';
-  function buildWhatsAppText(){
-    const name=$('#tName').value||'—', model=$('#modelSelect').selectedOptions[0].textContent, stage=$('#stageSelect').selectedOptions[0].textContent;
-    const lines=[`تقييم الأداء الوظيفي — ${name} — ${model} — ${stage}`, `المجموع: ${$('#sumScore').textContent}`, `المتوسط (من 5): ${$('#avgOutOf5').textContent}`, '', 'ملخص البنود:'];
-    $$('#rows tr').forEach(tr=>{
-      const item=tr.querySelector('.item-text').textContent; const w=+tr.dataset.w; const v=+tr.querySelector('.grade').value; const s=(v/5)*w;
-      lines.push(`- ${item}: وزن ${w}%، درجة ${v}/5، ناتج ${s.toFixed(2)}`);
-    });
-    lines.push('', 'نقاط القوة:', $('#strengthsBox').textContent||'—', '', 'مجالات التحسين:', $('#improveBox').textContent||'—');
-    return encodeURIComponent(lines.join("\n"));
-  }
-  $('#btnWhatsApp').addEventListener('click',()=>{
-    const phone = prompt('أدخل رقم واتساب (مع مفتاح الدولة):', DEFAULT_PHONE) || DEFAULT_PHONE;
-    localStorage.setItem('waPhone', phone);
-    const text=buildWhatsAppText();
-    window.open(`https://wa.me/${phone}?text=${text}`,'_blank');
+/* فتح الشرح/الأدلة/إغلاق */
+$('#openHelp').addEventListener('click',()=> $('#helpModal').style.display='flex');
+$('#openRubrics').addEventListener('click',()=> $('#reportsModal').style.display='flex');
+document.addEventListener('click',e=>{ const sel=e.target.getAttribute('data-close'); if(sel){ $(sel).style.display='none'; }});
+
+/* خطة الفجوة: بناء متعدد الفجوات + PDF يعمل */
+function buildGapPlan(){
+  const name=$('#tName').value||'—';
+  const model=$('#modelSelect').selectedOptions[0].textContent;
+  const stage=$('#stageSelect').selectedOptions[0].textContent;
+  const d=new Date(); const year = d.getFullYear()+' / '+(d.getFullYear()+1);
+
+  $('#g_dirHeader').textContent = $('#dirText').textContent;
+  $('#g_schoolHeader').textContent = $('#schoolText').textContent;
+  $('#g_today').textContent = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()];
+  $('#g_date').textContent = d.toLocaleDateString('ar-SA');
+  $('#g_model').textContent = `نموذج: ${model}`;
+
+  $('#gapModal').style.display='flex';
+  $('#g_name').textContent=name; $('#g_dir').textContent=$('#dirText').textContent;
+  $('#g_title').textContent=model; $('#g_spec').textContent=$('#tSpec').value||'—';
+  $('#g_stage').textContent=stage; $('#g_school').textContent=$('#schoolText').textContent;
+  $('#g_year').textContent=year;
+
+  // استخراج أدنى 3 بنود كفجوات
+  const rows=$$('#rows tr').map(tr=>({name:tr.querySelector('.item-text').textContent,w:+tr.dataset.w,v:+tr.querySelector('.grade').value}));
+  rows.sort((a,b)=> (a.v===b.v? a.w-b.w : a.v-b.v));
+  const gaps=rows.slice(0,Math.min(3,rows.length));
+
+  const body=$('#g_targets'); body.innerHTML='';
+  gaps.forEach(g=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${g.name}</td>` + [1,2,3,4,5].map(k=> `<td style="font-weight:900">${k===g.v?'✓':''}</td>`).join('');
+    body.appendChild(tr);
   });
 
-  // الشرح / الأدلة
-  $('#openHelp').addEventListener('click',()=> $('#helpModal').style.display='flex');
-  $('#openRubrics').addEventListener('click',()=> $('#reportsModal').style.display='flex');
-  document.addEventListener('click',e=>{ const sel=e.target.getAttribute('data-close'); if(sel){ $(sel).style.display='none'; } });
+  const avg = +($('#avgOutOf5').textContent||'0');
+  $('#g_grade').textContent = `${avg.toFixed(2)} / 5`;
 
-  // خطة الفجوة
-  function buildGapPlan(){
-    const name=$('#tName').value||'—';
-    const model=$('#modelSelect').selectedOptions[0].textContent;
-    const stage=$('#stageSelect').selectedOptions[0].textContent;
-    const d=new Date(); const year = d.getFullYear()+' / '+(d.getFullYear()+1);
+  $('#g_strengths').textContent = ($('#strengthsBox').textContent||'').trim() || '—';
+  $('#g_gaps').textContent      = ($('#improveBox').textContent||'').trim()   || '—';
 
-    $('#g_dirHeader').textContent = $('#dirText').textContent;
-    $('#g_schoolHeader').textContent = $('#schoolText').textContent;
-    $('#g_today').textContent = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()];
-    $('#g_date').textContent = d.toLocaleDateString('ar-SA');
-    $('#g_model').textContent = `نموذج: ${model}`;
-
-    $('#gapModal').style.display='flex';
-    $('#g_name').textContent=name; $('#g_dir').textContent=$('#dirText').textContent;
-    $('#g_title').textContent=model; $('#g_spec').textContent=$('#tSpec').value||'—';
-    $('#g_stage').textContent=stage; $('#g_school').textContent=$('#schoolText').textContent;
-    $('#g_year').textContent=year;
-
-    const rows=$$('#rows tr').map(tr=>({name:tr.querySelector('.item-text').textContent,w:+tr.dataset.w,v:+tr.querySelector('.grade').value}));
-    rows.sort((a,b)=> (a.v===b.v? a.w-b.w : a.v-b.v));
-    const target=rows[0]||{name:'—',v:3};
-
-    $('#g_target').textContent=target.name;
-    ['g_s1','g_s2','g_s3','g_s4','g_s5'].forEach((id,i)=>{ const el=$('#'+id); el.textContent=(i+1)===target.v?'✓':''; el.style.fontWeight='900'; });
-    $('#g_grade').textContent = `${target.v} / 5`;
-    $('#g_strengths').textContent = ($('#strengthsBox').textContent||'').replace(/^•\s*/,'') || '—';
-    $('#g_gaps').textContent      = ($('#improveBox').textContent||'').replace(/^•\s*/,'')   || '—';
-
-    const actions=$('#g_actions'); actions.innerHTML='';
-    ['جلسة تغذية راجعة أسبوعية','درس تطبيقي/زيارة زميل','متابعة المؤشرات ورفع تقرير'].forEach((t,i)=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${i+1}</td><td contenteditable="true">${t} — (${target.name})</td><td contenteditable="true">مواد/منصات</td><td contenteditable="true">أسبوعان</td><td contenteditable="true">تدريب/دعم</td><td contenteditable="true">${name||'المعلم'}</td><td contenteditable="true">المدير/المشرف</td><td contenteditable="true">تحسن الدرجة ≥ 1</td>`;
-      actions.appendChild(tr);
-    });
-
-    $('#g_signTeacher').textContent = name || '—';
-    $('#g_signPrincipal').textContent = localStorage.getItem('principalName') || 'فهد حامد علي الزهراني';
-    $('#g_footerDate').textContent = `حرر في ${d.toLocaleDateString('ar-SA')} — ${['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()]}`;
-  }
-
-  document.getElementById('btnGapPlan').addEventListener('click',()=> buildGapPlan());
-  document.getElementById('gapClose').addEventListener('click',()=> $('#gapModal').style.display='none');
-  document.getElementById('gapPdf').addEventListener('click', async ()=>{
-    const name=$('#tName').value||'بدون اسم';
-    const hidden=[...document.querySelectorAll(HIDE_SEL)]; hidden.forEach(el=>{el.dataset._np='1'; el.style.display='none';});
-    try{
-      const { jsPDF } = window.jspdf;
-      const canvas = await html2canvas(document.getElementById('gapPanel'),{scale:1.4,useCORS:true,windowWidth:document.documentElement.scrollWidth});
-      const img = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({orientation:'p',unit:'mm',format:'a4'});
-      const props=pdf.getImageProperties(img); const w=210, h=(props.height*w)/props.width;
-      pdf.addImage(img,'PNG',0,0,w,h);
-      pdf.save(`خطة تحسين فجوة الأداء - ${name}.pdf`);
-    }catch(e){ alert('تعذّر حفظ PDF'); }
-    finally{
-      hidden.forEach(el=>{ if(el.dataset._np==='1'){el.style.display=''; delete el.dataset._np;} });
-    }
+  const actions=$('#g_actions'); actions.innerHTML='';
+  gaps.forEach((g,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td contenteditable="true">إجراء تحسين موجّه يتعلق بـ «${g.name}»</td><td contenteditable="true">مواد/منصات/دعم</td><td contenteditable="true">3 أسابيع</td><td contenteditable="true">تدريب/زيارة صفية</td><td contenteditable="true">${name||'المعلم'}</td><td contenteditable="true">المدير/المشرف</td><td contenteditable="true">تحسّن ≥ درجة واحدة</td>`;
+    actions.appendChild(tr);
   });
-  </script>
-  <div class="footer no-print" style="text-align:center;margin:6px 2px 4px 2px;color:#6a7f7b;font-size:12px">
-    <!-- تم إخفاء عبارة تنفيذ وتصميم حسب طلبكم -->
-  </div>
-</div><!-- /page -->
+
+  $('#g_signTeacher').textContent = name || '—';
+  $('#g_signPrincipal').textContent = localStorage.getItem('principalName') || 'فهد حامد علي الزهراني';
+  $('#g_footerDate').textContent = `حُرّر في ${d.toLocaleDateString('ar-SA')} — ${['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'][d.getDay()]}`;
+}
+document.getElementById('btnGapPlan').addEventListener('click', buildGapPlan);
+
+document.getElementById('gapClose').addEventListener('click',()=> $('#gapModal').style.display='none');
+document.getElementById('gapPdf').addEventListener('click', async ()=>{
+  const name=$('#tName').value||'بدون اسم';
+  await capturePDF(document.getElementById('gapPanel'), `خطة تحسين فجوة الأداء - ${name}.pdf`);
+});
+</script>
 </body>
 </html>
