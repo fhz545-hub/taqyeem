@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<title>نموذج تقييم الأداء الوظيفي –</title>
+<title>نموذج تقييم الأداء الوظيفي</title>
 
 <!-- خطوط -->
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal","Cairo
 .table th{background:var(--moe);color:#fff}
 
 /* سُلّم التقدير: وسط الأعمدة والاختيار */
-.table td:nth-(3), .table th:nth-(3){text-align:center}
+.table td:nth-child(3), .table th:nth-child(3){text-align:center}
 .select-mini{
   appearance:none;background:#fff;border:none;border-radius:10px;padding:4px 8px;
   font-weight:900;color:#0b3430;outline:none;opacity:.65;
@@ -86,13 +86,13 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 
 /* أهداف التخطيط */
 #goalsWrap{margin:8px 0;display:none}
-.goal-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:6px 8px}
-/* العبارة الإرشادية */
+.goal-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:6px 8px;text-align:center}
 .goal-hint{
   margin-top:6px;font-weight:800;color:#b30000;
   border:1px dashed var(--border);border-radius:10px;padding:8px 10px;
   background:linear-gradient(180deg,#ffffff,#fff6f6)
 }
+#goalsTable th,#goalsTable td{ text-align:center }
 
 /* نوافذ */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100;padding:10px}
@@ -188,7 +188,7 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
     <div style="font-weight:800;color:#0c594e;margin-bottom:6px">
       الأهداف المهنية ومؤشراتها (مرحلة التخطيط )
     </div>
-    <!-- العبارة الإرشادية الجديدة — مخفية في الطباعة ووقت الحفظ -->
+    <!-- العبارة الإرشادية — لا تظهر في الطباعة/الحفظ -->
     <div class="goal-hint no-print" data-hide-on-export style="font-size:12px">
   🔴 دوّن أهدافك القابلة للقياس مع مؤشراتها وقيمها المستهدفة، وبعدها انتقل إلى مرحلة المراجعة النصف السنوية.
 </div>
@@ -315,13 +315,14 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
     </div>
   </div>
 
-  <!-- خطة فجوة الأداء (تلقائية) -->
+  <!-- خطة فجوة الأداء -->
   <div class="modal" id="gapModal">
     <div class="panel" id="gapPanel" style="width:min(900px,96%);background:#fff">
-      <div class="head"><div>خطة تحسين فجوة الأداء</div>
+      <div class="head">
+        <div>خطة تحسين فجوة الأداء</div>
         <div style="display:flex;gap:8px">
-          <button id="gapPdf" class="pill" style="background:#fff;color:#0c594e;border-color:#fff" type="button">🧾 حفظ PDF</button>
-          <button id="gapClose" class="pill" style="background:#fff;color:#0c594e;border-color:#fff" type="button">✖ إغلاق</button>
+          <button id="gapPdf" class="pill" data-hide-on-export style="background:#fff;color:#0c594e;border-color:#fff" type="button">🧾 حفظ PDF</button>
+          <button id="gapClose" class="pill" data-hide-on-export style="background:#fff;color:#0c594e;border-color:#fff" type="button">✖ إغلاق</button>
         </div>
       </div>
       <div class="body" id="gapBody">
@@ -420,10 +421,10 @@ function loadHeaderPrefs(){
   const dir=localStorage.getItem(STORE_KEYS.dir)||'الإدارة العامة للتعليم بالمنطقة الشرقية';
   const school=localStorage.getItem(STORE_KEYS.school)||'ثانوية اليعقوبي';
   const principal=localStorage.getItem(STORE_KEYS.principal)||'فهد حامد علي الزهراني';
-  $('#dirText').first.nodeValue = dir;
-  $('#schoolText').first.nodeValue = school;
+  $('#dirText').firstChild.nodeValue = dir;
+  $('#schoolText').firstChild.nodeValue = school;
   $('#signPrincipalName').textContent = principal;
-  // مزامنة خطة الفجوة عند الفتح
+  // مزامنة خطة الفجوة
   $('#g_dirHeader').textContent=dir;
   $('#g_schoolHeader').textContent=school;
   $('#g_signPrincipal').textContent=principal;
@@ -439,12 +440,12 @@ document.addEventListener('click',e=>{
   const val=prompt(title, current);
   if(val===null) return;
   const clean=val.trim().replace(/\s+/g,' ');
-  if(el.id==='dirText'){ el.first.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; $('#g_dir').textContent=clean; }
+  if(el.id==='dirText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; $('#g_dir').textContent=clean; }
   else if(el.id==='schoolText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.school,clean); $('#g_schoolHeader').textContent=clean; $('#g_school').textContent=clean; }
   else if(el.id==='signPrincipalName'){ el.textContent = clean; el.parentElement.appendChild(t); localStorage.setItem(STORE_KEYS.principal,clean); $('#g_signPrincipal').textContent=clean; }
 });
 
-/* تعريف النماذج */
+/* تعريف النماذج (بدون تغيير المفاتيح) */
 const RUBRICS={
   teacher:[
     {name:"أداء الواجبات الوظيفية",weight:10},
@@ -587,7 +588,7 @@ const RUBRICS={
   ],
 };
 
-/* أهداف افتراضية (للتخطيط) */
+/* أهداف افتراضية */
 const GOALS={
   teacher:[
     {g:"رفع متوسط نواتج التعلم",kpi:"تحسّن نتائج الاختبارات القصيرة",target:"≥ 15%"},
@@ -754,13 +755,22 @@ applyModelStage(); tryLoad();
 
 /* عدسة الأسماء (استيراد Excel) */
 const HEADER_MAP=[
-  {keys:['الاسم','Name','Full Name'],prop:'name'},
-  {keys:['رقم الهوية','هوية','ID','National ID'],prop:'id'},
-  {keys:['التخصص','Specialty','Major'],prop:'spec'},
-  {keys:['المرتبة','الرتبة','Rank','Grade'],prop:'rank'},
-  {keys:['المسمى','المسمى الوظيفي','Title','Role'],prop:'title'}
+  {keys:['الاسم','اسم','Name','Full Name','fullname'],prop:'name'},
+  {keys:['رقم الهوية','رقم','هوية','ID','National ID','nationalid','nid'],prop:'id'},
+  {keys:['التخصص','تخصص','Specialty','Major','speciality','major'],prop:'spec'},
+  {keys:['المرتبة','الرتبة','مرتبة','رتبة','Rank','Grade','rank','grade'],prop:'rank'},
+  {keys:['المسمى','المسمى الوظيفي','وظيفي','المسمىالوظيفي','Title','Role','title','role'],prop:'title'}
 ];
-function findProp(h){h=(h||'').toString().trim();for(const m of HEADER_MAP){if(m.keys.some(k=>new RegExp(`^${k}$`,'i').test(h)))return m.prop;}return null;}
+function norm(s){return String(s||'').toLowerCase().replace(/[ \u200f\u200e._\-:،,]/g,'');}
+function findProp(h){
+  const n=norm(h);
+  for(const m of HEADER_MAP){
+    for(const k of m.keys){
+      if(n.includes(norm(k))) return m.prop;
+    }
+  }
+  return null;
+}
 function getNames(){return JSON.parse(localStorage.getItem('namesV2')||'[]');}
 function setNames(a){localStorage.setItem('namesV2',JSON.stringify(a));}
 function refreshNameList(){
@@ -792,9 +802,17 @@ $('#xlsInput').addEventListener('change',async e=>{
     wb.SheetNames.forEach(name=>{
       const ws=wb.Sheets[name]; const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''}); if(!rows.length)return;
       const head=rows[0]; const idx={}; head.forEach((h,i)=>{const p=findProp(h); if(p) idx[p]=i;});
-      for(let r=1;r<rows.length;r++){const row=rows[r]; if(!row.length)continue; const o={}; Object.keys(idx).forEach(p=>o[p]=String(row[idx[p]]||'').trim()); if(o.name) all.push(o);}
+      for(let r=1;r<rows.length;r++){
+        const row=rows[r]; if(!row.length)continue;
+        const o={}; Object.keys(idx).forEach(p=>o[p]=String(row[idx[p]]||'').trim());
+        if(o.name) all.push(o);
+      }
     });
-    if(all.length){const prev=getNames(); const mix=[...prev]; all.forEach(o=>{if(!mix.some(x=>x.name===o.name && x.id===o.id))mix.push(o)}); setNames(mix); refreshNameList();} else alert('لم يتم التعرف على الأعمدة.');
+    if(all.length){
+      const prev=getNames(); const mix=[...prev];
+      all.forEach(o=>{if(!mix.some(x=>x.name===o.name && x.id===o.id))mix.push(o)});
+      setNames(mix); refreshNameList();
+    } else alert('لم يتم التعرف على الأعمدة. تأكد من صف العناوين.');
   }catch(err){console.error(err);alert('تعذّر قراءة الملف.');}
   e.target.value='';
 });
@@ -809,8 +827,8 @@ document.addEventListener('click',e=>{
 });
 
 /* ——— طباعة وPDF مع إخفاء عناصر التصدير ——— */
-function ensureImagesLoaded(root){
-  const imgs=[...root.querySelectorAll('img')]; if(!imgs.length) return Promise.resolve();
+function ensureImagesLoaded(rootDoc){
+  const imgs=[...rootDoc.querySelectorAll('img')]; if(!imgs.length) return Promise.resolve();
   return Promise.all(imgs.map(img=> new Promise(res=>{ if(img.complete) return res(); img.onload=()=>res(); img.onerror=()=>res(); })));
 }
 function hideExportables(root,hide=true){
@@ -818,7 +836,7 @@ function hideExportables(root,hide=true){
   nodes.forEach(n=>{ if(hide){ n.setAttribute('data-prev-display', n.style.display||''); n.style.display='none'; } else { n.style.display=n.getAttribute('data-prev-display')||''; n.removeAttribute('data-prev-display'); } });
 }
 async function savePdfSmart(targetEl, filename){
-  // 1) نافذة الطباعة (تخفي العناصر عبر CSS)
+  // 1) نافذة الطباعة
   try{
     const w=window.open('','_blank','noopener,noreferrer,width=900,height=1200');
     if(w){
@@ -845,7 +863,7 @@ async function savePdfSmart(targetEl, filename){
     }
   }catch(e){console.warn('نافذة الطباعة فشلت',e);}
 
-  // 2) html2canvas + jsPDF مع إخفاء عناصر التصدير قبل الالتقاط
+  // 2) html2canvas + jsPDF
   try{
     hideExportables(document,true);
     await ensureImagesLoaded(document);
@@ -859,10 +877,10 @@ async function savePdfSmart(targetEl, filename){
     return;
   }catch(e){console.warn('html2canvas فشل',e);}
   finally{
-    hideExportables(document,false); // إعادة إظهار العناصر بعد الالتقاط
+    hideExportables(document,false);
   }
 
-  // 3) نافذة طوارئ
+  // 3) طوارئ
   try{
     const w2=window.open('','_blank'); w2.document.write('<pre>تعذر إنشاء PDF تلقائيًا. استخدم Ctrl/Cmd+P ثم اختر "حفظ كـ PDF".</pre>'); w2.document.close(); w2.focus();
   }catch(e){ alert('تعذر إنشاء PDF.'); }
@@ -926,7 +944,12 @@ function buildGapPlan(){
 }
 document.getElementById('btnGapPlan').addEventListener('click',buildGapPlan);
 document.getElementById('gapClose').addEventListener('click',()=> $('#gapModal').style.display='none');
-document.getElementById('gapPdf').addEventListener('click',async()=>{const name=$('#tName').value||'بدون اسم'; await savePdfSmart(document.getElementById('gapPanel'), `خطة تحسين فجوة الأداء - ${name}.pdf`);});
+document.getElementById('gapPdf').addEventListener('click',async()=>{
+  const name=$('#tName').value||'بدون اسم';
+  $('#g_signTeacher').textContent=$('#tName').value||'—';
+  $('#g_signPrincipal').textContent=$('#signPrincipalName').textContent.trim();
+  await savePdfSmart(document.getElementById('gapPanel'), `خطة تحسين فجوة الأداء - ${name}.pdf`);
+});
 
 /* إغلاق عام للنوافذ بالنقر خارجها */
 ['helpModal','guidesModal','gapModal'].forEach(id=>{
