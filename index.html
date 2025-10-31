@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<title>نموذج تقييم الأداء الوظيفي – ثانوية اليعقوبي</title>
+<title>نموذج تقييم الأداء الوظيفي –  </title>
 
 <!-- خطوط -->
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&family=Cairo:wght@600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal","Cairo
 .table th{background:var(--moe);color:#fff}
 
 /* سُلّم التقدير: وسط الأعمدة والاختيار */
-.table td:nth-child(3), .table th:nth-child(3){text-align:center}
+.table td:nth-(3), .table th:nth-(3){text-align:center}
 .select-mini{
   appearance:none;background:#fff;border:none;border-radius:10px;padding:4px 8px;
   font-weight:900;color:#0b3430;outline:none;opacity:.65;
@@ -420,8 +420,8 @@ function loadHeaderPrefs(){
   const dir=localStorage.getItem(STORE_KEYS.dir)||'الإدارة العامة للتعليم بالمنطقة الشرقية';
   const school=localStorage.getItem(STORE_KEYS.school)||'ثانوية اليعقوبي';
   const principal=localStorage.getItem(STORE_KEYS.principal)||'فهد حامد علي الزهراني';
-  $('#dirText').firstChild.nodeValue = dir;
-  $('#schoolText').firstChild.nodeValue = school;
+  $('#dirText').first.nodeValue = dir;
+  $('#schoolText').first.nodeValue = school;
   $('#signPrincipalName').textContent = principal;
   // مزامنة خطة الفجوة عند الفتح
   $('#g_dirHeader').textContent=dir;
@@ -439,7 +439,7 @@ document.addEventListener('click',e=>{
   const val=prompt(title, current);
   if(val===null) return;
   const clean=val.trim().replace(/\s+/g,' ');
-  if(el.id==='dirText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; $('#g_dir').textContent=clean; }
+  if(el.id==='dirText'){ el.first.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; $('#g_dir').textContent=clean; }
   else if(el.id==='schoolText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.school,clean); $('#g_schoolHeader').textContent=clean; $('#g_school').textContent=clean; }
   else if(el.id==='signPrincipalName'){ el.textContent = clean; el.parentElement.appendChild(t); localStorage.setItem(STORE_KEYS.principal,clean); $('#g_signPrincipal').textContent=clean; }
 });
