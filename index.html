@@ -61,7 +61,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal","Cairo
 .select-mini{
   appearance:none;background:#fff;border:none;border-radius:10px;padding:4px 8px;
   font-weight:900;color:#0b3430;outline:none;opacity:.65;
-  text-align:center; text-align-last:center; /* مركز النص داخل السلكت */
+  text-align:center; text-align-last:center;
 }
 .select-mini:disabled{opacity:.28}
 .select-mini:focus{outline:2px solid #bfe8df}
@@ -87,6 +87,12 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 /* أهداف التخطيط */
 #goalsWrap{margin:8px 0;display:none}
 .goal-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:6px 8px}
+/* العبارة الإرشادية */
+.goal-hint{
+  margin-top:6px;font-weight:800;color:#b30000;
+  border:1px dashed var(--border);border-radius:10px;padding:8px 10px;
+  background:linear-gradient(180deg,#ffffff,#fff6f6)
+}
 
 /* نوافذ */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:100;padding:10px}
@@ -96,7 +102,7 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 
 /* طباعة */
 @media print{
-  .no-print,.modal,.toolbar{display:none!important}
+  .no-print,.modal,.toolbar,[data-hide-on-export]{display:none!important}
   #page{padding:0}
   @page{size:A4;margin:12mm}
 }
@@ -179,8 +185,14 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 
   <!-- أهداف التخطيط -->
   <section id="goalsWrap">
-    <div style="font-weight:800;color:#0c594e;margin-bottom:6px">الهدف/المؤشر/القيمة المستهدفة (مرحلة التخطيط فقط)</div>
-    <table class="table" id="goalsTable">
+    <div style="font-weight:800;color:#0c594e;margin-bottom:6px">
+      الهدف/المؤشر/القيمة المستهدفة (مرحلة التخطيط فقط)
+    </div>
+    <!-- العبارة الإرشادية الجديدة — مخفية في الطباعة ووقت الحفظ -->
+    <div class="goal-hint no-print" data-hide-on-export>
+      🔴 دوّن أهدافك القابلة للقياس مع مؤشراتها وقيمها المستهدفة، وسلّمها مطبوعة لقائد المدرسة للانتقال إلى مرحلة المراجعة النصف السنوية.
+    </div>
+    <table class="table" id="goalsTable" style="margin-top:8px">
       <thead><tr><th>الهدف</th><th>المؤشر</th><th>القيمة المستهدفة</th></tr></thead>
       <tbody id="goalsBody"></tbody>
     </table>
@@ -230,7 +242,7 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
     <div style="text-align:center">
       <div id="signTeacherName" style="font-weight:800;color:#0c594e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
       <div style="border-top:1px dashed #bcd3cd;margin-top:6px;width:80%;margin-inline:auto"></div>
-      <div style="font-size:12px;color:#667">توقيع شاغل الوظيفة</div>
+      <div style="font-size:12px;color:#667">توقيع الموظف</div>
     </div>
     <div style="text-align:center">
       <div style="display:inline-flex;align-items:center;gap:6px;justify-content:center">
@@ -375,7 +387,7 @@ tr.rate-5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
           <div style="text-align:center">
             <div id="g_signTeacher" style="font-weight:800;color:#0c594e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
             <div style="border-top:1px dashed #bcd3cd;margin-top:6px;width:80%;margin-inline:auto"></div>
-            <div style="font-size:12px;color:#667">توقيع شاغل الوظيفة</div>
+            <div style="font-size:12px;color:#667">توقيع الموظف</div>
           </div>
           <div style="text-align:center">
             <div id="g_signPrincipal" style="font-weight:800;color:#0c594e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">فهد حامد علي الزهراني</div>
@@ -403,11 +415,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 })();
 
 /* —— إعدادات محفوظة ——————————————————— */
-const STORE_KEYS={
-  dir:'PF_dirText',
-  school:'PF_schoolText',
-  principal:'PF_principalName'
-};
+const STORE_KEYS={ dir:'PF_dirText', school:'PF_schoolText', principal:'PF_principalName' };
 function loadHeaderPrefs(){
   const dir=localStorage.getItem(STORE_KEYS.dir)||'الإدارة العامة للتعليم بالمنطقة الشرقية';
   const school=localStorage.getItem(STORE_KEYS.school)||'ثانوية اليعقوبي';
@@ -431,15 +439,13 @@ document.addEventListener('click',e=>{
   const val=prompt(title, current);
   if(val===null) return;
   const clean=val.trim().replace(/\s+/g,' ');
-  // حدّث النص (الحفاظ على النص الأساسي بدون الأزرار)
-  if(el.id==='dirText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; }
+  if(el.id==='dirText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.dir,clean); $('#g_dirHeader').textContent=clean; $('#g_dir').textContent=clean; }
   else if(el.id==='schoolText'){ el.firstChild.nodeValue = clean; localStorage.setItem(STORE_KEYS.school,clean); $('#g_schoolHeader').textContent=clean; $('#g_school').textContent=clean; }
   else if(el.id==='signPrincipalName'){ el.textContent = clean; el.parentElement.appendChild(t); localStorage.setItem(STORE_KEYS.principal,clean); $('#g_signPrincipal').textContent=clean; }
 });
 
-/* تعريف النماذج (مطابقة للتفريغ) */
+/* تعريف النماذج */
 const RUBRICS={
-  /* 1) المعلّم */
   teacher:[
     {name:"أداء الواجبات الوظيفية",weight:10},
     {name:"التفاعل مع المجتمع المهني",weight:10},
@@ -453,8 +459,6 @@ const RUBRICS={
     {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",weight:10},
     {name:"تنوع أساليب التقويم",weight:10},
   ],
-
-  /* 2) رائد نشاط */
   activity:[
     {name:"أداء الواجبات الوظيفية",weight:10},
     {name:"التفاعل مع المجتمع المهني",weight:10},
@@ -472,8 +476,6 @@ const RUBRICS={
     {name:"دعم المعلمين وفق احتياجهم وميولهم للأنشطة",weight:5},
     {name:"تحفيز المتعلمين على المشاركة في الأنشطة المدرسية",weight:10},
   ],
-
-  /* 3) الموجّه الصحي */
   health:[
     {name:"أداء الواجبات الوظيفية",weight:10},
     {name:"التفاعل مع المجتمع المهني",weight:10},
@@ -490,8 +492,6 @@ const RUBRICS={
     {name:"حصر الحالات الصحية للمتعلمين",weight:5},
     {name:"تهيئة البيئة الصحية المدرسية",weight:10},
   ],
-
-  /* 4) معلمة رياض الأطفال */
   kg:[
     {name:"أداء الواجبات الوظيفية",weight:10},
     {name:"التفاعل مع المجتمع المهني",weight:5},
@@ -513,8 +513,6 @@ const RUBRICS={
     {name:"دعم اكتساب القيم والاتجاهات",weight:5},
     {name:"تنمية المهارات اللغوية والاجتماعية لكل متعلم",weight:5},
   ],
-
-  /* 5) محضر المختبر */
   lab:[
     {name:"أداء الواجبات الوظيفية",weight:10},
     {name:"التفاعل مع المجتمع المهني",weight:10},
@@ -530,8 +528,6 @@ const RUBRICS={
     {name:"يعد تقرير أنشطة ومهام المختبر الأسبوعية",weight:10},
     {name:"يعد تقارير دورية عن حالة الأجهزة والمعدات",weight:10},
   ],
-
-  /* 6) الموجّه الطلابي */
   counselor:[
     {name:"أداء الواجبات الوظيفية",weight:20},
     {name:"التفاعل مع المجتمع المهني",weight:5},
@@ -547,8 +543,6 @@ const RUBRICS={
     {name:"يقدم تدخلات تربوية للمتعثرين والمعيدين دراسيًا",weight:5},
     {name:"توعية أولياء الأمور بقواعد السلوك والمواظبة",weight:5},
   ],
-
-  /* 7) مدير المدرسة — 19 بندًا */
   principal:[
     {name:"أداء الواجبات الوظيفية",weight:5},
     {name:"التفاعل مع المجتمع المهني",weight:5},
@@ -570,8 +564,6 @@ const RUBRICS={
     {name:"يعزّز السلوك الإيجابي لدى الطلاب",weight:5},
     {name:"تهيئة بيئة مدرسية آمنة ومهيأة للتعلم",weight:5},
   ],
-
-  /* 8) وكيل المدرسة — 19 بندًا */
   vp:[
     {name:"أداء الواجبات الوظيفية",weight:5},
     {name:"التفاعل مع المجتمع المهني",weight:5},
@@ -742,7 +734,14 @@ function tryLoad(){
   const raw=localStorage.getItem(keyFor()); if(!raw) return;
   const d=JSON.parse(raw);
   $$('#rows tr').forEach((tr,i)=>{const r=d.rows[i]; if(r){tr.querySelector('.grade').value=r.v; tr.querySelector('.grade').disabled=!!r.dis;}});
-  if(d.goals?.length){const gb=$('#goalsBody'); gb.innerHTML=''; d.goals.forEach(r=>{const tr=document.createElement('tr'); tr.innerHTML=`<td><input class="goal-input" value="${r.g||''}"></td><td><input class="goal-input" value="${r.kpi||''}"></td><td><input class="goal-input" value="${r.target||''}"></td>`; gb.appendChild(tr);});}
+  if(d.goals?.length){
+    const gb=$('#goalsBody'); gb.innerHTML='';
+    d.goals.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td><input class="goal-input" value="${r.g||''}"></td><td><input class="goal-input" value="${r.kpi||''}"></td><td><input class="goal-input" value="${r.target||''}"></td>`;
+      gb.appendChild(tr);
+    });
+  }
   $('#tName').value=d.meta?.n||''; $('#tId').value=d.meta?.id||''; $('#tSpec').value=d.meta?.spec||''; $('#tRank').value=d.meta?.rank||'';
   recalc();
 }
@@ -772,7 +771,7 @@ function refreshNameList(){
   const grid=document.createElement('div');grid.style.display='grid';grid.style.gridTemplateColumns='repeat(auto-fill,minmax(240px,1fr))';grid.style.gap='8px';
   names.forEach(o=>{
     const card=document.createElement('div');card.style.border='1px solid var(--border)';card.style.borderRadius='10px';card.style.padding='8px';card.style.cursor='pointer';card.style.background='#fff';
-    card.innerHTML=`<div style="font-weight:900;color:#0c594e">${o.name}</div><div style="font-size:12px;color:#667;display:flex;gap:6px;flex-wrap:wrap"><span>${o.id||'—'}</span><span>${o.spec||='—'}</span><span>${o.rank||'—'}</span><span>${o.title||'—'}</span></div>`;
+    card.innerHTML=`<div style="font-weight:900;color:#0c594e">${o.name}</div><div style="font-size:12px;color:#667;display:flex;gap:6px;flex-wrap:wrap"><span>${o.id||'—'}</span><span>${o.spec||'—'}</span><span>${o.rank||'—'}</span><span>${o.title||'—'}</span></div>`;
     card.onclick=()=>{$('#tName').value=o.name||'';$('#tId').value=o.id||'';$('#tSpec').value=o.spec||'';$('#tRank').value=o.rank||'';$('#mini').style.display='none';recalc();autoSave();};
     grid.appendChild(card);
   }); box.appendChild(grid);
@@ -809,16 +808,34 @@ document.addEventListener('click',e=>{
   if(e.target.id==='guidesModal') $('#guidesModal').style.display='none';
 });
 
-/* طباعة وPDF */
+/* ——— طباعة وPDF مع إخفاء عناصر التصدير ——— */
 function ensureImagesLoaded(root){
   const imgs=[...root.querySelectorAll('img')]; if(!imgs.length) return Promise.resolve();
   return Promise.all(imgs.map(img=> new Promise(res=>{ if(img.complete) return res(); img.onload=()=>res(); img.onerror=()=>res(); })));
 }
+function hideExportables(root,hide=true){
+  const nodes=[...root.querySelectorAll('[data-hide-on-export]')];
+  nodes.forEach(n=>{ if(hide){ n.setAttribute('data-prev-display', n.style.display||''); n.style.display='none'; } else { n.style.display=n.getAttribute('data-prev-display')||''; n.removeAttribute('data-prev-display'); } });
+}
 async function savePdfSmart(targetEl, filename){
+  // 1) نافذة الطباعة (تخفي العناصر عبر CSS)
   try{
     const w=window.open('','_blank','noopener,noreferrer,width=900,height=1200');
     if(w){
-      w.document.write(`<html dir="rtl" lang="ar"><head><title>${filename}</title><meta charset="utf-8"><style>@page{size:A4;margin:12mm}body{font-family:Tajawal,system-ui;margin:0} .no-print{display:none}</style></head><body>${targetEl.outerHTML}</body></html>`);
+      const html = `
+      <html dir="rtl" lang="ar">
+        <head>
+          <title>${filename}</title>
+          <meta charset="utf-8">
+          <style>
+            @page{size:A4;margin:12mm}
+            body{font-family:Tajawal,system-ui;margin:0}
+            .no-print,[data-hide-on-export]{display:none!important}
+          </style>
+        </head>
+        <body>${targetEl.outerHTML}</body>
+      </html>`;
+      w.document.write(html);
       w.document.close();
       await new Promise(r=>setTimeout(r,300));
       await ensureImagesLoaded(w.document);
@@ -827,7 +844,10 @@ async function savePdfSmart(targetEl, filename){
       return;
     }
   }catch(e){console.warn('نافذة الطباعة فشلت',e);}
+
+  // 2) html2canvas + jsPDF مع إخفاء عناصر التصدير قبل الالتقاط
   try{
+    hideExportables(document,true);
     await ensureImagesLoaded(document);
     const { jsPDF } = window.jspdf;
     const canvas = await html2canvas(targetEl,{scale:2,useCORS:true,backgroundColor:'#ffffff',windowWidth:document.documentElement.scrollWidth});
@@ -838,6 +858,11 @@ async function savePdfSmart(targetEl, filename){
     pdf.save(filename);
     return;
   }catch(e){console.warn('html2canvas فشل',e);}
+  finally{
+    hideExportables(document,false); // إعادة إظهار العناصر بعد الالتقاط
+  }
+
+  // 3) نافذة طوارئ
   try{
     const w2=window.open('','_blank'); w2.document.write('<pre>تعذر إنشاء PDF تلقائيًا. استخدم Ctrl/Cmd+P ثم اختر "حفظ كـ PDF".</pre>'); w2.document.close(); w2.focus();
   }catch(e){ alert('تعذر إنشاء PDF.'); }
