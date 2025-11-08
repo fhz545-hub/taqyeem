@@ -7,34 +7,49 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--moe:#1e8a79;--moe-d:#0c594e;--ink:#0b2f2b;--line:#e6f1ee}
-*{box-sizing:border-box} html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-size:15px;line-height:1.8}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-size:15px;line-height:1.8}
 #page{width:min(1120px,100%);margin:0 auto;padding:12px 14px 50px}
+
+/* رأس */
 .head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;margin-bottom:8px}
-.hcol{display:flex;flex-direction:column;gap:2px;align-items:center}.hcol .line{font-weight:700;color:var(--moe-d)}
-img{width:min(220px,40vw)}
-.actions{display:flex;gap:8px;justify-content:flex-end;margin:6px 0}
+.hcol{display:flex;flex-direction:column;gap:2px;align-items:center}
+.hcol .line{font-weight:700;color:var(--moe-d);font-size:13px}
+img{width:min(200px,34vw)}
+
+/* أزرار */
+.actions{display:flex;gap:8px;justify-content:flex-end;margin:6px 0;flex-wrap:wrap}
 .btn{border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-weight:800;background:#fff;color:#0c594e;cursor:pointer}
 .btn.primary{background:linear-gradient(180deg,var(--moe),var(--moe-d));color:#fff}
 .btn.warn{background:linear-gradient(180deg,#fff6f6,#ffecec);color:#9b0000}
 
+/* ملخص */
 .summary{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;border:1px solid var(--line);border-radius:12px;padding:8px;background:#fff;margin:8px 0}
 .tag{border:1px solid var(--line);border-radius:10px;padding:6px 8px;text-align:center}
-.tag .t{font-size:12px;color:#557}.tag .v{font-weight:900;color:#0c594e}
+.tag .t{font-size:12px;color:#557}
+.tag .v{font-weight:900;color:#0c594e}
 
+/* جدول */
 .table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .table th,.table td{border:1px solid var(--line);padding:8px;vertical-align:middle;white-space:nowrap}
 .table th{background:var(--moe);color:#fff}
 .w-id{width:130px;max-width:130px}
 .sign{height:26px;border-bottom:1px dashed #a9c5bf}
 
-/* عبارة الاعتماد أسفل الكشف */
-.approval{margin-top:12px;display:flex;justify-content:flex-end}
-.approval .stamp{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:#0c594e;font-weight:800}
-.approval .sub{font-size:12px;color:#6a7f7b;margin-top:4px;text-align:center}
+/* تذييل: في الوسط + خط متقطع تحت الاسم */
+.approver{margin-top:16px;text-align:center}
+.approver .title{color:var(--moe-d);font-weight:800}
+.pname{font-weight:800;color:var(--moe-d)}
+.sigline-below{width:240px;margin:6px auto 2px;border-bottom:1px dashed #a9c5bf}
+.stamp{width:120px;height:120px;margin:12px auto;border:2px dashed var(--moe-d);border-radius:50%;
+       display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--moe-d)}
 
+/* استجابة وطباعة */
 @media (max-width:920px){.summary{grid-template-columns:repeat(3,1fr)}}
 @media print{
   .actions{display:none!important}
+  .no-print, .no-print *{display:none!important} /* إخفاء عمود الحذف */
+  .stamp{display:none!important} /* إخفاء الدائرة عند الطباعة */
   @page{size:A4;margin:12mm}
   html,body{font-size:13px;line-height:1.6}
 }
@@ -42,17 +57,25 @@ img{width:min(220px,40vw)}
 </head>
 <body>
 <div id="page">
-  <div class="head" data-hide-on-print>
-    <div class="hcol"><div class="line">المملكة العربية السعودية</div><div class="line">وزارة التعليم</div><div class="line" id="dir">—</div><div class="line" id="sch">—</div></div>
+  <div class="head">
+    <div class="hcol">
+      <div class="line">المملكة العربية السعودية</div>
+      <div class="line">وزارة التعليم</div>
+      <div class="line" id="dir">—</div>
+      <div class="line" id="sch">—</div>
+    </div>
     <img src="وزارة التعليم.png" alt="">
-    <div class="hcol"><div class="line" id="day"></div><div class="line" id="date"></div><div class="line">كشف تقييم الأداء الوظيفي ١٤٤٧هـ</div></div>
+    <div class="hcol">
+      <div class="line" id="day"></div>
+      <div class="line" id="date"></div>
+      <div class="line">كشف تقييم الأداء الوظيفي ١٤٤٧هـ</div>
+    </div>
   </div>
 
   <div class="actions">
     <button class="btn primary" id="add">إضافة من الجلسة الحالية</button>
-    <button class="btn" onclick="window.print()">🖨️ طباعة</button>
-    <button class="btn" id="delOne">حذف اسم واحد</button>
     <button class="btn warn" id="wipe">مسح الكشف</button>
+    <button class="btn" onclick="window.print()">🖨️ طباعة</button>
     <button class="btn" onclick="window.close()">إغلاق</button>
   </div>
 
@@ -66,7 +89,7 @@ img{width:min(220px,40vw)}
     <div class="tag"><div class="t">درجة 3/2/1</div><div class="v" id="c321">0/0/0</div></div>
   </section>
 
-  <!-- جدول الكشف: الاسم/الهوية/التخصص/مستوى الأداء/المؤشر/التوقيع -->
+  <!-- جدول الكشف -->
   <table class="table" id="tbl">
     <thead>
       <tr>
@@ -76,88 +99,108 @@ img{width:min(220px,40vw)}
         <th>مستوى الأداء (من 5)</th>
         <th>مؤشر الإنجاز %</th>
         <th>توقيع المعلم</th>
+        <th class="no-print">حذف</th>
       </tr>
     </thead>
     <tbody id="body"></tbody>
   </table>
 
-  <!-- عبارة الاعتماد (اسم المدير يسحب من الصفحة الرئيسية) -->
-  <div class="approval">
-    <div>
-      <div class="stamp" id="approveTxt">يعتمد مدير المدرسة: —</div>
-      <div class="sub">التوقيع والختم</div>
-    </div>
+  <!-- التذييل -->
+  <div class="approver">
+    <div class="title">يعتمد مدير المدرسة</div>
+    <div class="pname" id="pname">—</div>
+    <div class="sigline-below"></div>
+    <div class="stamp">الختم</div>
   </div>
 </div>
 
 <script>
 const $=s=>document.querySelector(s);
+
+/* رأس الصفحة */
 const now=new Date(),days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-$('#day').textContent=days[now.getDay()]; $('#date').textContent=now.toLocaleDateString('ar-SA');
+day.textContent=days[now.getDay()];
+date.textContent=now.toLocaleDateString('ar-SA');
 
-/* قراءة بيانات الجلسة من الصفحة الرئيسية */
+/* قاعدة بيانات موحّدة */
+const DB_KEY='PF_DB';
+function ensureDB(){
+  const db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  if(!db.archive) db.archive=[];
+  if(!db.evals) db.evals=[];
+  if(!db.plans) db.plans=[];
+  if(!db.meta) db.meta={};
+  return db;
+}
+function saveDB(db){localStorage.setItem(DB_KEY,JSON.stringify(db));}
+
+/* تحميل بيانات الجلسة + مزامنة الاسم إلى قاعدة البيانات */
 const sess=JSON.parse(localStorage.getItem('PF_session')||'{}');
-$('#dir').textContent=sess.dir||'—'; 
-$('#sch').textContent=sess.school||'—';
+dir.textContent=sess.dir||localStorage.getItem('PF_dir')||'—';
+sch.textContent=sess.school||localStorage.getItem('PF_school')||'—';
 
-/* اسم المدير يُسحب خوارزميًا من الصفحة الأساسية:
-   - أولًا من PF_session.principal (المحفوظ عند الحفظ/الانتقال من الصفحة الرئيسية)
-   - احتياطًا من PF_principal (اسم المدير المخزّن مسبقًا)،
-   - وإلا يُعرض الاسم الافتراضي. */
-(function setPrincipalApproval(){
-  const fromSession=(sess && sess.principal)||'';
-  const fallbackLocal=localStorage.getItem('PF_principal')||'';
-  const name=(fromSession || fallbackLocal || 'فهد حامد علي الزهراني').trim();
-  $('#approveTxt').textContent='يعتمد مدير المدرسة: ' + name;
-})();
+const db0=ensureDB();
+const principalName = sess.principal || localStorage.getItem('PF_principal') || db0.meta.principal || '—';
+db0.meta.principal = principalName; /* تخزين الاسم في قاعدة البيانات الداخلية */
+saveDB(db0);
+pname.textContent = principalName;
 
-/* أرشيف الكشف */
-function box(){return JSON.parse(localStorage.getItem('PF_archive')||'[]');}
-function save(a){localStorage.setItem('PF_archive',JSON.stringify(a));}
+/* واجهات أرشيف الكشف */
+function box(){return ensureDB().archive;}
+function save(a){const db=ensureDB(); db.archive=a; saveDB(db);}
 
-/* إضافة سجل من الجلسة الحالية (الصفحة الرئيسية) */
+/* إضافة من الجلسة الحالية */
 function addFromSession(){
   const s=JSON.parse(localStorage.getItem('PF_session')||'{}');
-  if(!s.name||!s.model){alert('لا توجد جلسة صالحة من الصفحة الرئيسية');return;}
-  const rec={name:s.name||'—',id:s.id||'',spec:s.spec||'',avg:+(s.avg||0),total:+(s.total||0)};
+  if(!s.name||!s.model){alert('لا توجد جلسة صالحة في الصفحة الرئيسية');return;}
+  const rec={
+    name:s.name||'—',
+    id:s.id||'',
+    spec:s.spec||'',
+    avg:+(s.avg||0),
+    total:+(s.total||0),
+    key:`${s.id||s.name}-${s.modelKey}-${s.stageKey}-${Date.now()}`
+  };
   const a=box(); a.push(rec); save(a); render();
 }
-
-/* حذف اسم واحد — بالهوية أو الاسم */
-function deleteOne(){
-  const key=prompt('أدخل رقم الهوية أو الاسم المراد حذفه من الكشف:');
-  if(!key) return;
-  const a=box();
-  const k=key.trim();
-  const idx=a.findIndex(r=> String(r.id||'')===k || String(r.name||'').trim()===k);
-  if(idx===-1){ alert('لم يتم العثور على سجل مطابق'); return; }
-  a.splice(idx,1); save(a); render();
+function delOne(key){
+  const a=box().filter(r=>r.key!==key); save(a); render();
 }
 
-/* عرض الكشف والملخص */
 function render(){
-  const a=box(), tb=$('#body'); tb.innerHTML='';
+  const a=box(), tb=body; tb.innerHTML='';
   a.forEach(r=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.name}</td><td class="w-id">${r.id||''}</td><td>${r.spec||''}</td><td style="text-align:center">${(+r.avg).toFixed(2)}</td><td style="text-align:center">${(+r.total).toFixed(0)}%</td><td><div class="sign"></div></td>`;
+    tr.innerHTML=`
+      <td>${r.name}</td>
+      <td class="w-id">${r.id||''}</td>
+      <td>${r.spec||''}</td>
+      <td style="text-align:center">${(+r.avg).toFixed(2)}</td>
+      <td style="text-align:center">${(+r.total).toFixed(0)}%</td>
+      <td><div class="sign"></div></td>
+      <td class="no-print" style="text-align:center">
+        <button class="btn warn" data-k="${r.key}">حذف</button>
+      </td>`;
     tb.appendChild(tr);
   });
-  // ملخص علوي
-  $('#c_all').textContent=a.length;
+
+  // أحداث الحذف الفردي
+  tb.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>delOne(b.getAttribute('data-k')));
+
+  // ملخص
+  document.getElementById('c_all').textContent=a.length;
   const cnt={1:0,2:0,3:0,4:0,5:0}; let sA=0,sP=0;
   a.forEach(r=>{const g=Math.max(1,Math.min(5,Math.round(+r.avg)));cnt[g]++; sA+=+r.avg; sP+=+r.total;});
   const avg=a.length? sA/a.length : 0, pct=a.length? Math.round(sP/a.length) : 0;
-  $('#avg').textContent=avg.toFixed(2)+' / 5'; $('#avgPct').textContent=pct+'%';
-  $('#c5').textContent=cnt[5]; $('#c4').textContent=cnt[4];
-  $('#c321').textContent=`${cnt[3]}/${cnt[2]}/${cnt[1]}`;
+  document.getElementById('avg').textContent=avg.toFixed(2)+' / 5';
+  document.getElementById('avgPct').textContent=pct+'%';
+  document.getElementById('c5').textContent=cnt[5];
+  document.getElementById('c4').textContent=cnt[4];
+  document.getElementById('c321').textContent=`${cnt[3]}/${cnt[2]}/${cnt[1]}`;
 }
 
-/* أحداث */
 document.getElementById('add').onclick=addFromSession;
-document.getElementById('delOne').onclick=deleteOne;
 document.getElementById('wipe').onclick=()=>{if(confirm('مسح جميع سجلات الكشف؟')){save([]);render();}};
-
-/* بدء */
 render();
 </script>
 </body>
