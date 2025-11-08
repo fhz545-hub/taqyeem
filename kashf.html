@@ -26,8 +26,18 @@ img{width:min(220px,40vw)}
 .table th{background:var(--moe);color:#fff}
 .w-id{width:130px;max-width:130px}
 .sign{height:26px;border-bottom:1px dashed #a9c5bf}
+
+/* عبارة الاعتماد أسفل الكشف */
+.approval{margin-top:12px;display:flex;justify-content:flex-end}
+.approval .stamp{border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff;color:#0c594e;font-weight:800}
+.approval .sub{font-size:12px;color:#6a7f7b;margin-top:4px;text-align:center}
+
 @media (max-width:920px){.summary{grid-template-columns:repeat(3,1fr)}}
-@media print{.actions{display:none!important} @page{size:A4;margin:12mm} html,body{font-size:13px;line-height:1.6}}
+@media print{
+  .actions{display:none!important}
+  @page{size:A4;margin:12mm}
+  html,body{font-size:13px;line-height:1.6}
+}
 </style>
 </head>
 <body>
@@ -41,6 +51,7 @@ img{width:min(220px,40vw)}
   <div class="actions">
     <button class="btn primary" id="add">إضافة من الجلسة الحالية</button>
     <button class="btn" onclick="window.print()">🖨️ طباعة</button>
+    <button class="btn" id="delOne">حذف اسم واحد</button>
     <button class="btn warn" id="wipe">مسح الكشف</button>
     <button class="btn" onclick="window.close()">إغلاق</button>
   </div>
@@ -69,23 +80,61 @@ img{width:min(220px,40vw)}
     </thead>
     <tbody id="body"></tbody>
   </table>
+
+  <!-- عبارة الاعتماد (اسم المدير يسحب من الصفحة الرئيسية) -->
+  <div class="approval">
+    <div>
+      <div class="stamp" id="approveTxt">يعتمد مدير المدرسة: —</div>
+      <div class="sub">التوقيع والختم</div>
+    </div>
+  </div>
 </div>
 
 <script>
 const $=s=>document.querySelector(s);
 const now=new Date(),days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 $('#day').textContent=days[now.getDay()]; $('#date').textContent=now.toLocaleDateString('ar-SA');
-const sess=JSON.parse(localStorage.getItem('PF_session')||'{}');
-$('#dir').textContent=sess.dir||'—'; $('#sch').textContent=sess.school||'—';
 
+/* قراءة بيانات الجلسة من الصفحة الرئيسية */
+const sess=JSON.parse(localStorage.getItem('PF_session')||'{}');
+$('#dir').textContent=sess.dir||'—'; 
+$('#sch').textContent=sess.school||'—';
+
+/* اسم المدير يُسحب خوارزميًا من الصفحة الأساسية:
+   - أولًا من PF_session.principal (المحفوظ عند الحفظ/الانتقال من الصفحة الرئيسية)
+   - احتياطًا من PF_principal (اسم المدير المخزّن مسبقًا)،
+   - وإلا يُعرض الاسم الافتراضي. */
+(function setPrincipalApproval(){
+  const fromSession=(sess && sess.principal)||'';
+  const fallbackLocal=localStorage.getItem('PF_principal')||'';
+  const name=(fromSession || fallbackLocal || 'فهد حامد علي الزهراني').trim();
+  $('#approveTxt').textContent='يعتمد مدير المدرسة: ' + name;
+})();
+
+/* أرشيف الكشف */
 function box(){return JSON.parse(localStorage.getItem('PF_archive')||'[]');}
 function save(a){localStorage.setItem('PF_archive',JSON.stringify(a));}
+
+/* إضافة سجل من الجلسة الحالية (الصفحة الرئيسية) */
 function addFromSession(){
   const s=JSON.parse(localStorage.getItem('PF_session')||'{}');
   if(!s.name||!s.model){alert('لا توجد جلسة صالحة من الصفحة الرئيسية');return;}
   const rec={name:s.name||'—',id:s.id||'',spec:s.spec||'',avg:+(s.avg||0),total:+(s.total||0)};
   const a=box(); a.push(rec); save(a); render();
 }
+
+/* حذف اسم واحد — بالهوية أو الاسم */
+function deleteOne(){
+  const key=prompt('أدخل رقم الهوية أو الاسم المراد حذفه من الكشف:');
+  if(!key) return;
+  const a=box();
+  const k=key.trim();
+  const idx=a.findIndex(r=> String(r.id||'')===k || String(r.name||'').trim()===k);
+  if(idx===-1){ alert('لم يتم العثور على سجل مطابق'); return; }
+  a.splice(idx,1); save(a); render();
+}
+
+/* عرض الكشف والملخص */
 function render(){
   const a=box(), tb=$('#body'); tb.innerHTML='';
   a.forEach(r=>{
@@ -93,7 +142,7 @@ function render(){
     tr.innerHTML=`<td>${r.name}</td><td class="w-id">${r.id||''}</td><td>${r.spec||''}</td><td style="text-align:center">${(+r.avg).toFixed(2)}</td><td style="text-align:center">${(+r.total).toFixed(0)}%</td><td><div class="sign"></div></td>`;
     tb.appendChild(tr);
   });
-  // ملخص
+  // ملخص علوي
   $('#c_all').textContent=a.length;
   const cnt={1:0,2:0,3:0,4:0,5:0}; let sA=0,sP=0;
   a.forEach(r=>{const g=Math.max(1,Math.min(5,Math.round(+r.avg)));cnt[g]++; sA+=+r.avg; sP+=+r.total;});
@@ -102,8 +151,13 @@ function render(){
   $('#c5').textContent=cnt[5]; $('#c4').textContent=cnt[4];
   $('#c321').textContent=`${cnt[3]}/${cnt[2]}/${cnt[1]}`;
 }
+
+/* أحداث */
 document.getElementById('add').onclick=addFromSession;
+document.getElementById('delOne').onclick=deleteOne;
 document.getElementById('wipe').onclick=()=>{if(confirm('مسح جميع سجلات الكشف؟')){save([]);render();}};
+
+/* بدء */
 render();
 </script>
 </body>
