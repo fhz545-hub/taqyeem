@@ -396,7 +396,6 @@ RUBRICS.activity=[
   {name:"الإدارة الصفية",w:5},
   {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",w:5},
   {name:"تنوع أساليب التقويم",w:5},
-  /* معيار خاص للنشاط */
   {name:"إعداد خطة زمنية ومعتمدة لبرامج وفعاليات النشاط الطلابي",w:10},
   {name:"تهيئة البيئة المدرسية للبرامج والأنشطة الطلابية",w:5},
   {name:"دعم المعلمين وفق احتياجاتهم وميولهم للأشطة",w:5},
@@ -416,7 +415,6 @@ RUBRICS.health=[
   {name:"الإدارة الصفية",w:5},
   {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",w:5},
   {name:"تنوع أساليب التقويم",w:5},
-  /* معيار خاص للموجه الصحي */
   {name:"تنفيذ الخطة المشتركة للبرامج الصحية المدرسية",w:15},
   {name:"حصر الحالات الصحية للمتعلمين",w:5},
   {name:"تهيئة البيئة الصحية المدرسية",w:10}
@@ -508,7 +506,7 @@ RUBRICS.vp=[
   {name:"التفاعل مع المجتمع المهني",w:5},
   {name:"التفاعل مع أولياء الأمور",w:5},
   {name:"مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",w:5},
-  {name:"يدعم ويشارك في المبادرات النوعية",w:10},
+  {name:"يدعم ويشارك في المبادرات النوعية",w:5},                // كان 10% → 5%
   {name:"يتخذ إجراءات تربوية تحقق الانضباط المدرسي",w:5},
   {name:"يدير الموارد في المدرسة بكفاءة",w:5},
   {name:"يشارك في إعداد خطة التطوير المهني",w:5},
@@ -518,6 +516,7 @@ RUBRICS.vp=[
   {name:"ينفذ إجراءات علمية لتحسين نتائج التعلم",w:15},
   {name:"يساهم في رفع مستوى أداء المدرسة",w:5},
   {name:"يشارك في إعداد الخطط المدرسية",w:5},
+  {name:"يتابع تنفيذ الخطط المدرسية",w:5},                      // العنصر المضاف
   {name:"يوفر الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية",w:5},
   {name:"يوظف المنصات الرقمية وتطبيقاتها التعليمية في دعم عمليات التعليم والتعلم",w:5},
   {name:"يعزز السلوك الإيجابي للطلاب",w:5},
@@ -538,6 +537,12 @@ const BANK_IMPROVE={
   "توظيف تقنيات ووسائل التعلم المناسبة":{imp:"دمج أدوات رقمية وتوثيق دروس.",str:"توظيف فاعل للتقنية."},
   "تحليل نتائج المتعلمين وتشخيص مستوياتهم":{imp:"جلسة تحليل فجوات مع خطة علاج.",str:"تحليل منهجي واتخاذ قرارات."}
 };
+
+/* أدوات تنسيق لقوائم القوة/التحسين كسطر واحد مع '/' */
+function cleanText(s){return String(s||'').replace(/\s+/g,' ').trim();}
+function bulletize(s){s=cleanText(s); if(!s) return ''; return s.startsWith('•')? s : '• '+s;}
+function uniq(arr){const seen=new Set(); const out=[]; for(const t of arr){const k=cleanText(t); if(k && !seen.has(k)){seen.add(k); out.push(k);} } return out;}
+function joinSlashLine(arr){const list=uniq(arr).map(bulletize); return list.length? list.join(' / '): '—';}
 
 /* بناء الجدول */
 function build(){
@@ -568,7 +573,7 @@ function toggleStageLock(){
   $('#gapBtn').setAttribute('data-tip', isFirst?msg:''); $('#archBtn').setAttribute('data-tip', isFirst?msg:'');
 }
 
-/* حساب المؤشرات + بنك القوة/التحسين */
+/* حساب المؤشرات + بنك القوة/التحسين (مخرجات بسطر واحد مفصول بـ /) */
 function recalc(){
   let total=0, ws=0, n=0,d=0;
   const strengths=[], improves=[];
@@ -577,8 +582,8 @@ function recalc(){
     tr.querySelector('.s').textContent=((v/5)*w).toFixed(2); total+=(v/5)*w; n+=v*w; d+=w;
     for(let k=1;k<=5;k++) tr.classList.remove('r'+k); tr.classList.add('r'+v);
     const bank=BANK_IMPROVE[item]||{};
-    if(v>=4){ strengths.push(`• ${bank.str||`تميّز في «${item}».`}`); }
-    if(v<=2){ improves.push(`• ${bank.imp||`تطوير «${item}» بخطة قصيرة وشواهد أسبوعية.`}`); }
+    if(v>=4){ strengths.push(bank.str||`تميّز في «${item}».`); }
+    if(v<=2){ improves.push(bank.imp||`تطوير «${item}» بخطة قصيرة وشواهد أسبوعية.`); }
   });
   const avg=d? n/d : 0;
   $('#sum').textContent=total.toFixed(2); $('#avg').textContent=avg.toFixed(2);
@@ -587,8 +592,10 @@ function recalc(){
   $('#kM').textContent=`متوسط السُّلّم: ${avg.toFixed(2)} / 5`;
   $('#kR').textContent=`مجموع الأوزان: ${ws}%`;
   $('#sigT').textContent=$('#tName').value||'—';
-  $('#strengths').textContent=strengths.join('\n')||'—';
-  $('#improves').textContent=improves.join('\n')||'—';
+
+  /* إخراج منسق كسطر واحد بفواصل '/' */
+  $('#strengths').textContent = joinSlashLine(strengths);
+  $('#improves').textContent  = joinSlashLine(improves);
 }
 
 /* قاعدة البيانات الداخلية (localStorage) */
