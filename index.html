@@ -21,7 +21,13 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .pen{border:none;background:transparent;color:var(--moe-d);cursor:pointer;font-size:14px;line-height:1}
 .pen:hover{opacity:.8}
 .noprint{display:inline-flex}
-#moe{width:min(220px,40vw);object-fit:contain}
+/* عرض أصغر على الشاشة */
+#moe{width:min(180px,32vw);object-fit:contain}
+
+/* عند الطباعة يكون أصغر قليلًا */
+@media print{
+  #moe{width:150px}
+}
 
 /* الأدوات */
 .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;white-space:nowrap;margin:6px 0}
