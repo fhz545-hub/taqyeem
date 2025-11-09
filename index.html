@@ -49,7 +49,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   grid-template-columns:2fr 1fr 1fr 1fr;
   gap:8px;
   align-items:center;
-  white-space:nowrap;        /* منع التفاف كل الخلايا */
+  white-space:nowrap;
 }
 .lined{
   height:40px;border:none;border-radius:0;padding:0 4px;background:transparent;outline:none;
@@ -103,13 +103,12 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .tip{position:relative}
 .tip:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:0;background:#0c594e;color:#fff;padding:6px 8px;border-radius:8px;font-size:12px;white-space:nowrap}
 
-/* نافذة الشرح (متمركزة 70%) */
+/* نافذة الشرح */
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.28);z-index:1000;padding:12px}
 .modal.show{display:flex}
 .modal-card{
   width:min(70vw, 980px);
-  max-height:88vh;
-  overflow:auto;
+  max-height:88vh; overflow:auto;
   background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.12)
 }
 .modal-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#e9f7f3,#fff);z-index:2}
@@ -119,6 +118,22 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#f2fbf8;border:1px solid var(--line);font-weight:700;color:#0b534b}
 .close{border:none;background:#fff;color:#0b534b;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer}
 .close:hover{background:#f6fbf9}
+
+/* نافذة عدسة الأسماء */
+.lens-card{width:min(92vw,1100px);max-height:92vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.14)}
+.lens-head{position:sticky;top:0;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f0fffa,#fff);z-index:3}
+.lens-title{font-weight:900;color:#0c594e;display:flex;gap:8px;align-items:center}
+.lens-body{padding:12px 16px}
+.lens-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.input{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff;font-weight:700;outline:none}
+.filebox{display:flex;align-items:center;gap:8px;border:1px dashed #cce7e2;background:#f8fffd;padding:8px 10px;border-radius:12px}
+.drop{border:2px dashed #b6e9df;background:#f3fffb;border-radius:12px;padding:14px;text-align:center;color:#0b534b}
+.table-wrap{border:1px solid var(--line);border-radius:12px;overflow:auto}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:8px}
+.tbl th{background:#ecfffa;color:#0b534b;text-align:right;position:sticky;top:0}
+.row-btn{border:1px solid #cde6df;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;font-weight:800;color:#0c594e}
+.row-btn:hover{background:#f1fffb}
 
 /* تجاوبية */
 @media (max-width:920px){ .grid4{grid-template-columns:1fr 1fr;gap:6px} .toolbar{gap:6px} }
@@ -196,6 +211,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <button class="btn primary tip" id="gapBtn"  data-tip="">خطة تحسين فجوة الأداء ▾</button>
     <button class="btn primary tip" id="archBtn" data-tip="">كشف تقييم الأداء ▾</button>
     <button class="btn accent" id="dlelBtn">📚 دليل المعايير والشواهد</button>
+    <button class="btn" id="lensBtn">🔎 عدسة الأسماء</button>
     <button class="btn" id="helpBtn">📄 الشرح</button>
     <button class="btn" id="printBtn">🖨️ طباعة</button>
     <button class="btn warn" id="clearBtn">🧹 مسح</button>
@@ -262,6 +278,41 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   </div>
 </div>
 
+<!-- نافذة عدسة الأسماء -->
+<div id="lens" class="modal" aria-hidden="true">
+  <div class="lens-card" role="dialog" aria-modal="true" aria-labelledby="lensTitle">
+    <div class="lens-head">
+      <div class="lens-title" id="lensTitle">🔎 عدسة الأسماء — استيراد من Excel/CSV</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="searchBox" class="input" placeholder="ابحث بالاسم / الهوية / التخصص"/>
+        <button class="close" id="closeLens" aria-label="إغلاق">إغلاق ✕</button>
+      </div>
+    </div>
+    <div class="lens-body">
+      <div class="lens-tools">
+        <label class="filebox">
+          <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" style="display:none"/>
+          <span>📤 اختر ملف Excel/CSV</span>
+          <button class="row-btn" id="pickFileBtn" type="button">استعراض</button>
+        </label>
+        <span id="lensInfo" class="badge">لا توجد بيانات مستوردة بعد</span>
+        <button class="row-btn" id="clearPeople" type="button">مسح الأسماء المحفوظة</button>
+      </div>
+
+      <div id="dropZone" class="drop">اسحب الملف هنا أو استخدم زر الاستعراض</div>
+
+      <div class="table-wrap" style="margin-top:10px">
+        <table class="tbl" id="peopleTbl" aria-label="قائمة الأسماء">
+          <thead>
+            <tr><th>الاسم</th><th>الهوية</th><th>التخصص</th><th>المسمى</th><th>اختيار</th></tr>
+          </thead>
+          <tbody id="peopleBody"><tr><td colspan="5" style="text-align:center;color:#678">— لا توجد بيانات —</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
@@ -276,6 +327,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const K_P='PF_principal', K_DIR='PF_dir', K_SCH='PF_school';
 const K_SESSION='PF_session';
 const K_DB='PF_db';
+const K_PEOPLE='PF_people'; // عدسة الأسماء
 
 /* تحميل/تعديل الإدارة والمدرسة */
 (function initOrg(){
@@ -291,11 +343,10 @@ const K_DB='PF_db';
 $('#sigP').textContent=localStorage.getItem(K_P)||$('#sigP').textContent;
 $('#sigP').onclick=()=>{const v=prompt('اسم مدير المدرسة', $('#sigP').textContent.trim()); if(v!==null){$('#sigP').textContent=(v.trim()||'—'); localStorage.setItem(K_P,$('#sigP').textContent); snap();}};
 
-/* محتوى الشرح — حرفيًا كما طُلب */
+/* محتوى الشرح */
 const HELP_TEXT = `
 <p><b>🔹 نموذج تقييم الأداء الوظيفي (إصدار تجريبي غير رسمي)</b></p>
 <p>أداة إلكترونية ميسّرة تهدف إلى تسهيل عمليات تخطيط الأهداف، وقياس الأداء، وتحليل النتائج بطريقة تربوية حديثة تدعم العمل الإداري داخل المدرسة.</p>
-
 <h4>✳️ أبرز المزايا:</h4>
 <ul>
   <li><b>تخطيط ذكي للأداء:</b> إدخال الأهداف القابلة للقياس مع مؤشرات وقيم مستهدفة من بنك أهداف مخصص لكل نموذج.</li>
@@ -305,10 +356,8 @@ const HELP_TEXT = `
   <li><b>كشف تقييم الأداء:</b> تجميع آلي لأسماء المقيمين ونتائجهم في عرض واحد لتيسير المراجعة والإشراف.</li>
   <li><b>إخراج جاهز للطباعة (A4):</b> تصميم منسق بهوية وزارة التعليم، متوافق مع الطباعة الملونة أو بالأبيض والأسود.</li>
 </ul>
-
 <p class="badge">⚠️ تنويه</p>
 <p>هذه الأداة ليست نموذجاً رسمياً، وإنما وسيلة تجريبية مساندة لتسهيل التقييم وتحليل الأداء داخل المدرسة.</p>
-
 <p>للاستفسار والتواصل: 📧 <a href="mailto:fhz545@gmail.com">fhz545@gmail.com</a></p>
 `;
 $('#helpContent').innerHTML = HELP_TEXT;
@@ -344,7 +393,7 @@ function renderGoalChips(){
   });
 }
 
-/* عناصر النماذج — مكتملة لكل نموذج */
+/* عناصر النماذج */
 const RUBRICS={};
 RUBRICS.teacher=[
   {name:"أداء الواجبات الوظيفية",w:10},
@@ -539,7 +588,125 @@ function openGap(){ const snapData=snap(); upsertRecord(snapData); window.open('
 function openArch(){ const snapData=snap(); upsertRecord(snapData); window.open('kashf.html','_blank'); }
 function openDlel(){ const snapData=snap(); upsertRecord(snapData); window.open('dlel.html','_blank'); }
 
-/* أحداث */
+/* ===== عدسة الأسماء: استيراد + بحث + اختيار ===== */
+let PEOPLE = []; // {name,id,spec,title}
+function updateLensInfo(){
+  const n=PEOPLE.length;
+  $('#lensInfo').textContent = n? `تم تحميل ${n} سجلًا` : 'لا توجد بيانات مستوردة بعد';
+}
+function savePeople(){ localStorage.setItem(K_PEOPLE, JSON.stringify(PEOPLE||[])); updateLensInfo(); }
+function loadPeople(){
+  try{ PEOPLE = JSON.parse(localStorage.getItem(K_PEOPLE)||'[]')||[]; }
+  catch{ PEOPLE = []; }
+  renderPeople();
+  updateLensInfo();
+}
+function norm(s){ return String(s||'').toLowerCase().trim().replace(/\s+/g,' '); }
+function mapHeaders(cols){
+  // محاولات عربية/إنجليزية شائعة
+  const map={
+    name:['الاسم','اسم','اسم المعلم','اسم الموظف','name','full name'],
+    id:['الهوية','رقم الهوية','السجل المدني','id','national id'],
+    spec:['التخصص','المادة','التخصص الدراسي','specialty','subject','major'],
+    title:['المسمى','المسمى الوظيفي','الوظيفة','job title','title']
+  };
+  const idx={name:-1,id:-1,spec:-1,title:-1};
+  cols.forEach((h,i)=>{
+    const k=norm(h);
+    for(const key in map){
+      if(map[key].some(alias=>norm(alias)===k || k.includes(norm(alias)))){
+        if(idx[key]===-1) idx[key]=i;
+      }
+    }
+  });
+  return idx;
+}
+function toArray(workbook){
+  const sheetName = workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  const json = XLSX.utils.sheet_to_json(sheet,{header:1,defval:''});
+  if(!json.length) return [];
+  const headers = json[0];
+  const idx = mapHeaders(headers);
+  const rows = json.slice(1).map(r=>({
+    name: String(r[idx.name] ?? '').trim(),
+    id: String(r[idx.id] ?? '').trim(),
+    spec: String(r[idx.spec] ?? '').trim(),
+    title: String(r[idx.title] ?? '').trim()
+  })).filter(x=>x.name);
+  return rows;
+}
+function parseFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+      const arr = toArray(wb);
+      PEOPLE = arr;
+      savePeople();
+      renderPeople();
+    }catch(err){
+      alert('تعذر قراءة الملف. تأكد من الصيغة والأعمدة.\n'+err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function renderPeople(filter=''){
+  const body=$('#peopleBody');
+  const q=norm(filter);
+  const rows = PEOPLE.filter(p=>{
+    if(!q) return true;
+    return norm(p.name).includes(q) || norm(p.id).includes(q) || norm(p.spec).includes(q) || norm(p.title).includes(q);
+  });
+  if(!rows.length){
+    body.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#678">— لا نتائج —</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map((p,i)=>`
+    <tr>
+      <td>${p.name||'—'}</td>
+      <td>${p.id||'—'}</td>
+      <td>${p.spec||'—'}</td>
+      <td>${p.title||'—'}</td>
+      <td><button class="row-btn" data-i="${i}">اختيار</button></td>
+    </tr>
+  `).join('');
+}
+
+/* أحداث عدسة الأسماء */
+function openLens(){ toggleLens(true); }
+function toggleLens(show){ const m=$('#lens'); m.classList.toggle('show',!!show); m.setAttribute('aria-hidden', show?'false':'true'); }
+$('#lensBtn').onclick=openLens;
+$('#closeLens').onclick=()=>toggleLens(false);
+$('#pickFileBtn').onclick=()=>$('#fileInput').click();
+$('#fileInput').addEventListener('change',e=>{
+  const f=e.target.files?.[0]; if(f) parseFile(f);
+});
+$('#searchBox').addEventListener('input',e=>renderPeople(e.target.value));
+$('#peopleTbl').addEventListener('click',e=>{
+  const btn=e.target.closest('button.row-btn'); if(!btn) return;
+  const i=+btn.dataset.i;
+  const q=norm($('#searchBox').value);
+  const rows = PEOPLE.filter(p=>{
+    if(!q) return true;
+    return norm(p.name).includes(q) || norm(p.id).includes(q) || norm(p.spec).includes(q) || norm(p.title).includes(q);
+  });
+  const p=rows[i]; if(!p) return;
+  $('#tName').value=p.name||''; $('#tId').value=p.id||''; $('#tSpec').value=p.spec||''; $('#tTitle').value=p.title||'';
+  recalc(); snap(); toggleLens(false);
+});
+$('#clearPeople').onclick=()=>{ if(confirm('مسح قائمة الأسماء المحفوظة؟')){ PEOPLE=[]; savePeople(); renderPeople(); } };
+/* سحب وإفلات */
+const dz=$('#dropZone');
+;['dragenter','dragover','dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();}));
+;['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,()=>{dz.style.background='#eafff7';}));
+;['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,()=>{dz.style.background='';}));
+dz.addEventListener('drop',e=>{
+  const f=e.dataTransfer.files?.[0]; if(f) parseFile(f);
+});
+
+/* أحداث عامة */
 document.addEventListener('change',e=>{
   if(e.target.classList.contains('g')){recalc();snap();}
   if(e.target.id==='model'){build();}
@@ -563,12 +730,15 @@ function toggleHelp(show){ const m=$('#help'); m.classList.toggle('show',!!show)
 $('#helpBtn').onclick=()=>toggleHelp(true);
 $('#closeHelp').onclick=()=>toggleHelp(false);
 $('#help').addEventListener('click',e=>{ if(e.target.id==='help') toggleHelp(false); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleHelp(false); });
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ toggleHelp(false); toggleLens(false); }
+});
 
 /* بدء */
 (function init(){
   $('#stage').value='first';
   build(); recalc(); renderGoalsPrint(); snap();
+  loadPeople(); // تحميل الأسماء المحفوظة (إن وجدت)
 })();
 </script>
 </body>
