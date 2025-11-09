@@ -21,13 +21,9 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .pen{border:none;background:transparent;color:var(--moe-d);cursor:pointer;font-size:13px;line-height:1}
 .pen:hover{opacity:.8}
 .noprint{display:inline-flex}
-/* عرض أصغر على الشاشة */
+/* شعار */
 #moe{width:min(180px,32vw);object-fit:contain}
-
-/* عند الطباعة يكون أصغر قليلًا */
-@media print{
-  #moe{width:150px}
-}
+@media print{ #moe{width:150px} }
 
 /* الأدوات */
 .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;white-space:nowrap;margin:6px 0}
@@ -39,29 +35,44 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .btn.warn{background:linear-gradient(180deg,#fff6f6,#ffe5e5);color:#990000}
 .btn[disabled]{opacity:.6;cursor:not-allowed}
 
-/* صف بيانات الموظف + عدسة أسماء احترافية */
-.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
-.lined{height:40px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:#fff}
-.namewrap{position:relative}
-#lensBtn{position:absolute;left:8px;top:6px;height:28px;padding:0 8px;border:1px solid var(--line);border-radius:8px;background:#f2fbf8;color:#0b534b;font-weight:900;cursor:pointer}
-.lens{position:absolute;z-index:50;right:0;top:44px;width:min(760px,95vw);background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 28px rgba(0,0,0,.08);padding:10px;display:none}
-.lens .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.lens .lined{height:34px}
-.lens .pill{border:1px dashed var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;background:#fff}
-.lens .tbl{width:100%;border-collapse:collapse;margin-top:8px}
-.lens .tbl th,.lens .tbl td{border:1px solid var(--line);padding:6px 8px;white-space:nowrap}
-.lens .tbl th{background:#f6fbf9;color:#0c594e}
-.lens .tbl tbody tr{cursor:pointer}
-.lens .tbl tbody tr:hover{background:#f2fbf8}
+/* صف بيانات الموظف — صف واحد بدون التفاف + بدون حدود للحقول */
+.grid4{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:8px;
+  align-items:center;
+  white-space:nowrap;        /* يمنع التفاف كل الخلايا */
+}
+.lined{
+  height:40px;
+  border:none;               /* إزالة الحدود بالكامل */
+  border-radius:0;           /* بلا زوايا لأن لا حدود */
+  padding:0 4px;             /* حواف خفيفة */
+  background:transparent;    /* شفاف */
+  outline:none;
+  font-weight:700;
+  color:var(--ink);
+  white-space:nowrap;        /* يمنع التفاف النص داخل الحقل */
+  overflow:hidden;
+  text-overflow:ellipsis;    /* اقتصاص أنيق عند الطول */
+  -webkit-appearance:none;   /* طباعة أوضح للقيمة */
+}
+.lined::placeholder{color:#7b8d88;font-weight:400}
 
 /* التخطيط للأداء */
-#goals{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fcfffe;margin:8px 0}
+#goals{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fcfffe;margin:8px 0;break-inside:avoid}
 #goals h3{margin:0 0 6px;color:#0c594e;display:flex;align-items:center;gap:10px}
 #goals .hint{font-size:12px;color:#557;white-space:nowrap}
 .goalrow{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:6px}
-.goalrow input{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px}
+.goalrow input{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff}
 #goalChips{display:flex;gap:6px;flex-wrap:wrap}
 #goalChips button{border:1px dashed var(--line);background:#fff;border-radius:999px;padding:4px 8px;font-size:12px;cursor:pointer;color:#0c594e}
+
+/* شريط عرض الأهداف المطبوعي والمدمج أعلى الجدول */
+.goals-print{display:none;margin:8px 0 6px;border:1px solid var(--line);border-radius:12px;padding:6px 8px;background:#fff}
+.goals-print .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;align-items:center}
+.goals-print .cell{border:1px dashed var(--line);border-radius:10px;padding:4px 8px;min-height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goals-print .hdr{font-weight:800;color:#0c594e}
 
 /* المؤشر */
 .kpi{margin:8px 0}
@@ -74,7 +85,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .table th,.table td{border:1px solid var(--line);padding:8px;vertical-align:middle}
 .table th{background:var(--moe);color:#fff}
 .table tfoot th{background:#0f4e47;color:#fff}
-.table td:nth-child(2), .table th:nth-child(2){text-align:center} /* توسيط عمود الوزن النسبي */
+.table td:nth-child(2), .table th:nth-child(2){text-align:center}
 .select-mini{appearance:none;background:#fff;border:none;border-radius:10px;padding:4px 8px;font-weight:900;color:#0b3430;text-align:center;text-align-last:center}
 tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:linear-gradient(90deg,#fde68a 0,#fff 60%)} tr.r3{background:linear-gradient(90deg,#ecfeff 0,#fff 60%)} tr.r4{background:linear-gradient(90deg,#dcfce7 0,#fff 60%)} tr.r5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 
@@ -109,7 +120,6 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 /* تجاوبية قوية */
 @media (max-width:920px){
   .grid4{grid-template-columns:1fr 1fr;gap:6px}
-  .goalrow{grid-template-columns:1fr}
   .toolbar{gap:6px}
 }
 @media (max-width:600px){
@@ -118,13 +128,19 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   .lined{height:38px}
 }
 
-/* طباعة */
+/* طباعة — مظهر مميز ومشدود على A4 */
 @media print{
-  .toolbar,.lens,.noprint,.tip::after,[data-hide-on-print],.modal{display:none!important}
+  .toolbar,.tip::after,[data-hide-on-print],.modal{display:none!important}
   #page{padding:0}
-  @page{size:A4;margin:12mm}
-  html,body{font-size:13px;line-height:1.6}
-  .goalrow input{height:30px}
+  @page{size:A4;margin:10mm}
+  html,body{font-size:12.6px;line-height:1.55}
+  .grid4{gap:6px}
+  .lined{height:28px;padding:0 2px}
+  #goals .goalrow, #goalChips, #goals .hint{display:none!important}
+  .goals-print{display:block}
+  .goals-print .cell{border:1px solid #dbe9e5;padding:2px 6px}
+  .table th,.table td{padding:6px}
+  .duo .box{padding:8px}
 }
 </style>
 </head>
@@ -183,27 +199,9 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <button class="btn warn" id="clearBtn">🧹 مسح</button>
   </div>
 
-  <!-- بيانات الموظف -->
+  <!-- بيانات الموظف — صف واحد بدون التفاف وبلا عدسة وبلا حدود -->
   <div class="grid4">
-    <div class="namewrap">
-      <input id="tName" class="lined" placeholder="اسم شاغل الوظيفة" autocomplete="off">
-      <button id="lensBtn" title="عدسة الأسماء">🔎</button>
-      <div id="lens" class="lens">
-        <div class="bar">
-          <strong style="color:#0c594e">عدسة الأسماء</strong>
-          <input id="q" class="lined" placeholder="بحث سريع بالاسم/الهوية/التخصص" style="flex:1;min-width:160px">
-          <input type="file" id="xls" accept=".xlsx,.xls,.csv" hidden>
-          <button class="pill" id="pick">⬆️ استيراد</button>
-          <button class="pill" id="sample">↻ عيّنة للتجربة</button>
-          <button class="pill" id="purge">مسح</button>
-          <span id="stats" style="margin-right:auto;color:#647a74"></span>
-        </div>
-        <table class="tbl">
-          <thead><tr><th>الاسم</th><th>الهوية</th><th>التخصص</th><th>المسمى</th></tr></thead>
-          <tbody id="namesBody"></tbody>
-        </table>
-      </div>
-    </div>
+    <input id="tName" class="lined" placeholder="اسم شاغل الوظيفة" autocomplete="off">
     <input id="tId" class="lined" inputmode="numeric" placeholder="رقم الهوية" autocomplete="off">
     <input id="tSpec" class="lined" placeholder="التخصص" autocomplete="off">
     <input id="tTitle" class="lined" placeholder="المسمى" autocomplete="off">
@@ -219,6 +217,8 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <div class="goalrow"><input id="g1" placeholder="الهدف"><input id="g1i" placeholder="المؤشر"><input id="g1t" placeholder="القيمة المستهدفة"></div>
     <div class="goalrow"><input id="g2" placeholder="الهدف"><input id="g2i" placeholder="المؤشر"><input id="g2t" placeholder="القيمة المستهدفة"></div>
     <div class="goalrow"><input id="g3" placeholder="الهدف"><input id="g3i" placeholder="المؤشر"><input id="g3t" placeholder="القيمة المستهدفة"></div>
+    <!-- شريط عرض الأهداف المضغوط (يظهر في الطباعة ويُشد أعلى الجدول) -->
+    <div id="goalsPrint" class="goals-print" aria-hidden="true"></div>
   </section>
 
   <!-- المؤشر -->
@@ -260,9 +260,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
       <div class="modal-title">الشرح <span class="badge">إصدار تجريبي غير رسمي</span></div>
       <button class="close" id="closeHelp">إغلاق ✕</button>
     </div>
-    <div class="modal-body" id="helpContent">
-      <!-- يُملأ بالنص أدناه برمجياً لضمان سلاسة التنسيق -->
-    </div>
+    <div class="modal-body" id="helpContent"></div>
   </div>
 </div>
 
@@ -270,12 +268,16 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
 /* تاريخ */
-(function(){const d=new Date(),days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];$('#dayTxt').textContent=days[d.getDay()];$('#dateTxt').textContent=d.toLocaleDateString('ar-SA');})();
+(function(){
+  const d=new Date(),days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  $('#dayTxt').textContent=days[d.getDay()];
+  $('#dateTxt').textContent=d.toLocaleDateString('ar-SA');
+})();
 
 /* مفاتيح التخزين */
 const K_P='PF_principal', K_DIR='PF_dir', K_SCH='PF_school';
-const K_SESSION='PF_session';          // لقطة آخر جلسة
-const K_DB='PF_db';                     // قاعدة البيانات الداخلية (مجموعة سجلات)
+const K_SESSION='PF_session';
+const K_DB='PF_db';
 
 /* تحميل/تعديل الإدارة والمدرسة */
 (function initOrg(){
@@ -299,7 +301,6 @@ const HELP_TEXT = `
 <ul>
 <li><b>تخطيط ذكي للأداء:</b> إدخال الأهداف القابلة للقياس مع مؤشرات وقيم مستهدفة من بنك أهداف مخصص لكل نموذج.</li>
 <li><b>تحليل فوري:</b> احتساب تلقائي للأوزان، متوسط السُّلّم، ومؤشر الإنجاز بخوارزمية دقيقة.</li>
-<li><b>عدسة بيانات:</b> استيراد أسماء المعلمين من ملفات Excel ببحث مباشر واختيار فوري.</li>
 <li><b>خطة تحسين فجوات الأداء:</b> توليد صفحة مستقلة تحتوي على عناصر التحسين المقترحة وفق نتائج التقييم.</li>
 <li><b>كشف تقييم الأداء:</b> تجميع آلي لأسماء المقيمين ونتائجهم في عرض واحد لتيسير المراجعة والإشراف.</li>
 <li><b>إخراج جاهز للطباعة (A4):</b> تصميم منسق بهوية وزارة التعليم، متوافق مع الطباعة الملونة أو بالأبيض والأسود.</li>
@@ -308,6 +309,7 @@ const HELP_TEXT = `
 <p>هذه الأداة ليست نموذجاً رسمياً، وإنما وسيلة تجريبية مساندة لتسهيل التقييم وتحليل الأداء داخل المدرسة.</p>
 <p>للاستفسار والتواصل: 📧 <a href="mailto:fhz545@gmail.com">fhz545@gmail.com</a></p>
 `;
+$('#helpContent').innerHTML = HELP_TEXT;
 
 /* بنك الأهداف لكل نموذج */
 const GOALS_BANK={
@@ -356,19 +358,24 @@ function autoFillGoals(){
   const bank=GOALS_BANK[$('#model').value]||[];
   const slots=[[g1,g1i,g1t],[g2,g2i,g2t],[g3,g3i,g3t]];
   slots.forEach(([a,b,c],i)=>{a.value=bank[i]?.[0]||''; b.value=bank[i]?.[1]||''; c.value=bank[i]?.[2]||'';});
+  renderGoalsPrint();
 }
 function renderGoalChips(){
   const bank=GOALS_BANK[$('#model').value]||[], box=$('#goalChips'); box.innerHTML='';
-  bank.forEach(([t,i,v])=>{const b=document.createElement('button'); b.textContent=t; b.onclick=()=>{
-    const slots=[[g1,g1i,g1t],[g2,g2i,g2t],[g3,g3i,g3t]];
-    for(const [a,b1,c] of slots){ if(!a.value){a.value=t; b1.value=i; c.value=v; break;} }
-    snap();
-  }; box.appendChild(b);});
+  bank.forEach(([t,i,v])=>{
+    const b=document.createElement('button');
+    b.textContent=t;
+    b.onclick=()=>{
+      const slots=[[g1,g1i,g1t],[g2,g2i,g2t],[g3,g3i,g3t]];
+      for(const [a,b1,c] of slots){ if(!a.value){a.value=t; b1.value=i; c.value=v; break;} }
+      renderGoalsPrint(); snap();
+    };
+    box.appendChild(b);
+  });
 }
 
-/* عناصر النماذج (مطابقة للصور المرفقة) */
+/* عناصر النماذج */
 const RUBRICS={};
-/* المعلّم */
 RUBRICS.teacher=[
   {name:"أداء الواجبات الوظيفية",w:10},
   {name:"التفاعل مع المجتمع المهني",w:10},
@@ -382,8 +389,6 @@ RUBRICS.teacher=[
   {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",w:10},
   {name:"تنوع أساليب التقويم",w:10}
 ];
-
-/* معلم مسند له نشاط طلابي */
 RUBRICS.activity=[
   {name:"أداء الواجبات الوظيفية",w:10},
   {name:"التفاعل مع المجتمع المهني",w:10},
@@ -401,8 +406,6 @@ RUBRICS.activity=[
   {name:"دعم المعلمين وفق احتياجاتهم وميولهم للأشطة",w:5},
   {name:"تحفيز المتعلمين على المشاركة في الأنشطة",w:10}
 ];
-
-/* معلم مسند له توجيه صحي */
 RUBRICS.health=[
   {name:"أداء الواجبات الوظيفية",w:10},
   {name:"التفاعل مع المجتمع المهني",w:10},
@@ -419,8 +422,6 @@ RUBRICS.health=[
   {name:"حصر الحالات الصحية للمتعلمين",w:5},
   {name:"تهيئة البيئة الصحية المدرسية",w:10}
 ];
-
-/* معلمة رياض الأطفال */
 RUBRICS.kg=[
   {name:"أداء الواجبات الوظيفية",w:10},
   {name:"التفاعل مع المجتمع المهني",w:5},
@@ -442,8 +443,6 @@ RUBRICS.kg=[
   {name:"تنمية مهارات الاستقلال لدى المتعلمين",w:5},
   {name:"تطوير السلوكيات الإيجابية والقيم والمبادئ والاتجاهات",w:5}
 ];
-
-/* محضر المختبر */
 RUBRICS.lab=[
   {name:"أداء الواجبات الوظيفية",w:10},
   {name:"التفاعل مع المجتمع المهني",w:10},
@@ -459,8 +458,6 @@ RUBRICS.lab=[
   {name:"تقرير أسبوعي للأنشطة",w:10},
   {name:"تقارير حالة الأجهزة",w:10}
 ];
-
-/* الموجه الطلابي */
 RUBRICS.counselor=[
   {name:"أداء الواجبات الوظيفية",w:20},
   {name:"التفاعل مع المجتمع المهني",w:5},
@@ -476,8 +473,6 @@ RUBRICS.counselor=[
   {name:"يتابع تدخلات تربوية للمتعثرين دراسيًا وسلوكيًا",w:5},
   {name:"توعية المتعلمين وأولياء أمورهم بقواعد السلوك والمواظبة",w:5}
 ];
-
-/* مدير المدرسة */
 RUBRICS.principal=[
   {name:"أداء الواجبات الوظيفية",w:5},
   {name:"التفاعل مع المجتمع المهني",w:5},
@@ -499,24 +494,22 @@ RUBRICS.principal=[
   {name:"تعزيز السلوك الإيجابي",w:5},
   {name:"تهيئة بيئة مدرسية آمنة ومحصنة على التعلم",w:5}
 ];
-
-/* وكيل المدرسة */
 RUBRICS.vp=[
   {name:"أداء الواجبات الوظيفية",w:5},
   {name:"التفاعل مع المجتمع المهني",w:5},
   {name:"التفاعل مع أولياء الأمور",w:5},
   {name:"مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",w:5},
-  {name:"يدعم ويشارك في المبادرات النوعية",w:5},                // كان 10% → 5%
+  {name:"يدعم ويشارك في المبادرات النوعية",w:5},
   {name:"يتخذ إجراءات تربوية تحقق الانضباط المدرسي",w:5},
   {name:"يدير الموارد في المدرسة بكفاءة",w:5},
   {name:"يشارك في إعداد خطة التطوير المهني",w:5},
   {name:"يتابع التغذية الراجعة ونتائج تحقق مؤشرات الأداء الوظيفي",w:5},
   {name:"يدعم تنفيذ برامج التطوير المهني",w:5},
   {name:"يقيم أداء منسوبي المدرسة",w:5},
-  {name:"ينفذ إجراءات علمية لتحسين نتائج التعلم",w:15},
+  {name:"ينفذ إجراءات علمية لتحسين نتائج التعلم",w:10},
   {name:"يساهم في رفع مستوى أداء المدرسة",w:5},
   {name:"يشارك في إعداد الخطط المدرسية",w:5},
-  {name:"يتابع تنفيذ الخطط المدرسية",w:5},                      // العنصر المضاف
+  {name:"يتابع تنفيذ الخطط المدرسية",w:5},
   {name:"يوفر الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية",w:5},
   {name:"يوظف المنصات الرقمية وتطبيقاتها التعليمية في دعم عمليات التعليم والتعلم",w:5},
   {name:"يعزز السلوك الإيجابي للطلاب",w:5},
@@ -541,7 +534,7 @@ const BANK_IMPROVE={
 /* أدوات تنسيق لقوائم القوة/التحسين كسطر واحد مع '/' */
 function cleanText(s){return String(s||'').replace(/\s+/g,' ').trim();}
 function bulletize(s){s=cleanText(s); if(!s) return ''; return s.startsWith('•')? s : '• '+s;}
-function uniq(arr){const seen=new Set(); const out=[]; for(const t of arr){const k=cleanText(t); if(k && !seen.has(k)){seen.add(k); out.push(k);} } return out;}
+function uniq(arr){const seen=new Set(); const out=[]; for(const t of arr){const k=cleanText(t); if(k && !seen.has(k)){seen.add(k); if(!out.includes(k)) out.push(k);} } return out;}
 function joinSlashLine(arr){const list=uniq(arr).map(bulletize); return list.length? list.join(' / '): '—';}
 
 /* بناء الجدول */
@@ -563,6 +556,19 @@ function build(){
   recalc(); snap();
 }
 
+/* شريط عرض الأهداف المضغوط (يتحدث مع كل تغيير) */
+function readGoal(n){ return {t:$('#g'+n).value.trim(), i:$('#g'+n+'i').value.trim(), v:$('#g'+n+'t').value.trim()}; }
+function renderGoalsPrint(){
+  const gp=$('#goalsPrint');
+  const goals=[1,2,3].map(readGoal);
+  gp.innerHTML = goals.map(g=>`
+    <div class="row">
+      <div class="cell"><span class="hdr">الهدف:</span> ${g.t||'—'}</div>
+      <div class="cell"><span class="hdr">المؤشر:</span> ${g.i||'—'}</div>
+      <div class="cell"><span class="hdr">المستهدف:</span> ${g.v||'—'}</div>
+    </div>`).join('');
+}
+
 /* إظهار/إخفاء عناصر التخطيط فقط */
 function toggleStageLock(){
   const isFirst=$('#stage').value==='first';
@@ -573,7 +579,7 @@ function toggleStageLock(){
   $('#gapBtn').setAttribute('data-tip', isFirst?msg:''); $('#archBtn').setAttribute('data-tip', isFirst?msg:'');
 }
 
-/* حساب المؤشرات + بنك القوة/التحسين (مخرجات بسطر واحد مفصول بـ /) */
+/* حساب المؤشرات + بنك القوة/التحسين */
 function recalc(){
   let total=0, ws=0, n=0,d=0;
   const strengths=[], improves=[];
@@ -593,7 +599,6 @@ function recalc(){
   $('#kR').textContent=`مجموع الأوزان: ${ws}%`;
   $('#sigT').textContent=$('#tName').value||'—';
 
-  /* إخراج منسق كسطر واحد بفواصل '/' */
   $('#strengths').textContent = joinSlashLine(strengths);
   $('#improves').textContent  = joinSlashLine(improves);
 }
@@ -612,6 +617,7 @@ function upsertRecord(rec){
 
 /* حفظ لقطة للجلسة + ربط الصفحات الأخرى */
 function snap(){
+  renderGoalsPrint();
   const rows=$$('#rows tr').map(tr=>({name:tr.querySelector('.item').textContent,w:+tr.dataset.w,v:+tr.querySelector('.g').value}));
   const data={
     dir:$('#dirTxt').textContent.trim(), school:$('#schTxt').textContent.trim(),
@@ -637,77 +643,19 @@ document.addEventListener('change',e=>{
   if(e.target.classList.contains('g')){recalc();snap();}
   if(e.target.id==='model'){build();}
   if(e.target.id==='stage'){toggleStageLock(); if(e.target.value==='first'){autoFillGoals();} snap();}
+  if(['g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t'].includes(e.target.id)){ renderGoalsPrint(); snap(); }
 });
 $('#saveBtn').onclick=()=>{const data=snap(); upsertRecord(data); alert('تم الحفظ');};
 $('#gapBtn').onclick=openGap; $('#archBtn').onclick=openArch;
-$('#printBtn').onclick=()=>window.print();
-$('#clearBtn').onclick=()=>{ $$('.g').forEach(s=>s.value='3'); ['tName','tId','tSpec','tTitle','g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t'].forEach(id=>document.getElementById(id).value=''); recalc(); snap(); };
-
-/* عدسة الأسماء: استيراد + بحث */
-const K_NAMES='PF_names';
-const getN=()=>JSON.parse(localStorage.getItem(K_NAMES)||'[]');
-const setN=a=>localStorage.setItem(K_NAMES,JSON.stringify(a));
-function norm(s){return String(s||'').toLowerCase().replace(/[ \u200f\u200e._\-:،,]/g,'');}
-function headerMap(head){
-  const map={}, H=head.map(h=>String(h||'').trim());
-  const prefer=(p, i)=>{ if(map[p]==null) map[p]=i; };
-  H.forEach((h,i)=>{const n=norm(h);
-    if(/(name|fullname|الاسم)/.test(n)) prefer('name',i);
-    if(/(id|nid|الهوية|رقم|سجل)/.test(n)) prefer('id',i);
-    if(/(spec|major|التخصص)/.test(n)) prefer('spec',i);
-    if(/(title|role|position|المسمى)/.test(n)) prefer('title',i);
-  }); return map;
-}
-function guessRow(row){
-  const flat=row.map(x=>String(x||'').trim());
-  let id=flat.find(v=>/^\d{9,12}$/.test(v))||''; let name=flat.find(v=>v && !/^\d/.test(v))||'';
-  const rest=flat.filter(v=>v!==id && v!==name); let spec=rest[0]||'', title=rest[1]||'';
-  return {name,id,spec,title};
-}
-function renderNames(){
-  const a=getN().slice().sort((x,y)=>String(x.name||'').localeCompare(String(y.name||''),'ar'));
-  $('#stats').textContent=a.length?`عدد الأسماء: ${a.length}`:'';
-  const q=$('#q').value?.trim().toLowerCase(); const body=$('#namesBody'); body.innerHTML='';
-  a.filter(o=>!q || [o.name,o.id,o.spec,o.title].some(v=>String(v||'').toLowerCase().includes(q)))
-   .forEach(o=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${o.name||'—'}</td><td>${o.id||'—'}</td><td>${o.spec||'—'}</td><td>${o.title||'—'}</td>`;
-      tr.onclick=()=>{ tName.value=o.name||''; tId.value=o.id||''; tSpec.value=o.spec||''; tTitle.value=o.title||''; $('#lens').style.display='none'; recalc(); snap(); };
-      body.appendChild(tr);
-   });
-}
-$('#lensBtn').onclick=()=>{const p=$('#lens'); p.style.display=(p.style.display==='block')?'none':'block'; renderNames();};
-document.addEventListener('click',e=>{ if(!e.target.closest('.namewrap')) $('#lens').style.display='none'; });
-let qTimer=null; $('#q').addEventListener('input',()=>{clearTimeout(qTimer); qTimer=setTimeout(renderNames,120);});
-$('#purge').onclick=()=>{setN([]); renderNames();};
-$('#sample').onclick=()=>{ setN([{name:'أحمد محمد',id:'1012345678',spec:'رياضيات',title:'معلم'},{name:'سارة علي',id:'1023456789',spec:'فيزياء',title:'معلم'},{name:'عبدالله سالم',id:'1034567891',spec:'لغة عربية',title:'معلم'}]); renderNames(); };
-$('#pick').onclick=()=>$('#xls').click();
-$('#xls').addEventListener('change',async e=>{
-  const f=e.target.files[0]; if(!f) return;
-  try{
-    const ab=await f.arrayBuffer(); const wb=XLSX.read(ab,{type:'array'}); const merged=getN();
-    wb.SheetNames.forEach(sn=>{
-      const ws=wb.Sheets[sn]; const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''}); if(!rows.length) return;
-      const head=rows[0], map=headerMap(head);
-      for(let r=1;r<rows.length;r++){
-        const row=rows[r]; let o={};
-        if(Object.keys(map).length){
-          o.name=String(row[map.name]??'').trim();
-          o.id=String(row[map.id]??'').trim();
-          o.spec=String(row[map.spec]??'').trim();
-          o.title=String(row[map.title]??'').trim();
-          if(!o.name){ o=guessRow(row); }
-        }else{ o=guessRow(row); }
-        if(o.name){ if(!merged.some(x=>x.name===o.name && x.id===o.id)) merged.push(o); }
-      }
-    });
-    setN(merged); renderNames();
-  }catch(err){ console.error(err); alert('تعذر قراءة الملف'); }
-  e.target.value='';
-});
+$('#printBtn').onclick=()=>{snap(); window.print();};
+$('#clearBtn').onclick=()=>{
+  $$('.g').forEach(s=>s.value='3');
+  ['tName','tId','tSpec','tTitle','g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t']
+    .forEach(id=>document.getElementById(id).value='');
+  renderGoalsPrint(); recalc(); snap();
+};
 
 /* نافذة الشرح */
-$('#helpContent').innerHTML = HELP_TEXT;
 function toggleHelp(show){ const m=$('#help'); m.classList.toggle('show',!!show); m.setAttribute('aria-hidden', show?'false':'true'); }
 $('#helpBtn').onclick=()=>toggleHelp(true);
 $('#closeHelp').onclick=()=>toggleHelp(false);
@@ -717,7 +665,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') toggleHelp(false);
 /* بدء: المرحلة الأولى افتراضياً + بناء الجدول + تعبئة الأهداف تلقائيًا */
 (function init(){
   $('#stage').value='first';
-  build(); recalc(); snap();
+  build(); recalc(); renderGoalsPrint(); snap();
 })();
 </script>
 </body>
