@@ -1,493 +1,482 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>📘 دليل العناصر والمعايير – النماذج المعتمدة</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>دليل العناصر والمعايير</title>
 
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 
 <style>
 :root{
   --moe:#1e8a79; --moe-d:#0c594e; --ink:#0b2f2b; --line:#e6f1ee; --muted:#6b7e7b;
+  --L5:#16a34a; --L4:#22c55e; --L3:#f59e0b; --L2:#f97316; --L1:#ef4444;
   --grad:linear-gradient(135deg,#1e8a79,#23b8a2);
-  --amber:#f59e0b; --red:#ef4444; --green:#16a34a; --sky:#0ea5e9;
 }
 *{box-sizing:border-box}
-body{font-family:"Tajawal",sans-serif;background:#f9fbfa;color:var(--ink)}
-.header-fallback{background:#fff;border-bottom:1px solid var(--line);padding:12px;text-align:center;color:var(--moe-d);font-weight:800}
+html,body{height:100%}
+body{font-family:"Tajawal",system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f7fbfa;color:var(--ink);overflow-x:hidden}
+.container-locked{max-width:1160px;margin-inline:auto;padding-inline:clamp(12px,2.2vw,22px)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 18px rgba(12,89,78,.07);transition:transform .2s}
+.card:hover{transform:translateY(-2px)}
+.models-bar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:.4rem .5rem;display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.model-chip{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.38rem .6rem;font-weight:800;font-size:.8rem}
+.model-chip .ico{font-size:1rem}
+.model-chip.active{background:var(--moe);color:#fff;border-color:transparent;box-shadow:0 5px 14px rgba(12,89,78,.18)}
+.grid-cards{display:grid;gap:12px}
+@media(min-width:640px){.grid-cards{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid-cards{grid-template-columns:repeat(3,1fr)}}
+.tag{font-size:.75rem;border:1px solid var(--line);padding:.1rem .5rem;border-radius:999px;background:#f6fbf9}
 
-/* شريط النماذج المصغّر */
-.models-bar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:.3rem .5rem;display:flex;gap:.35rem;overflow-x:auto}
-.model-icon{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.34rem .6rem;font-weight:800;font-size:.85rem}
-.model-icon span{font-size:.95rem;opacity:.9}
-.model-icon.active{background:var(--moe);color:#fff;border-color:transparent;box-shadow:0 6px 16px rgba(12,89,78,.18)}
-.model-icon:hover{transform:translateY(-1px)}
+/* donut */
+.donut{
+  --size:68px; --thick:9px;
+  width:var(--size); height:var(--size); border-radius:50%;
+  background:conic-gradient(#16a34a calc(var(--pct)*1%), #e8f2ef 0);
+  display:grid; place-items:center; position:relative; flex:0 0 var(--size)
+}
+.donut::after{
+  content:""; position:absolute; inset:calc(var(--thick)); background:#fff; border-radius:50%;
+  box-shadow:inset 0 0 0 1px var(--line);
+}
+.donut b{position:relative; z-index:1; font-variant-numeric:tabular-nums}
 
-/* بطاقات العناصر */
-.card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 6px 20px rgba(12,89,78,.08);transition:.2s}
-.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(12,89,78,.12)}
-.tag{font-size:.72rem;border:1px solid var(--line);padding:.12rem .48rem;border-radius:999px;background:#f6fbf9}
-.grad-bar{height:6px;border-radius:999px;background:linear-gradient(90deg,#ef4444,#f59e0b,#16a34a)}
-
-/* نافذة منبثقة */
+/* ===== Modal ===== */
 .modal-bg{background:rgba(0,0,0,.55);backdrop-filter:saturate(140%) blur(3px)}
 .modal-panel{border-radius:22px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.18)}
 .modal-head{background:var(--grad);color:#fff}
-.level-pill{padding:.38rem .62rem;border-radius:999px;border:1px solid #ffffff66;cursor:pointer;font-weight:800;color:#fff}
-.level-pill.active{background:#fff;color:var(--moe-d)}
-.section-title{font-weight:900;color:var(--moe-d);letter-spacing:.2px}
-
-/* قسم الوزن النسبي + المقياس */
-.weight-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .6rem;border-radius:999px;background:#f1faf6;border:1px solid var(--line);font-weight:800}
-.weight-chip.pulse{box-shadow:0 0 0 0 rgba(30,138,121,.5);animation:pulse .9s ease-out 1}
-@keyframes pulse{to{box-shadow:0 0 0 16px rgba(30,138,121,0)}}
-
-.impact-wrap{display:grid;gap:.35rem}
-.impact-label{display:flex;justify-content:space-between;font-size:.82rem;color:#0b2f2b99}
-.impact-bar{height:10px;border-radius:999px;background:#e9f4f2;overflow:hidden;border:1px solid var(--line)}
-.impact-bar>div{height:100%;width:0%;transition:width .35s;}
-
-/* صناديق الأقسام */
+.level-pill{padding:.38rem .58rem;border-radius:12px;border:1px solid var(--line);cursor:pointer;font-weight:900;display:flex;align-items:center;gap:.42rem;background:#fff}
+.level-pill .dot{width:12px;height:12px;border-radius:999px}
+.level-pill .num{font-variant-numeric:tabular-nums}
+.level-pill.active{outline:3px solid #00000012;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.level-pill[data-l="5"] .num{color:var(--L5)} .level-pill[data-l="4"] .num{color:var(--L4)}
+.level-pill[data-l="3"] .num{color:var(--L3)} .level-pill[data-l="2"] .num{color:var(--L2)} .level-pill[data-l="1"] .num{color:var(--L1)}
+.level-legend b{padding:.16rem .42rem;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.meter{width:100%;height:10px;border-radius:999px;background:#e9f4f2;border:1px solid var(--line);overflow:hidden}
+.meter .fill{height:100%;width:0%;background:repeating-linear-gradient(90deg,#20b486 0 16px,#bfe8de 16px 24px);transition:width .35s ease-out}
 .block{border-radius:16px;border:1px solid var(--line);background:#fbfdfc}
-.block .head{display:flex;align-items:center;gap:.5rem;padding:.55rem .7rem;border-bottom:1px dashed var(--line);font-weight:900}
-.block .head .ico{font-size:1.05rem}
+.block .head{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;border-bottom:1px dashed var(--line);font-weight:900}
 .block .body{padding:.75rem .9rem}
-.badge{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .55rem;border-radius:999px;background:#eefcf6;border:1px solid var(--line);font-size:.78rem;font-weight:800}
-
-/* شواهد ملوّنة */
 .evidence-box{border-radius:14px;padding:10px 12px;border-right:6px solid}
-.ev-green{background:#ecfdf5;border-color:#22c55e;color:#166534}
-.ev-amber{background:#fffbeb;border-color:#f59e0b;color:#92400e}
-.ev-red{background:#fef2f2;border-color:#ef4444;color:#7f1d1d}
+.ev-L5{background:#ecfdf5;border-color:var(--L5);color:#14532d}
+.ev-L4{background:#ecfdf5;border-color:var(--L4);color:#14532d}
+.ev-L3{background:#fffbeb;border-color:var(--L3);color:#92400e}
+.ev-L2{background:#fff7ed;border-color:var(--L2);color:#7c2d12}
+.ev-L1{background:#fef2f2;border-color:var(--L1);color:#7f1d1d}
+.modal-foot{position:sticky;bottom:0;inset-inline:0;background:#fffffff2;backdrop-filter:blur(4px);
+  border-top:1px solid var(--line);padding:.55rem .9rem;display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+.foot-chip{display:flex;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:999px;padding:.34rem .68rem;background:#fff;font-weight:900}
+.foot-chip .big{font-size:1.05rem}
+.foot-chip.l5{color:var(--L5)} .foot-chip.l4{color:var(--L4)} .foot-chip.l3{color:var(--L3)}
+.foot-chip.l2{color:var(--L2)} .foot-chip.l1{color:var(--L1)}
 
-/* فواصل */
-.divider{height:1px;background:linear-gradient(90deg,transparent,#dbe7e4,transparent)}
+/* Header image */
+.header-img{background:#0a3340 url('te.png') center/cover no-repeat; min-height:110px;border-radius:18px}
+.header-title{color:#fff;font-weight:800;font-size:clamp(18px,2.6vw,26px);text-shadow:0 2px 16px rgba(0,0,0,.25)}
+.header-btn{background:#ffffff; color:#0b2f2b; font-weight:800; border-radius:999px; padding:.42rem .9rem; display:inline-flex; align-items:center; gap:.5rem; border:1px solid #e7f2ee}
+.header-btn:hover{filter:brightness(0.98)}
 </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-<!-- الهيدر من الصفحة الرئيسية -->
-<div id="headerMount"></div>
-
-<!-- وصف تربوي مختصر للصفحة -->
-<section class="max-w-6xl mx-auto mt-5 px-4 sm:px-6">
-  <div class="bg-white border border-[var(--line)] rounded-2xl p-6 shadow-sm">
-    <h1 class="text-2xl font-extrabold text-[var(--moe-d)] mb-2">📘 دليل العناصر والمعايير – النماذج المعتمدة</h1>
-    <p class="text-[15px] leading-7 text-[color:var(--ink)/85]">
-      يقدّم هذا الدليل عرضًا تفاعليًا لعناصر التقييم وأوزانها النسبية وسُلّم التقدير (٥–١) مع
-      تفسير تربوي للشواهد وتحليل الممارسات وخطوات <b>تعزيز الأثر القيادي</b>. صُمّم لتيسير الوصول
-      للمعلومة كاملة وبسرعة، على أن يُرجع دائمًا إلى الأدلة والإجراءات الرسمية الصادرة عن
-      <b>وزارة التعليم</b> لاعتماد السياسات وضوابط التطبيق.
-    </p>
+<!-- Header -->
+<header class="container-locked mt-4">
+  <div class="header-img relative">
+    <!-- العنوان إلى الجهة الأخرى (يسار) -->
+    <div class="absolute left-4 md:left-6 bottom-3 md:bottom-4 header-title">
+      دليل العناصر والمعايير
+    </div>
+    <!-- زر الرجوع للنموذج الرئيسي -->
+    <a href="https://fhz545-hub.github.io/taqyeem/" target="_blank" class="absolute right-4 md:right-6 bottom-3 md:bottom-4 header-btn" title="الرجوع إلى نموذج التقييم">
+      ↩︎ فتح نموذج التقييم
+    </a>
   </div>
+</header>
+
+<!-- Models bar: 8 أزرار في صف واحد دون التفاف -->
+<section class="container-locked mt-4">
+  <div id="modelsBar" class="models-bar flex-nowrap"></div>
 </section>
 
-<!-- قائمة النماذج المصغّرة (أيقونات) -->
-<section class="max-w-6xl mx-auto px-4 sm:px-6 mt-4">
-  <div id="modelsBar" class="models-bar">
-    <!-- يُحقن برمجياً -->
-  </div>
-</section>
-
-<!-- بطاقات العناصر -->
-<main class="max-w-6xl mx-auto px-4 sm:px-6 mt-6 mb-16">
-  <div id="cardsContainer" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+<!-- Cards -->
+<main class="container-locked mt-4 mb-16">
+  <div id="cardsContainer" class="grid-cards"></div>
 </main>
 
-<!-- نافذة العناصر -->
+<!-- Modal -->
 <div id="modal" class="fixed inset-0 hidden items-start sm:items-center justify-center modal-bg z-50 p-3 sm:p-6">
   <div class="bg-white w-full max-w-5xl modal-panel relative">
-    <!-- رأس -->
     <div class="modal-head px-5 py-3 flex items-center justify-between gap-3">
       <div class="font-extrabold text-lg" id="modalTitle">—</div>
-      <div class="flex items-center gap-2">
-        <div id="weightChip" class="weight-chip" title="الوزن النسبي للعنصر">
-          <span>الوزن</span><b id="metaWeight">—</b>
-        </div>
-        <button onclick="closeModal()" class="text-white/95 hover:text-white text-2xl leading-none" title="إغلاق">✖</button>
-      </div>
+      <button onclick="closeModal()" class="text-white/95 hover:text-white text-2xl leading-none" title="إغلاق">✖</button>
     </div>
 
-    <!-- تبويبات المستوى + مقياس الأثر -->
-    <div class="px-5 pt-3 pb-2">
-      <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div id="levelTabs" class="flex items-center gap-2"></div>
-        <div class="impact-wrap min-w-[260px]">
-          <div class="impact-label">
-            <span><b>مقياس الأثر</b> (وزن × مستوى)</span>
-            <span id="impactValue">0%</span>
+    <div class="px-5 pt-3 pb-2 space-y-3">
+      <div class="flex items-center gap-3 text-[13px] level-legend">
+        <span class="flex items-center gap-1"><b style="color:var(--L5)">٥</b> تميّز</span>
+        <span class="flex items-center gap-1"><b style="color:var(--L4)">٤</b> متقدّم</span>
+        <span class="flex items-center gap-1"><b style="color:var(--L3)">٣</b> مقبول</span>
+        <span class="flex items-center gap-1"><b style="color:var(--L2)">٢</b> يحتاج دعم</span>
+        <span class="flex items-center gap-1"><b style="color:var(--L1)">١</b> حدّ أدنى</span>
+      </div>
+      <div id="levelTabs" class="flex items-center gap-2 flex-wrap"></div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <div class="flex items-center justify-between text-[.92rem] text-[color:var(--ink)/85] mb-1">
+            <b>مؤشر المستوى (١→٥)</b><span id="levelMeterLabel">0%</span>
           </div>
-          <div class="impact-bar"><div id="impactFill"></div></div>
+          <div class="meter"><div id="levelMeterFill" class="fill"></div></div>
+          <div class="text-[.8rem] mt-1 text-[color:var(--ink)/70]">يمتلئ بالكامل عند اختيار مستوى (٥).</div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-[.92rem] text-[color:var(--ink)/85] mb-1">
+            <b>أثر العنصر بالوزن</b><span id="impactLabel">0%</span>
+          </div>
+          <div class="meter"><div id="impactFill" class="fill"></div></div>
+          <div class="text-[.8rem] mt-1 text-[color:var(--ink)/70]">الحساب: وزن العنصر × (المستوى/٥).</div>
         </div>
       </div>
     </div>
-    <div class="divider mx-5 mb-2"></div>
+    <div class="mx-5 h-px bg-[linear-gradient(90deg,transparent,#dbe7e4,transparent)] mb-2"></div>
 
-    <!-- محتوى غنيّ: الوصف / الشواهد / التحليل / تعزيز الأثر -->
     <div class="px-5 pb-6">
       <div class="grid lg:grid-cols-2 gap-5">
-        <!-- الوصف + الشواهد -->
         <section class="block">
-          <div class="head"><span class="ico">📝</span> الوصف</div>
-          <div class="body"><p id="descText" class="leading-8"></p></div>
-
-          <div class="head"><span class="ico">📎</span> الشواهد (الحد الأدنى/الكمال)</div>
+          <div class="head"><span>📝</span><b id="descHead">وصف مستوى التقدير</b></div>
+          <div class="body">
+            <p id="descText" class="leading-8"></p>
+            <p id="itemDesc" class="leading-7 text-[14px] text-[color:var(--ink)/85] mt-3"></p>
+          </div>
+          <div class="head"><span>📎</span><b>الشاهد المقترح</b> <small id="evHint" class="font-normal text-[color:var(--ink)/60]"></small></div>
           <div class="body">
             <div id="evidenceBox" class="evidence-box"></div>
             <ul id="evidenceList" class="list-disc list-inside text-[15px] mt-2 space-y-1"></ul>
           </div>
         </section>
 
-        <!-- التحليل + تعزيز الأثر -->
         <section class="block">
-          <div class="head"><span class="ico">🔎</span> تحليل الممارسات</div>
+          <div class="head"><span>🔎</span><b>تحليل للممارسات</b></div>
           <div class="body"><ul id="analysisList" class="list-disc list-inside text-[15px] space-y-1"></ul></div>
-
-          <div class="head"><span class="ico">🚀</span> تعزيز الأثر القيادي</div>
-          <div class="body">
-            <div class="badge mb-2">خطوات عملية مُقترحة</div>
-            <ul id="improveList" class="list-disc list-inside text-[15px] space-y-1"></ul>
-          </div>
+          <div class="head"><span>🚀</span><b id="improveTitle">خطوات التطوير</b></div>
+          <div class="body"><ul id="improveList" class="list-disc list-inside text-[15px] space-y-1"></ul></div>
         </section>
       </div>
+    </div>
+
+    <div class="modal-foot">
+      <div class="foot-chip"><span>الوزن النسبي:</span> <span class="big" id="footWeight">—</span></div>
+      <div class="foot-chip" id="footLevelChip"><span>المستوى المختار:</span> <span class="big" id="footLevelNum">—</span></div>
     </div>
   </div>
 </div>
 
-<script>
-/* ============= 1) استيراد الهيدر ============= */
-async function importHeader(){
-  const mount = document.getElementById('headerMount');
-  const homeUrl = localStorage.getItem('taqyeem:homeUrl') || 'index.html';
-  try{
-    const res = await fetch(homeUrl);
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html,'text/html');
-    const header = doc.querySelector('header') || doc.querySelector('#mainHeader');
-    mount.innerHTML = header ? header.outerHTML : `<div class="header-fallback">الدليل الإرشادي</div>`;
-  }catch{
-    mount.innerHTML = `<div class="header-fallback">الدليل الإرشادي</div>`;
-  }
-}
+<!-- Footer credit -->
+<footer class="container-locked mb-8 text-center text-xs text-[color:var(--ink)/65]">
+  جمع وتنفيذ فهد حامد الزهراني
+</footer>
 
-/* ============= 2) تعريف النماذج ============= */
+<script>
+/* ======================= بيانات النماذج (٨ أزرار) ======================= */
 const MODELS = [
-  { id:'teacher', icon:'👨‍🏫', name:'المعلم',
-    items:[
-      ["أداء الواجبات الوظيفية","10%","duties"],
-      ["التفاعل مع المجتمع المهني","10%","professional_community"],
-      ["التفاعل مع أولياء الأمور","10%","parents_interaction"],
-      ["التنوع في استراتيجيات التدريس","10%","teaching_strategies"],
-      ["تحسين نتائج المتعلمين","10%","student_results"],
-      ["إعداد وتنفيذ خطة التعلم","10%","learning_plan"],
-      ["توظيف التقنيات والوسائل","10%","tech_and_tools"],
-      ["تهيئة بيئة تعليمية","5%","learning_environment"],
-      ["الإدارة الصفية","5%","classroom_management"],
-      ["تحليل نتائج المتعلمين","10%","results_analysis"],
-      ["تنوع أساليب التقويم","10%","assessment_variety"],
-    ]},
-  { id:'teacher_activity', icon:'🎯', name:'معلم نشاط',
-    items:[
-      ["أداء الواجبات الوظيفية","10%","duties"],
-      ["التفاعل مع المجتمع المهني","10%","professional_community"],
-      ["التفاعل مع أولياء الأمور","10%","parents_interaction"],
-      ["التنوع في استراتيجيات التدريس","5%","teaching_strategies"],
-      ["تحسين نتائج المتعلمين","5%","student_results"],
-      ["إعداد وتنفيذ خطة التعلم","5%","learning_plan"],
-      ["توظيف التقنيات والوسائل","5%","tech_and_tools"],
-      ["تهيئة بيئة تعليمية","5%","learning_environment"],
-      ["الإدارة الصفية","5%","classroom_management"],
-      ["تحليل نتائج المتعلمين","5%","results_analysis"],
-      ["تنوع أساليب التقويم","5%","assessment_variety"],
-      ["خطة برامج النشاط الطلابي","10%","activity_plan"],
-      ["تهيئة بيئة الأنشطة","5%","activity_env"],
-      ["دعم نمو ميول المعلمين للأنشطة","5%","activity_support_teachers"],
-      ["التزام المتعلمين بالمشاركة","10%","activity_students_commit"],
-    ]},
-  { id:'teacher_health', icon:'🏥', name:'توجيه صحي',
-    items:[
-      ["أداء الواجبات الوظيفية","10%","duties"],
-      ["التفاعل مع المجتمع المهني","10%","professional_community"],
-      ["التفاعل مع أولياء الأمور","10%","parents_interaction"],
-      ["التنوع في استراتيجيات التدريس","5%","teaching_strategies"],
-      ["تحسين نتائج المتعلمين","5%","student_results"],
-      ["إعداد وتنفيذ خطة التعلم","5%","learning_plan"],
-      ["توظيف التقنيات والوسائل","5%","tech_and_tools"],
-      ["تهيئة بيئة تعليمية","5%","learning_environment"],
-      ["الإدارة الصفية","5%","classroom_management"],
-      ["تحليل نتائج المتعلمين","5%","results_analysis"],
-      ["تنوع أساليب التقويم","5%","assessment_variety"],
-      ["الخطة الصحية المشتركة","15%","health_joint_plan"],
-      ["حصر الحالات الصحية","5%","health_cases"],
-      ["تهيئة البيئة الصحية","10%","health_env"],
-    ]},
-  { id:'kg', icon:'🧒', name:'رياض الأطفال',
-    items:[
-      ["أداء الواجبات الوظيفية","10%","duties"],
-      ["التفاعل مع المجتمع المهني","5%","professional_community"],
-      ["التفاعل مع أولياء الأمور","5%","parents_interaction"],
-      ["التنوع في استراتيجيات التدريس","5%","teaching_strategies"],
-      ["تحسين نتائج المتعلمين","5%","student_results"],
-      ["خطة أنشطة شاملة","5%","kg_plan"],
-      ["خبرات تعلم مرنة","5%","kg_experiences"],
-      ["توظيف التقنيات والوسائل","5%","tech_and_tools"],
-      ["التمكن من المحتوى","5%","kg_content_mastery"],
-      ["استراتيجيات تدريس فاعلة","5%","teaching_strategies"],
-      ["إشراك الأسرة","5%","kg_parents_involve"],
-      ["بيئة آمنة ومحفزة","15%","kg_env_safe"],
-      ["تنظيم التعلم النشط","5%","kg_active_learning"],
-      ["مراعاة الفروق الفردية","5%","kg_diff"],
-      ["شراكة الأسرة لدعم التعلم","5%","kg_family_partnership"],
-      ["متابعة تقدم الأطفال","5%","kg_progress_follow"],
-      ["أدوات تقويم مناسبة","5%","kg_assessment"],
-      ["قياس الأثر التعليمي","5%","kg_impact"],
-      ["غرس القيم والهوية","5%","kg_values"],
-    ]},
-  { id:'lab', icon:'🧪', name:'محضر المختبر',
-    items:[
-      ["أداء الواجبات الوظيفية","10%","duties"],
-      ["التفاعل مع المجتمع المهني","10%","professional_community"],
-      ["التفاعل مع أولياء الأمور","10%","parents_interaction"],
-      ["دعم التدريس العملي","10%","lab_teaching_support"],
-      ["تحسين نتائج المتعلمين","10%","lab_students_results"],
-      ["خطة يومية للمختبر","5%","lab_daily_plan"],
-      ["معرفة فنية بالمفاهيم","5%","lab_knowledge"],
-      ["توفير المستلزمات للتجارب","5%","lab_provisions"],
-      ["سلامة المختبر","5%","lab_safety"],
-      ["تهيئة المختبر وتجهيزه","5%","lab_prep"],
-      ["إدارة الأجهزة وتسليمها","5%","lab_devices_manage"],
-      ["تقرير أنشطة أسبوعي","10%","lab_weekly_report"],
-      ["تقارير حالة الأجهزة","10%","lab_equipment_status"],
-    ]},
-  { id:'counselor', icon:'🧭', name:'الموجّه الطلابي',
-    items:[
-      ["أداء الواجبات الوظيفية","20%","duties"],
-      ["التفاعل مع المجتمع المهني","5%","professional_community"],
-      ["التفاعل مع أولياء الأمور","5%","parents_interaction"],
-      ["تدخلات لتعزيز الانضباط","5%","c_interventions"],
-      ["برامج رفع الدافعية","5%","c_motivation_programs"],
-      ["خطة التوجيه الطلابي","10%","c_guidance_plan"],
-      ["برامج دعم الحالات","10%","c_case_management"],
-      ["تعزيز القيم والسلوكيات","10%","c_values"],
-      ["أنشطة وقائية/علاجية اجتماعية","10%","c_preventive"],
-      ["مساندة تخطيط المعلمين","5%","c_help_teachers"],
-      ["تعزيز التفوق الدراسي","5%","c_achievement"],
-      ["متابعة المتأخرين دراسيًا/سلوكيًا","5%","c_follow_cases"],
-      ["توعية الحقوق والواجبات","5%","c_awareness"],
-    ]},
-  { id:'principal', icon:'🏫', name:'مدير المدرسة',
-    items:[
-      ["أداء الواجبات الوظيفية","5%","duties"],
-      ["التفاعل مع المجتمع المهني","5%","professional_community"],
-      ["التفاعل مع أولياء الأمور","5%","parents_interaction"],
-      ["مرونة في إنجاز الأعمال","5%","p_flexibility"],
-      ["المبادرات النوعية","5%","p_initiatives"],
-      ["إجراءات الانضباط المدرسي","5%","p_discipline"],
-      ["إدارة الموارد بكفاءة","5%","p_resources"],
-      ["خطط التطوير المهني","5%","p_pd_plan"],
-      ["تغذية راجعة ومؤشرات الأداء","5%","p_feedback_kpis"],
-      ["دعم برامج التطوير المهني","5%","p_pd_support"],
-      ["تقييم أداء المنسوبين","5%","p_staff_eval"],
-      ["تحسين نتائج التعلم","15%","p_learning_results"],
-      ["رفع مستوى أداء المدرسة","10%","p_school_lead"],
-      ["إشراك المجتمع المدرسي","5%","p_community"],
-      ["فرص مشاركة الطلاب","5%","p_students_opps"],
-      ["توظيف المنصات الرقمية","5%","p_edtech"],
-      ["تعزيز السلوك الإيجابي","5%","p_behavior_pos"],
-      ["بيئة آمنة ومحفزة","5%","p_safe_env"],
-    ]},
-  { id:'vp', icon:'🧩', name:'وكيل المدرسة',
-    items:[
-      ["أداء الواجبات الوظيفية","5%","duties"],
-      ["التفاعل مع المجتمع المهني","5%","professional_community"],
-      ["التفاعل مع أولياء الأمور","5%","parents_interaction"],
-      ["مرونة في إنجاز الأعمال","5%","v_flexibility"],
-      ["المبادرات النوعية","10%","v_initiatives"],
-      ["إجراءات الانضباط المدرسي","5%","v_discipline"],
-      ["إدارة الموارد بكفاءة","5%","v_resources"],
-      ["المشاركة في خطط التطوير المهني","5%","v_pd_plan"],
-      ["متابعة التغذية الراجعة والمؤشرات","5%","v_feedback_kpis"],
-      ["دعم برامج التطوير المهني","5%","v_pd_support"],
-      ["تقييم أداء المنسوبين","5%","v_staff_eval"],
-      ["تحسين نتائج التعلم","15%","v_learning_results"],
-      ["قيادة مبادرات داخل المدرسة","5%","v_school_lead"],
-      ["إشراك المجتمع المدرسي","5%","v_community"],
-      ["فرص مشاركة الطلاب","5%","v_students_opps"],
-      ["توظيف المنصات الرقمية","5%","v_edtech"],
-      ["تعزيز السلوك الإيجابي","5%","v_behavior_pos"],
-      ["بيئة آمنة ومحفزة","5%","v_safe_env"],
-    ]},
+  { id:'teacher',         icon:'👨‍🏫', name:'المعلم',               items:[] },
+  { id:'teacher_activity',icon:'🎯',   name:'معلم نشاط طلابي',      items:[] },
+  { id:'teacher_health',  icon:'🩺',   name:'معلّم توجيه صحي',       items:[] },
+  { id:'kg',              icon:'👩‍👧‍👦', name:'معلمة رياض الأطفال', items:[] },
+  { id:'lab',             icon:'🧪',   name:'محضر المختبر',          items:[] },
+  { id:'counselor',       icon:'🧭',   name:'الموجّه الطلابي',        items:[] },
+  { id:'principal',       icon:'🏫',   name:'مدير المدرسة',          items:[] },
+  { id:'vp',              icon:'🧩',   name:'وكيل المدرسة',          items:[] },
 ];
 
-/* ============= 3) بنك المستويات (مُثري) ============= */
-const RUBRIC = {
-  common:{
-    5:{desc:"قدوة مهنية يبتكر ممارسات واعتمادها معيارًا؛ أثر ملموس على مستوى المدرسة/الإدارة.",
-       ev:["توثيق مبادرات مبتكرة مع موافقات/اعتمادات","تقارير أثر رقمية (قبل/بعد)","محاضر مشاركة الممارسة مهنيًا"],
-       analysis:["انضباط عالٍ واتساق في الأداء","تصميم حلول للمشكلات المتكررة","إدارة وقت وموارد بكفاءة"],
-       improve:["توسيع نطاق الممارسة داخل الأقسام","ربط الأثر بمؤشرات أداء المدرسة","نشر المعرفة عبر PLC وتقارير موجزة"]},
-    4:{desc:"يتجاوز المتوقع ويعالج التحديات باستباقية ويدعم الزملاء بالممارسة الجيدة.",
-       ev:["محاضر/تقارير تطبيق ناجح","سجل دعم زملاء/زيارات تبادلية"],
-       analysis:["تحليل أسباب الفجوات","تنسيق جهود الفريق","توثيق شبه منتظم"],
-       improve:["تحويل الحلول إلى إجراءات معيارية","رفع وتيرة التوثيق وقياس الأثر"]},
-    3:{desc:"أداء مستقر ضمن الحدود الأساسية ومتطلبات العمل النظامية.",
-       ev:["سجلات تنفيذ أساسية","خطط متابعة قصيرة"],
-       analysis:["التزام بالحد الأدنى","تفاوت بسيط في الجودة"],
-       improve:["زيادة التوثيق","تحديد فجوتين محوريتين ومعالجتهما"]},
-    2:{desc:"تذبذب في الأداء يحتاج متابعة لصيقة وتوجيهًا مستمرًا.",
-       ev:["تنبيهات/خطة تصحيح","متابعة أسبوعية"],
-       analysis:["ضعف اتساق التنفيذ","اعتماد على التذكير"],
-       improve:["خطة التزام شخصية","لوحة مؤشرات مبسطة للمتابعة"]},
-    1:{desc:"قصور واضح دون الحد الأدنى.",
-       ev:["إنذارات/مخالفات","محاضر تقصير"],
-       analysis:["غياب/تأخر متكرر","إخفاق في متطلبات أساسية"],
-       improve:["التزام فوري وخطة علاجية مُلزِمة","متابعة يومية لفترة محددة"]}
-  },
-  // تخصيص مختصر لعناصر خاصة (أمثلة)
-  activity_plan:{
-    5:{desc:"خطة سنوية محكمة بمؤشرات مُعتمدة وتنفيذ كامل وتقارير أثر نوعي.",
-       ev:["خطة معتمدة","تقارير أثر شهرية/فصلية","صور/روابط إنتاج"],
-       analysis:["مواءمة الخطة للتقويم الدراسي","شراكات داخلية وخارجية"],
-       improve:["أتمتة قياس المؤشرات","نشر قصص نجاح مختصرة"]},
-    4:{desc:"تنفيذ مرتفع مع متابعة دورية.",ev:["محاضر تنفيذ منتظم"],analysis:["توزيع أدوار واضح"],improve:["سد الفجوات المتبقية"]},
-    3:{desc:"خطة أساسية وتنفيذ مقبول.",ev:["خطة مختصرة"],analysis:["ضعف القياس"],improve:["تعزيز أدوات القياس"]}
-  },
-  health_joint_plan:{
-    5:{desc:"خطة صحية مشتركة بمؤشرات وقائية/علاجية متحققة وأثر على الحضور والانضباط الصحي.",
-       ev:["نماذج تثقيف صحي مع توقيعات","تقارير حالات قبل/بعد"],analysis:["تنسيق مع الجهات الصحية"],improve:["توسيع المبادرات الوقائية"]},
-  },
-  kg_env_safe:{
-    5:{desc:"بيئة آمنة ثرية بالزوايا التعليمية تدعم النمو النمائي واللغوي والسلوك الإيجابي.",
-       ev:["قوائم تحقق أمن وسلامة","صور بيئات تعلم نشطة"],analysis:["توزيع مناطق التعلم بذكاء"],improve:["ربط البيئة بمؤشرات اللغة والسلوك"]},
-  },
-  lab_weekly_report:{
-    5:{desc:"تقارير أسبوعية دقيقة تُترجم إلى تحسينات تشغيلية للمختبر.",
-       ev:["نماذج موقعة/إلكترونية","سجل تحسينات"],analysis:["تحليل أعطال الأجهزة"],improve:["أتمتة التقارير ولوحة متابعة"]},
-  }
+/* العناصر والأوزان الدقيقة (كما تم تثبيتها بالنسخة السابقة) */
+const MODEL_ITEMS = {
+  teacher:[
+    ["أداء الواجبات الوظيفية",10,"duties"],
+    ["التفاعل مع المجتمع المهني",10,"professional_community"],
+    ["التفاعل مع أولياء الأمور",10,"parents_interaction"],
+    ["التنوع في استراتيجيات التدريس",10,"teaching_strategies"],
+    ["تحسين نتائج المتعلمين",10,"student_results"],
+    ["إعداد وتنفيذ خطة التعلم",10,"learning_plan"],
+    ["توظيف تقنيات ووسائل التعلم المناسبة",10,"tech_and_tools"],
+    ["تهيئة بيئة تعليمية",5,"learning_environment"],
+    ["الإدارة الصفية",5,"classroom_management"],
+    ["تحليل نتائج المتعلمين وتشخيص مستواهم",10,"results_analysis"],
+    ["تنوع أساليب التقويم",10,"assessment_variety"]
+  ],
+  teacher_activity:[
+    ["أداء الواجبات الوظيفية",10,"duties"],
+    ["التفاعل مع المجتمع المهني",10,"professional_community"],
+    ["التفاعل مع أولياء الأمور",10,"parents_interaction"],
+    ["التنوع في استراتيجيات التدريس",5,"teaching_strategies"],
+    ["تحسين نتائج المتعلمين",5,"student_results"],
+    ["إعداد وتنفيذ خطة التعلم",5,"learning_plan"],
+    ["توظيف تقنيات ووسائل التعلم المناسبة",5,"tech_and_tools"],
+    ["تهيئة بيئة تعليمية",5,"learning_environment"],
+    ["الإدارة الصفية",5,"classroom_management"],
+    ["تحليل نتائج المتعلمين وتشخيص مستواهم",5,"results_analysis"],
+    ["تنوع أساليب التقويم",5,"assessment_variety"],
+    ["إعداد خطة زمنية ومعتمدة لبرامج وفِعاليات النشاط الطلابي",10,"act_plan"],
+    ["تهيئة البيئة المدرسية للبرامج والأنشطة الطلابية",5,"act_env"],
+    ["يدعم المعلمين وفق احتياجهم ويُنمّي ميولهم للأنشطة",5,"act_support_teachers"],
+    ["يحفّز المتعلمين على المشاركة في الأنشطة المدرسية",10,"act_motivate_students"]
+  ],
+  teacher_health:[
+    ["أداء الواجبات الوظيفية",10,"duties"],
+    ["التفاعل مع المجتمع المهني",10,"professional_community"],
+    ["التفاعل مع أولياء الأمور",10,"parents_interaction"],
+    ["التنوع في استراتيجيات التدريس",5,"teaching_strategies"],
+    ["تحسين نتائج المتعلمين",5,"student_results"],
+    ["إعداد وتنفيذ خطة التعلم",5,"learning_plan"],
+    ["توظيف تقنيات ووسائل التعلم المناسبة",5,"tech_and_tools"],
+    ["تهيئة بيئة تعليمية",5,"learning_environment"],
+    ["الإدارة الصفية",5,"classroom_management"],
+    ["تحليل نتائج المتعلمين وتشخيص مستواهم",5,"results_analysis"],
+    ["تنوع أساليب التقويم",5,"assessment_variety"],
+    ["تنفيذ الخطة المشتركة للبرامج الصحية المدرسية",15,"health_joint_plan"],
+    ["حصر الحالات الصحية للمتعلمين",5,"health_cases"],
+    ["تهيئة البيئة الصحية المدرسية",10,"health_env"]
+  ],
+  kg:[
+    ["أداء الواجبات الوظيفية",10,"duties"],
+    ["التفاعل مع المجتمع المهني",5,"professional_community"],
+    ["التفاعل مع أولياء الأمور",5,"parents_interaction"],
+    ["التنوع في استراتيجيات التدريس",5,"teaching_strategies"],
+    ["تحسين نتائج المتعلمين",5,"student_results"],
+    ["إعداد خطة شاملة وتفصيلية للأنشطة",5,"kg_plan"],
+    ["تصميم خبرات تعلم مرِنة ومبتكرة",5,"kg_experiences"],
+    ["توظيف تقنيات ووسائل التعلم المناسبة",5,"tech_and_tools"],
+    ["التمكن من المادة العلمية",5,"kg_subject_matter"],
+    ["استخدام استراتيجيات تدريس فاعلة ومتنوعة",5,"kg_strategies"],
+    ["إشراك الأسرة في خطط التعلم",5,"kg_parents_involve"],
+    ["بيئة تعليمية آمنة ومحفزة للتطور النمائي والتعلم",15,"kg_safe_env"],
+    ["يربط بين نواتج التعلم وبيئة التعلم",5,"kg_link_outcomes"],
+    ["تقويم تعلم الأطفال وتقديم تغذية راجعة بنّاءة",5,"kg_assessment_fb"],
+    ["تعزيز نمو المتعلمين ودعم الموهوبين",5,"kg_growth"],
+    ["يشرك الأسرة في التقويم ويتابع تقدّم كل طفل",5,"kg_parents_assess"],
+    ["يوائم أساليب التقويم بالمعايير والمؤشرات",5,"kg_alignment"],
+    ["يراعي الفروق الفردية ويكيّف الخبرات",5,"kg_diff"]
+  ],
+  lab:[
+    ["أداء الواجبات الوظيفية",10,"duties"],
+    ["التفاعل مع المجتمع المهني",10,"professional_community"],
+    ["التفاعل مع أولياء الأمور",10,"parents_interaction"],
+    ["التنوع في استراتيجيات التدريس (الدعم المخبري)",10,"lab_support_teach"],
+    ["تحسين نتائج المتعلمين عبر التهيئة العملية",10,"lab_student_results"],
+    ["إعداد خطة يومية لأنشطة المختبر",5,"lab_daily_plan"],
+    ["المعرفة بالأسس والمفاهيم الفنية",5,"lab_knowledge"],
+    ["يوفر المستلزمات اللازمة لأداء التجارب العلمية",5,"lab_supplies"],
+    ["يلتزم بسياسات وإجراءات السلامة المهنية",5,"lab_safety"],
+    ["يحضر ويجهز المختبر",5,"lab_prepare"],
+    ["تهيئة وتسليم الأجهزة للمعلمين وتخزينها بطريقة سليمة",5,"lab_devices"],
+    ["يعد تقارير أنشطة المختبر الأسبوعية",10,"lab_reports"],
+    ["يعد تقارير دورية عن حالة الأجهزة والمواد",10,"lab_status"]
+  ],
+  counselor:[
+    ["أداء الواجبات الوظيفية",20,"duties"],
+    ["التفاعل مع المجتمع المهني",5,"professional_community"],
+    ["التفاعل مع أولياء الأمور",5,"parents_interaction"],
+    ["يقدّم تدخلات مناسبة لتعزيز الانضباط",5,"c_discipline"],
+    ["يقدّم برامج تربوية لتعزيز دافعية الطلبة للتعلّم",5,"c_motivation"],
+    ["إعداد خطة برامج التوجيه الطلابي",10,"c_plan"],
+    ["يعالج الحالات ويقدّم برامج للدعم المناسب",10,"c_cases"],
+    ["يعزز القيم والسلوكيات للمتعلمين",10,"c_values"],
+    ["يقدّم أنشطة إنمائية واجتماعية",10,"c_social"],
+    ["يساعد المعلمين على التخطيط الإرشادي المهني والتعليمي",5,"c_help_teachers"],
+    ["يعزز التفوق الدراسي",5,"c_achievement"],
+    ["يعالج تخلّفات دراسية وسلوكية للمتعثرين",5,"c_remedial"],
+    ["توعية المجتمع وأولياء الأمور بقواعد السلوك والمواظبة",5,"c_awareness"]
+  ],
+  principal:[
+    ["أداء الواجبات الوظيفية",5,"duties"],
+    ["التفاعل مع المجتمع المهني",5,"professional_community"],
+    ["التفاعل مع أولياء الأمور",5,"parents_interaction"],
+    ["مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",5,"p_resilience"],
+    ["يدعم ويشارك في المبادرات النوعية",5,"p_initiatives"],
+    ["يتخذ إجراءات تربوية لتحقيق الانضباط المدرسي",5,"p_discipline"],
+    ["يدير الموارد في المدرسة بكفاءة",5,"p_resources"],
+    ["يرسم خططًا للتطوير المهني",5,"p_pd_plans"],
+    ["يقدم التغذية الراجعة ويتابع مؤشرات الأداء الوظيفي",5,"p_feedback"],
+    ["يدعم تنفيذ برامج التطوير المهني",5,"p_pd_exec"],
+    ["يقيم أداء منسوبي المدرسة",5,"p_appraise"],
+    ["ينفذ إجراءات علمية لتحسين نتائج التعلّم",15,"p_improve_learning"],
+    ["يرفع مستوى أداء المدرسة",10,"p_raise_school"],
+    ["يشارك في إعداد الخطط المدرسية الآمنة",5,"p_safe_plans"],
+    ["يهيّئ الفرص والإمكانات الداعمة لمشاركة الطلاب",5,"p_student_participation"],
+    ["يوظّف المنصات الرقمية وتطبيقاتها التعليمية",5,"p_platforms"],
+    ["يعزز الانضباط الإيجابي للطلاب",5,"p_positive_behavior"],
+    ["يحافظ على بيئة مدرسية آمنة ومحصّنة",5,"p_secure_env"]
+  ],
+  vp:[
+    ["أداء الواجبات الوظيفية",5,"duties"],
+    ["التفاعل مع المجتمع المهني",5,"professional_community"],
+    ["التفاعل مع أولياء الأمور",5,"parents_interaction"],
+    ["مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",5,"v_resilience"],
+    ["يدعم ويشارك في المبادرات النوعية",10,"v_initiatives"],
+    ["يتخذ إجراءات تربوية لتحقيق الانضباط المدرسي",5,"v_discipline"],
+    ["يدير الموارد في المدرسة بكفاءة",5,"v_resources"],
+    ["يشارك في إعداد خطط التطوير المهني",5,"v_pd_plan"],
+    ["يقدّم التغذية الراجعة ويتابع مؤشرات الأداء الوظيفي",5,"v_feedback"],
+    ["يدعم تنفيذ برامج التطوير المهني",5,"v_pd_exec"],
+    ["يقيم أداء منسوبي المدرسة",5,"v_appraise"],
+    ["ينفّذ إجراءات علمية لتحسين نتائج التعلّم",15,"v_improve_learning"],
+    ["يرفع مستوى الأداء في المدرسة",5,"v_raise"],
+    ["يشارك في إعداد الخطط المدرسية الآمنة",5,"v_safe_plans"],
+    ["يهيّئ الفرص والإمكانات الداعمة لمشاركة الطلاب",5,"v_student_participation"],
+    ["يوظّف المنصات الرقمية وتطبيقاتها التعليمية",5,"v_platforms"],
+    ["يعزز الانضباط الإيجابي للطلاب",5,"v_positive_behavior"],
+    ["يحافظ على بيئة مدرسية آمنة ومحصّنة على التعلّم",5,"v_secure_env"]
+  ],
 };
 
-/* ============= 4) واجهة: شريط النماذج + البطاقات ============= */
+/* تطبيق العناصر على المصفوفة الأساسية */
+for(const m of MODELS){ m.items = MODEL_ITEMS[m.id]; }
+
+const LEVEL_KIT = {
+  5:{desc:"أداء ريادي مبتكر يُعتمد كنموذج مرجعي ويترك أثرًا واضحًا ومستدامًا.",
+     evidence:["مبادرة/أداة مبتكرة معتمدة","تقارير أثر قبل/بعد","مشاركة ونشر مهني"],
+     analysis:["قدوة مهنية وابتكار مبني على أدلة","تحويل البيانات إلى قرارات مؤثرة","تمكين الزملاء وبناء ممارسات مؤسسية"],
+     improve:["تعميم الحل بمؤشرات أثر","توثيق منهجي","خطة استدامة"], badge:"تعزيز الأثر القيادي"},
+  4:{desc:"تطبيق متقن ومتنوّع يراعي الفروق ويُسهم في تحسينات ملحوظة، مع مشاركة الخبرات.",
+     evidence:["خطط/نماذج مطبقة","محاضر تدريب الزملاء","دلائل أثر نوعي"],
+     analysis:["تنويع الأساليب ومعالجة استباقية","تعاون فعّال","متابعة دورية مبنية على بيانات"],
+     improve:["تحويل الجهد الفردي إلى مبادرة","قياس أثر صارم","نشر الممارسة"], badge:"الترقية إلى ٥"},
+  3:{desc:"يلبّي التوقعات الأساسية بثبات مع جوانب تحتاج تحسينًا في الجودة أو الاتساق.",
+     evidence:["خطط/سجلات منتظمة","التزام بالمواعيد","عينات تنفيذ أساسية"],
+     analysis:["التزام بالإجراءات الأساسية","تنويع بفاعلية متفاوتة","توثيق يحتاج عمقًا"],
+     improve:["قوالب موحّدة وقوائم تحقق","ابتكار صغير كل دورة","تغذية راجعة منظمة"], badge:"حافظ وارْتقِ"},
+  2:{desc:"تطبيق محدود أو غير مناسب مع اعتماد جزئي على التوجيه وفجوات ملحوظة.",
+     evidence:["ملاحظات إشرافية","توجيهات ومتابعة","دلائل استخدام محدود"],
+     analysis:["أساليب تقليدية/أحادية","ضعف توظيف البيانات/الأدوات","توثيق مجتزأ"],
+     improve:["خطة علاجية قصيرة SMART","تدريب موجّه + مشاهدة نظير","أدوات جاهزة + مراجعة أسبوعية"], badge:"تحسين عاجل"},
+  1:{desc:"عدم التزام بالحد الأدنى أو وجود مخالفات مع غياب أثر تعلّمي.",
+     evidence:["إنذارات/محاضر","غياب خطط ودلائل تنفيذ"],
+     analysis:["غياب التخطيط والتقويم","ممارسات لا ترتبط بالأهداف","ضعف شديد في إدارة الوقت"],
+     improve:["خطة تصحيح مُلزِمة أسبوعية","قوالب إلزامية وتقويم مرتبط بالأهداف","إعادة تقييم بعد 2–4 أسابيع"], badge:"استعادة الأساس"}
+};
+const BANK = { duties:{5:{evidence:["سياسات/آليات عمل معتمدة داخل المدرسة"]}} };
+
 let currentModel = MODELS[0].id;
+let currentLevel = 5, modalKey = '', modalWeight = 0, modalItemDesc = '';
 
 function renderModelsBar(){
   const bar = document.getElementById('modelsBar');
   bar.innerHTML = MODELS.map(m=>`
-    <button class="model-icon ${m.id===currentModel?'active':''}" onclick="selectModel('${m.id}')">
-      <span>${m.icon}</span><b>${m.name}</b>
+    <button class="model-chip ${m.id===currentModel?'active':''}" onclick="selectModel('${m.id}')" title="${m.name}">
+      <span class="ico">${m.icon}</span><span>${m.name}</span>
     </button>
   `).join('');
 }
-
-function selectModel(id){
-  currentModel = id;
-  renderModelsBar();
-  renderCards();
-}
+function selectModel(id){ currentModel=id; renderModelsBar(); renderCards(); }
 
 function renderCards(){
   const model = MODELS.find(m=>m.id===currentModel);
   const g = document.getElementById('cardsContainer');
-  g.innerHTML = model.items.map(([title,weight,key])=>`
-    <div class="card p-5">
-      <h3 class="font-bold text-[var(--moe-d)] text-lg mb-1">${title}</h3>
-      <p class="text-sm text-[var(--muted)] mb-2">سُلّم التقدير (٥→١) مع شواهد وتحليل وتعزيز للأثر.</p>
-      <div class="grad-bar mb-3" aria-hidden="true"></div>
-      <div class="flex items-center gap-2 text-sm">
-        <span class="tag">الوزن: <b>${weight}</b></span>
-        <span class="tag">السلم: ٥–١</span>
+  g.innerHTML = model.items.map(([title,weight,key])=>{
+    const pct = 100;
+    return `
+    <div class="card p-4 flex flex-col gap-2">
+      <div class="flex items-center gap-3">
+        <div class="donut" style="--pct:${pct}"><b>${weight}%</b></div>
+        <div class="grow">
+          <h3 class="font-bold text-[var(--moe-d)] text-[15px] md:text-[17px] leading-6">${title}</h3>
+          <div class="text-[12px] text-[color:var(--ink)/70]">وزن نسبي: <b>${weight}%</b></div>
+        </div>
       </div>
-      <div class="mt-4">
-        <button class="px-4 py-2 rounded-xl font-bold text-white" style="background:var(--grad)" onclick="openModal('${title}','${weight}','${key}')">عرض التفاصيل</button>
+      <div class="pt-1">
+        <button class="px-3 py-1.5 rounded-xl text-[13px] font-bold text-white hover:opacity-95"
+                style="background:var(--grad)"
+                onclick="openModal('${title}',${weight},'${key}')">عرض التفاصيل</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-/* ============= 5) نافذة العنصر ============= */
-let currentLevel = 5, modalKey='';
-
-function bankFor(key){
-  return RUBRIC[key] || RUBRIC.common;
-}
-function fillEvidenceList(arr){
-  return (arr||[]).map(x=>`<li>${x}</li>`).join('');
+/* Tabs for levels */
+function levelPill(l, active){
+  const color = l===5?'var(--L5)':l===4?'var(--L4)':l===3?'var(--L3)':l===2?'var(--L2)':'var(--L1)';
+  return `
+    <button class="level-pill ${active?'active':''}" data-l="${l}" onclick="setLevel(${l})" title="المستوى ${l}">
+      <span class="dot" style="background:${color}"></span>
+      <span class="num">${l}</span>
+    </button>
+  `;
 }
 
 function openModal(itemTitle, weight, key){
-  modalKey = key; currentLevel = 5;
+  modalKey = key; modalWeight = weight; modalItemDesc = "وصف العنصر: يقاس بشواهد نوعية وكمية مرتبطة بالمجال، مع مراعاة الاتساق وجودة التنفيذ والأثر.";
+  currentLevel = 5;
 
-  document.getElementById('modalTitle').textContent = itemTitle + " – مستوى " + currentLevel;
-  document.getElementById('metaWeight').textContent = weight;
+  document.getElementById('modalTitle').textContent = itemTitle;
+  document.getElementById('itemDesc').textContent = modalItemDesc;
 
-  // تبويبات المستوى
   const tabs = document.getElementById('levelTabs');
-  tabs.innerHTML = [5,4,3,2,1].map(l=>`
-    <button class="level-pill ${l===currentLevel?'active':''}" onclick="setLevel(${l})">${l}</button>
-  `).join('');
+  tabs.innerHTML = [5,4,3,2,1].map(l=>levelPill(l, l===currentLevel)).join('');
 
-  // تفاعل الوزن (نبض عند الفتح)
-  const wc = document.getElementById('weightChip');
-  wc.classList.remove('pulse'); void wc.offsetWidth; wc.classList.add('pulse');
-
+  document.getElementById('footWeight').textContent = weight + "%";
   setLevel(currentLevel);
+
   const modal = document.getElementById('modal');
   modal.classList.remove('hidden'); modal.classList.add('flex');
 }
 
+function mergeContent(key, level){
+  const base = JSON.parse(JSON.stringify(LEVEL_KIT[level]));
+  const extra = (BANK[key] && BANK[key][level]) ? BANK[key][level] : {};
+  if(extra.desc) base.desc = extra.desc;
+  if(extra.badge) base.badge = extra.badge;
+  if(extra.evidence){ base.evidence = [...new Set([...(base.evidence||[]), ...extra.evidence])]; }
+  if(extra.analysis){ base.analysis = [...new Set([...(base.analysis||[]), ...extra.analysis])]; }
+  if(extra.improve){ base.improve = [...new Set([...(base.improve||[]), ...extra.improve])]; }
+  return base;
+}
+
 function setLevel(level){
   currentLevel = level;
-  [...document.querySelectorAll('#levelTabs .level-pill')].forEach(b=>{
-    b.classList.toggle('active', Number(b.textContent)===level);
+  [...document.querySelectorAll('#levelTabs .level-pill')].forEach(btn=>{
+    btn.classList.toggle('active', Number(btn.getAttribute('data-l'))===level);
   });
 
-  const bank = bankFor(modalKey);
-  const R = bank[level] || RUBRIC.common[level];
+  const data = mergeContent(modalKey, level);
 
-  // الوصف
-  document.getElementById('descText').textContent = R.desc || "—";
+  document.getElementById('descHead').textContent = `وصف مستوى التقدير ${level}:`;
+  document.getElementById('descText').textContent = data.desc || "—";
 
-  // الشواهد (صندوق ملون حسب المستوى + قائمة أمثلة)
   const evBox = document.getElementById('evidenceBox');
-  const evClass = level>=4 ? 'ev-green' : level===3 ? 'ev-amber' : 'ev-red';
-  evBox.className = `evidence-box ${evClass}`;
-  evBox.textContent = (R.ev && R.ev.length) ? "أمثلة شواهد موثّقة لهذا المستوى:" : "رجاءً أرفق شواهد موثّقة مرتبطة مباشرة بالعنصر.";
-  document.getElementById('evidenceList').innerHTML = fillEvidenceList(R.ev);
-
-  // التحليل + التحسين
+  evBox.className = `evidence-box ev-L${level}`;
+  document.getElementById('evHint').textContent =
+    level>=4 ? "(إبراز شواهد التميّز والنشر)" :
+    level===3 ? "(شواهد تحقق الحدّ الأساسي)" :
+                "(شواهد دعم وخطة تصحيح)";
+  document.getElementById('evidenceList').innerHTML = (data.evidence||[]).map(x=>`<li>${x}</li>`).join('');
   const UL = arr => (arr||[]).map(x=>`<li>${x}</li>`).join('');
-  document.getElementById('analysisList').innerHTML = UL(R.analysis);
-  document.getElementById('improveList').innerHTML  = UL(R.improve);
+  document.getElementById('analysisList').innerHTML = UL(data.analysis);
+  document.getElementById('improveTitle').textContent =
+    level>=4 ? "تعزيز الأثر القيادي" :
+    level===3 ? "حافظ على المنجز وارْتقِ" :
+                "خطوات عملية للتحسين";
+  document.getElementById('improveList').innerHTML  = UL(data.improve);
 
-  // مقياس الأثر (وزن × مستوى)
-  const weightText = document.getElementById('metaWeight').textContent.trim().replace('%','');
-  const w = Number(weightText)||0;
-  const levelFactor = [1,2,3,4,5].indexOf(level)+1; // 1..5
-  const pct = Math.round((w*(levelFactor/5)));
-  document.getElementById('impactValue').textContent = pct + "%";
+  const levelPct = Math.round((level/5)*100);
+  document.getElementById('levelMeterFill').style.width = levelPct + "%";
+  document.getElementById('levelMeterLabel').textContent = levelPct + "%";
 
-  const fill = document.getElementById('impactFill');
-  fill.style.width = pct + "%";
-  fill.style.background = level>=4 ? 'linear-gradient(90deg,var(--green),#22c55e)' :
-                        level===3 ? 'linear-gradient(90deg,var(--amber),#f59e0b)' :
-                                    'linear-gradient(90deg,var(--red),#ef4444)';
+  const impactPct = Math.round((modalWeight||0) * (level/5));
+  document.getElementById('impactFill').style.width = impactPct + "%";
+  document.getElementById('impactLabel').textContent = impactPct + "%";
 
-  // وميض الوزن عند تغيير المستوى
-  const wc = document.getElementById('weightChip');
-  wc.classList.remove('pulse'); void wc.offsetWidth; wc.classList.add('pulse');
+  const chip = document.getElementById('footLevelChip');
+  chip.className = `foot-chip l${level}`;
+  document.getElementById('footLevelNum').textContent = String(level);
 }
 
 function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
 
-/* ============= 6) تشغيل ============= */
-window.addEventListener('DOMContentLoaded', async ()=>{
-  await importHeader();
-  // شريط النماذج
-  const bar = document.getElementById('modelsBar');
-  bar.innerHTML = MODELS.map(m=>`<button class="model-icon ${m.id===currentModel?'active':''}" onclick="selectModel('${m.id}')"><span>${m.icon}</span><b>${m.name}</b></button>`).join('');
-  renderCards();
-
+/* init */
+window.addEventListener('DOMContentLoaded', ()=>{
+  renderModelsBar(); renderCards();
   const modal = document.getElementById('modal');
   modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
   document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) closeModal(); });
