@@ -122,8 +122,9 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.28);z-index:1000;padding:12px}
 .modal.show{display:flex}
 .modal-card{
-  width:min(70vw, 980px);
-  max-height:88vh; overflow:auto;
+  /* تم تكبير النافذة لتناسب النص */
+  width:min(86vw, 1100px);
+  max-height:92vh; overflow:auto;
   background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.12)
 }
 .modal-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#e9f7f3,#fff);z-index:2}
@@ -371,21 +372,49 @@ const K_PEOPLE='PF_people'; // عدسة الأسماء
 $('#sigP').textContent=localStorage.getItem(K_P)||$('#sigP').textContent;
 $('#sigP').onclick=()=>{const v=prompt('اسم مدير المدرسة', $('#sigP').textContent.trim()); if(v!==null){$('#sigP').textContent=(v.trim()||'—'); localStorage.setItem(K_P,$('#sigP').textContent); snap();}};
 
-/* محتوى الشرح */
+/* محتوى الشرح — تمت إضافة الزرين وروابط الأدلة ورقم الجوال + أيقونات */
 const HELP_TEXT = `
 <p><b>🔹 نموذج تقييم الأداء الوظيفي (إصدار تجريبي غير رسمي)</b></p>
-<p>أداة إلكترونية ميسّرة تهدف إلى تسهيل عمليات تخطيط الأهداف، وقياس الأداء، وتحليل النتائج بطريقة تربوية حديثة تدعم العمل الإداري داخل المدرسة.</p>
+<p>
+أداة إلكترونية تربوية ميسّرة تمكّن القائد والمعلم من إدارة
+<mark>تخطيط الأهداف، وقياس الأداء، وتحليل النتائج</mark> بطرائق علمية حديثة،
+لدعم التحسين المستمر وجودة الممارسات داخل المدرسة.
+</p>
+
 <h4>✳️ أبرز المزايا:</h4>
 <ul>
   <li><b>تخطيط ذكي للأداء:</b> إدخال الأهداف القابلة للقياس مع مؤشرات وقيم مستهدفة من بنك أهداف مخصص لكل نموذج.</li>
-  <li><b>تحليل فوري:</b> احتساب تلقائي للأوزان، متوسط السُّلّم، ومؤشر الإنجاز بخوارزمية دقيقة.</li>
+  <li><b>تحليل فوري:</b> احتساب تلقائي للأوزان ومتوسط السُّلّم ومؤشر الإنجاز بخوارزمية دقيقة.</li>
   <li><b>عدسة بيانات:</b> استيراد أسماء المعلمين من ملفات Excel ببحث مباشر واختيار فوري.</li>
   <li><b>خطة تحسين فجوات الأداء:</b> توليد صفحة مستقلة تحتوي على عناصر التحسين المقترحة وفق نتائج التقييم.</li>
-  <li><b>إخراج جاهز للطباعة (A4):</b> تصميم منسق بهوية وزارة التعليم، متوافق مع الطباعة.</li>
+  <li><b>إخراج جاهز للطباعة (A4):</b> تصميم منسق بهوية وزارة التعليم ومتوافق مع الطباعة.</li>
 </ul>
+
 <p class="badge">⚠️ تنويه</p>
-<p>هذه الأداة ليست نموذجاً رسمياً، وإنما وسيلة تجريبية مساندة لتسهيل التقييم وتحليل الأداء داخل المدرسة.</p>
-<p>للاستفسار والتواصل: 📧 <a href="mailto:fhz545@gmail.com">fhz545@gmail.com</a></p>
+<p>هذه الأداة ليست نموذجًا رسميًا، وإنما وسيلة تجريبية مساندة لتسهيل التقييم وتحليل الأداء داخل المدرسة.</p>
+
+<div style="margin-top:14px; text-align:center;">
+  <button onclick="window.open('https://drive.google.com/file/d/1h76lUCBP4lO2qeFLkqbCDDVlJY_IPm7o/view','_blank')"
+    style="background:linear-gradient(90deg,#1e8a79,#23b8a2);color:#fff;padding:10px 18px;border:none;border-radius:10px;margin:4px;cursor:pointer;font-weight:800;">
+    📘 الدليل الإرشادي لإدارة الأداء الوظيفي
+  </button>
+  <button onclick="window.open('https://drive.google.com/file/d/1dr09uQ7u5hdlghwrtpLGzFsjR35XTZfP/view','_blank')"
+    style="background:linear-gradient(90deg,#0fb3b0,#16a34a);color:#fff;padding:10px 18px;border:none;border-radius:10px;margin:4px;cursor:pointer;font-weight:800;">
+    🧩 الدليل الإرشادي للجدارات المهنية
+  </button>
+</div>
+
+<p style="text-align:center;margin-top:12px;font-size:14px;">
+  <span style="display:inline-block;margin:6px;">
+    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg" alt="واتساب" style="width:18px;vertical-align:middle;margin-left:5px;">
+    <a href="https://wa.me/966504532489" target="_blank" style="color:#1e8a79;text-decoration:none;">0504532489</a>
+  </span>
+  &nbsp; | &nbsp;
+  <span style="display:inline-block;margin:6px;">
+    <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg" alt="إيميل" style="width:18px;vertical-align:middle;margin-left:5px;">
+    <a href="mailto:fhz545@gmail.com" style="color:#1e8a79;text-decoration:none;">fhz545@gmail.com</a>
+  </span>
+</p>
 `;
 $('#helpContent').innerHTML = HELP_TEXT;
 
