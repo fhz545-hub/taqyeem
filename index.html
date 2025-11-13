@@ -715,10 +715,14 @@ function recalc(){
     const s = joinSlashLine(strengths);
     $('#strengths').textContent = s || (cleanText($('#strengths').textContent)||'—');
   }
-  if(!editedImproves){
-    const i = joinSlashLine(improves);
-    $('#improves').textContent  = i || (cleanText($('#improves').textContent)||'—');
-  }
+
+  // 🔹 تفعيل بنك مجالات التطوير مع دمج ما كتبه المعلم
+  const currentImp = cleanText($('#improves').textContent);
+  const sourceList = (editedImproves && currentImp && currentImp!=='—')
+    ? [currentImp, ...improves]
+    : improves;
+  const mergedImp = joinSlashLine(sourceList);
+  $('#improves').textContent = mergedImp || (currentImp || '—');
 }
 
 /* حفظ لقطة */
