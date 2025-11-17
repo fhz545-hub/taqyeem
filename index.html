@@ -15,7 +15,14 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 #page{width:min(1120px,100%);margin:0 auto;padding:12px 14px 48px}
 
 /* هيدر */
-.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;text-align:center;margin-bottom:8px;position:relative}
+.header{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  text-align:center;
+  margin-bottom:8px;
+  position:relative
+}
 .hcol{display:flex;flex-direction:column;gap:2px;align-items:center}
 .hcol .line{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--moe-d)}
 .pen{border:none;background:transparent;color:var(--moe-d);cursor:pointer;font-size:13px;line-height:1}
@@ -26,18 +33,32 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 @media print{ #moe{width:150px} }
 
 /* أيقونة الشرح */
+@keyframes pulseHelp{
+  0%{box-shadow:0 0 0 0 rgba(15,179,176,.45);}
+  70%{box-shadow:0 0 0 14px rgba(15,179,176,0);}
+  100%{box-shadow:0 0 0 0 rgba(15,179,176,0);}
+}
 .help-fab{
   position:absolute; left:8px; bottom:-6px;
   width:28px;height:28px;border-radius:999px;
   display:flex;align-items:center;justify-content:center;
   border:1px solid #bdebe5;background:linear-gradient(180deg,#eafffb,#ffffff);
-  color:#0b6e68;font-weight:900;cursor:pointer;box-shadow:0 4px 14px rgba(15,179,176,.18);
-  transition:transform .2s ease
+  color:#0b6e68;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 14px rgba(15,179,176,.18);
+  transition:transform .2s ease;
+  animation:pulseHelp 1.8s infinite;
 }
 .help-fab:hover{transform:translateY(-1px)}
 
 /* الأدوات */
-.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;white-space:nowrap;margin:6px 0}
+.toolbar{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  white-space:nowrap;margin:6px 0;
+  overflow-x:auto;padding-bottom:4px
+}
+.toolbar::-webkit-scrollbar{height:4px}
+.toolbar::-webkit-scrollbar-track{background:transparent}
+.toolbar::-webkit-scrollbar-thumb{background:#cde6df;border-radius:999px}
 .select{appearance:none;height:36px;padding:0 30px 0 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-weight:800;color:#0b3a34;cursor:pointer;font-size:13px}
 .sel{position:relative;display:inline-block}
 .sel>span{position:absolute;right:10px;top:8px;pointer-events:none}
@@ -46,6 +67,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   border:1px solid #bfe7df;border-radius:999px;padding:8px 14px;font-weight:800;cursor:pointer;
   background:linear-gradient(180deg,var(--g1),var(--g2)); color:#fff;
   box-shadow:0 2px 0 rgba(0,0,0,.05), inset 0 -2px 0 rgba(255,255,255,.28);
+  white-space:nowrap;
 }
 .btn.secondary{--g1:#eafffb;--g2:#ffffff;color:#0b6e68;border-color:#bdebe5}
 .btn.warn{--g1:#ffe3e3;--g2:#ffd4d4;color:#8b0000;border-color:#f3caca}
@@ -70,10 +92,30 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 }
 .lined::placeholder{color:#7b8d88;font-weight:400}
 
-/* التخطيط للأداء */
+/* التخطيط للأداء (قابل للطي) */
 #goals{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fcfffe;margin:8px 0;break-inside:avoid}
-#goals h3{margin:0 0 6px;color:#0c594e;display:flex;align-items:center;gap:10px}
+#goals h3{margin:0 0 4px;color:#0c594e;display:flex;align-items:center;gap:10px}
 #goals .hint{font-size:12px;color:#557;white-space:nowrap}
+.goals-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.goals-toggle{
+  font-size:12px;
+  padding:6px 12px;
+}
+#goalsBody{
+  margin-top:4px;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease;
+}
+#goalsBody.open{
+  max-height:520px;
+}
 .goalrow{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:6px}
 .goalrow input{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff}
 #goalChips{display:flex;gap:6px;flex-wrap:wrap}
@@ -160,17 +202,37 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
 
 /* تجاودية */
-@media (max-width:920px){ .grid4{grid-template-columns:1fr 1fr;gap:6px} .toolbar{gap:6px} }
+@media (max-width:920px){
+  .grid4{grid-template-columns:1fr 1fr;gap:6px}
+  .toolbar{gap:6px}
+}
+@media (max-width:720px){
+  .header{grid-template-columns:1fr;row-gap:6px}
+  .hcol{align-items:center}
+  #moe{margin:4px auto}
+  .kline{flex-direction:column;align-items:flex-start}
+}
 @media (max-width:600px){
   html,body{font-size:14px}
-  .select{height:34px}
+  #page{padding:10px 10px 36px}
+  .select{height:34px;font-size:12px;padding:0 26px 0 10px}
   .lined{height:38px}
   .modal-card{width:94vw}
+  .duo{grid-template-columns:1fr}
+  .signs{grid-template-columns:1fr}
+  .toolbar{justify-content:flex-start}
+}
+@media (max-width:480px){
+  #page{padding:10px 8px 30px}
+  .grid4{grid-template-columns:1fr;white-space:normal}
+  .lined{white-space:normal}
+  .btn{padding:7px 10px;font-size:12px}
+  .goals-toggle{font-size:11px;padding:5px 10px}
 }
 
 /* طباعة — شد/ضغط A4 وصف بيانات بلا التفاف */
 @media print{
-  .toolbar,.tip::after,[data-hide-on-print],.modal,.help-fab,.lens-mini,.pen{display:none!important}
+  .toolbar,.tip::after,[data-hide-on-print],.modal,.help-fab,.lens-mini,.pen,#goalsToggle{display:none!important}
   #page{padding:0}
   @page{size:A4;margin:10mm}
   html,body{font-size:12.6px;line-height:1.55}
@@ -181,6 +243,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   .goals-print .cell{border:1px solid #dbe9e5;padding:2px 6px}
   .table th,.table td{padding:6px}
   .duo .box{padding:8px}
+  #goalsBody{max-height:none!important;overflow:visible!important}
 }
 </style>
 </head>
@@ -251,14 +314,19 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <input id="tTitle" class="lined" placeholder="المسمى" autocomplete="off" value="معلم ممارس">
   </div>
 
-  <!-- التخطيط للأداء -->
+  <!-- التخطيط للأداء (قابل للطي) -->
   <section id="goals">
-    <h3>التخطيط للأداء <span class="hint">🔹 أهداف قابلة للقياس ومؤشرات واضحة</span></h3>
-    <div id="goalChips" data-hide-on-print></div>
-    <div class="goalrow"><input id="g1" placeholder="الهدف"><input id="g1i" placeholder="المؤشر"><input id="g1t" placeholder="القيمة المستهدفة"></div>
-    <div class="goalrow"><input id="g2" placeholder="الهدف"><input id="g2i" placeholder="المؤشر"><input id="g2t" placeholder="القيمة المستهدفة"></div>
-    <div class="goalrow"><input id="g3" placeholder="الهدف"><input id="g3i" placeholder="المؤشر"><input id="g3t" placeholder="القيمة المستهدفة"></div>
-    <div id="goalsPrint" class="goals-print" aria-hidden="true"></div>
+    <div class="goals-head">
+      <h3>التخطيط للأداء <span class="hint">🔹 أهداف قابلة للقياس ومؤشرات واضحة</span></h3>
+      <button id="goalsToggle" type="button" class="btn secondary goals-toggle noprint" data-hide-on-print>إظهار الأهداف ▼</button>
+    </div>
+    <div id="goalsBody">
+      <div id="goalChips" data-hide-on-print></div>
+      <div class="goalrow"><input id="g1" placeholder="الهدف"><input id="g1i" placeholder="المؤشر"><input id="g1t" placeholder="القيمة المستهدفة"></div>
+      <div class="goalrow"><input id="g2" placeholder="الهدف"><input id="g2i" placeholder="المؤشر"><input id="g2t" placeholder="القيمة المستهدفة"></div>
+      <div class="goalrow"><input id="g3" placeholder="الهدف"><input id="g3i" placeholder="المؤشر"><input id="g3t" placeholder="القيمة المستهدفة"></div>
+      <div id="goalsPrint" class="goals-print" aria-hidden="true"></div>
+    </div>
   </section>
 
   <!-- المؤشر -->
@@ -372,7 +440,7 @@ const K_PEOPLE='PF_people'; // عدسة الأسماء
 $('#sigP').textContent=localStorage.getItem(K_P)||$('#sigP').textContent;
 $('#sigP').onclick=()=>{const v=prompt('اسم مدير المدرسة', $('#sigP').textContent.trim()); if(v!==null){$('#sigP').textContent=(v.trim()||'—'); localStorage.setItem(K_P,$('#sigP').textContent); snap();}};
 
-/* محتوى الشرح — تمت إضافة الزرين وروابط الأدلة ورقم الجوال + أيقونات */
+/* محتوى الشرح — كما هو بدون تغيير في النص */
 const HELP_TEXT = `
 <p><b>🔹 نموذج تقييم الأداء الوظيفي (إصدار تجريبي غير رسمي)</b></p>
 <p>
@@ -447,6 +515,21 @@ function renderGoalChips(){
       renderGoalsPrint(); snap();
     };
     box.appendChild(b);
+  });
+}
+
+/* طي/عرض الأهداف */
+const goalsBody = $('#goalsBody');
+const goalsToggle = $('#goalsToggle');
+function updateGoalsToggleLabel(){
+  if(!goalsToggle || !goalsBody) return;
+  const open = goalsBody.classList.contains('open');
+  goalsToggle.textContent = open ? 'إخفاء الأهداف ▲' : 'إظهار الأهداف ▼';
+}
+if(goalsToggle && goalsBody){
+  goalsToggle.addEventListener('click',()=>{
+    goalsBody.classList.toggle('open');
+    updateGoalsToggleLabel();
   });
 }
 
@@ -961,6 +1044,7 @@ $('#clearBtn').onclick=()=>{
   if(!$('#tTitle').value) $('#tTitle').value='معلم ممارس';
   build(); recalc(); renderGoalsPrint(); snap();
   loadPeople();
+  updateGoalsToggleLabel(); // الأهداف مخفية افتراضيًا
 })();
 </script>
 </body>
