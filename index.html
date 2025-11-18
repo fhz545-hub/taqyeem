@@ -142,6 +142,69 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .select-mini{appearance:none;background:#fff;border:none;border-radius:10px;padding:4px 8px;font-weight:900;color:#0b3430;text-align:center;text-align-last:center}
 tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:linear-gradient(90deg,#fde68a 0,#fff 60%)} tr.r3{background:linear-gradient(90deg,#ecfeff 0,#fff 60%)} tr.r4{background:linear-gradient(90deg,#dcfce7 0,#fff 60%)} tr.r5{background:linear-gradient(90deg,#bbf7d0 0,#fff 60%)}
 
+/* صف مستوى التقدير العام للأداء — نحيف ومندمج */
+.overall{
+  margin:6px 0 8px;
+}
+.overall-pill{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:6px 10px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:#f9fffd;
+  position:relative;
+  overflow:hidden;
+}
+.overall-main{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+}
+.overall-class{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:32px;
+  height:26px;
+  border-radius:999px;
+  background:#0c594e;
+  color:#fff;
+  font-weight:900;
+  font-size:14px;
+}
+.overall-desc{
+  font-weight:800;
+  color:#0b3f43;
+  white-space:nowrap;
+}
+.overall-stats{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  flex-wrap:wrap;
+}
+.overall-percent{
+  font-weight:900;
+  font-size:13px;
+  color:#0b3f43;
+}
+.overall-avg{
+  color:#546b66;
+  font-size:12px;
+}
+
+/* تدرج لوني حسب المستوى */
+.overall-pill.lv1{background:linear-gradient(90deg,#fee2e2,#fff);border-color:#fecaca;}
+.overall-pill.lv2{background:linear-gradient(90deg,#fef3c7,#fff);border-color:#fde68a;}
+.overall-pill.lv3{background:linear-gradient(90deg,#e0f2fe,#fff);border-color:#bfdbfe;}
+.overall-pill.lv4{background:linear-gradient(90deg,#dcfce7,#fff);border-color:#bbf7d0;}
+.overall-pill.lv5{background:linear-gradient(90deg,#bbf7d0,#ecfdf5);border-color:#4ade80;}
+
 /* القوة/التحسين */
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
 .box{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px}
@@ -164,7 +227,6 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.28);z-index:1000;padding:12px}
 .modal.show{display:flex}
 .modal-card{
-  /* تم تكبير النافذة لتناسب النص */
   width:min(86vw, 1100px);
   max-height:92vh; overflow:auto;
   background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.12)
@@ -221,6 +283,8 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   .duo{grid-template-columns:1fr}
   .signs{grid-template-columns:1fr}
   .toolbar{justify-content:flex-start}
+  .overall-pill{flex-direction:column;align-items:flex-start}
+  .overall-stats{align-items:flex-start}
 }
 @media (max-width:480px){
   #page{padding:10px 8px 30px}
@@ -269,6 +333,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
       <div class="line" id="dayTxt"></div>
       <div class="line" id="dateTxt"></div>
       <div class="line" id="mdlTxt">نموذج التقييم: —</div>
+      <div class="line" id="stageTxt">مرحلة التخطيط للأداء</div>
       <button id="helpFab" class="help-fab noprint" title="الشرح">?</button>
     </div>
   </div>
@@ -345,6 +410,20 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <tbody id="rows"></tbody>
     <tfoot><tr><th style="text-align:right">التقدير العام للأداء (من 5)</th><th id="sumW">0%</th><th id="avg">0.00</th><th id="sum">0.00</th></tr></tfoot>
   </table>
+
+  <!-- صف مستوى التقدير العام للأداء الجديد -->
+  <div id="overallWrap" class="overall">
+    <div id="overallPill" class="overall-pill">
+      <div class="overall-main">
+        <span id="overallClass" class="overall-class">—</span>
+        <span id="overallDesc" class="overall-desc">مستوى التقدير العام للأداء</span>
+      </div>
+      <div class="overall-stats">
+        <span id="overallPercent" class="overall-percent">الدرجة النسبية: 0%</span>
+        <span id="overallAvg" class="overall-avg">متوسط 0.00 / 5</span>
+      </div>
+    </div>
+  </div>
 
   <!-- القوة / التحسين — قابلة للتعديل -->
   <div class="duo">
@@ -440,7 +519,7 @@ const K_PEOPLE='PF_people'; // عدسة الأسماء
 $('#sigP').textContent=localStorage.getItem(K_P)||$('#sigP').textContent;
 $('#sigP').onclick=()=>{const v=prompt('اسم مدير المدرسة', $('#sigP').textContent.trim()); if(v!==null){$('#sigP').textContent=(v.trim()||'—'); localStorage.setItem(K_P,$('#sigP').textContent); snap();}};
 
-/* محتوى الشرح — كما هو بدون تغيير في النص */
+/* محتوى الشرح — كما هو */
 const HELP_TEXT = `
 <p><b>🔹 نموذج تقييم الأداء الوظيفي (إصدار تجريبي غير رسمي)</b></p>
 <p>
@@ -489,7 +568,7 @@ $('#helpContent').innerHTML = HELP_TEXT;
 
 /* بنك الأهداف */
 const GOALS_BANK={
-  principal:[['رفع كفاءة الأداء','تنفيذ الخطط','100٪'],['تعزيز الانضباط','انخفاض الغياب','≤ 5 حالات'],['تنمية المجتمع المهني','الاجتماعات الموثّقة','2/شهر']],
+  principal:[['رفع كفاءة الأداء','تنفيذ الخطط','100٪'],['تعزيز الانضباط','انخفاض الغياب','≤ 5 حالات'],['تنمية المجتمع المهني','الاجتماعات الموثّق','2/شهر']],
   vp:[['رفع فاعلية الإشراف','انتظام الجدول','100٪'],['دعم الانضباط','المخالفات','-15٪'],['التواصل مع أولياء الأمور','تقارير','4 فصلية']],
   teacher:[['تحسين النواتج','متوسط الدرجات','+10٪'],['استراتيجيات حديثة','عدد الموثّق','3'],['توظيف التقنية','حصص أسبوعيًا','4']],
   activity:[['مشاركة الأنشطة','النسبة','≥60٪'],['جودة البرامج','رضا الطلاب','≥90٪'],['توثيق','نسبة التوثيق','100٪']],
@@ -605,9 +684,8 @@ RUBRICS.vp=[
   {name:"يعزز السلوك الإيجابي للطلاب",w:5},{name:"تهيئة بيئة مدرسية آمنة ومحفزة على التعلم",w:5}
 ];
 
-/* بنك القوة/التحسين — مُفعّل وموسع لكل العناصر */
+/* بنك القوة/التحسين */
 const BANK_IMPROVE={
-  /* مشتركات تعليمية */
   "أداء الواجبات الوظيفية":{imp:"ضبط الالتزام الزمني وتحديث سجل الأداء أسبوعيًا.",str:"انضباط مهني واتساق في تنفيذ المهام."},
   "التفاعل مع المجتمع المهني":{imp:"تفعيل مشاركة موثقة في PLC وورش تبادل الخبرات.",str:"مشاركة فاعلة في المجتمع المهني وتغذية راجعة بنّاءة."},
   "التفاعل مع أولياء الأمور":{imp:"خطة تواصل دورية وقنوات موثّقة (رسائل/منصات).",str:"تواصل منظّم ينعكس على دعم تعلم الطالب."},
@@ -619,19 +697,13 @@ const BANK_IMPROVE={
   "الإدارة الصفية":{imp:"تعزيز القواعد التحفيزية وإدارة السلوك إيجابيًا.",str:"ضبط صفّي فاعل ومناخ تعلّم آمن."},
   "تحليل نتائج المتعلمين وتشخيص مستوياتهم":{imp:"جلسات تحليل بيانات مع إجراءات علاجية محددة.",str:"تحليل منهجي يقود قرارات تدريسية."},
   "تنوع أساليب التقويم":{imp:"إدراج تقويمات أدائية وتحليل نتائجها.",str:"تقويمات متنوعة مرتبطة بالأهداف."},
-
-  /* نشاط طلابي */
   "إعداد خطة زمنية ومعتمدة لبرامج وفعاليات النشاط الطلابي":{imp:"إحكام الجدولة وتحديد مؤشرات نجاح لكل برنامج.",str:"خطة نشاط واضحة بمؤشرات متابعة."},
   "تهيئة البيئة المدرسية للبرامج والأنشطة الطلابية":{imp:"حصر الاحتياجات وتفعيل الشراكات الداخلية.",str:"جاهزية مرافق تدعم تنفيذ الفعاليات."},
   "دعم المعلمين وفق احتياجاتهم وميولهم للأشطة":{imp:"استبانة ميول وتوزيع المهام بعدالة.",str:"مواءمة تكليفات النشاط مع ميول المعلمين."},
   "تحفيز المتعلمين على المشاركة في الأنشطة":{imp:"حوافز نوعية ونشر قصص نجاح.",str:"مشاركة طلابية مرتفعة ومستدامة."},
-
-  /* توجيه صحي */
   "تنفيذ الخطة المشتركة للبرامج الصحية المدرسية":{imp:"تقويم دوري للأثر وتحديث الرسائل التوعوية.",str:"تنفيذ منضبط لبرامج الصحة المدرسية."},
   "حصر الحالات الصحية للمتعلمين":{imp:"إحكام قاعدة البيانات وسرية السجلات.",str:"رصد دقيق للحالات وخطط متابعة."},
   "تهيئة البيئة الصحية المدرسية":{imp:"تحسين نقاط الماء/النظافة والملصقات الإرشادية.",str:"بيئة مدرسية داعمة للصحة."},
-
-  /* روضة/طفولة */
   "التنوع في الاستراتيجيات":{imp:"أنشطة حسية ولعب موجّه يراعي الفروق.",str:"تنويع غني يلائم خصائص النماء."},
   "تحسين نتائج التعلم":{imp:"بطاقات ملاحظة معيارية وخطة نمو فردية.",str:"تحسن في المؤشرات النمائية الأساسية."},
   "إعداد خطة شاملة وتفصيلية للأنشطة":{imp:"مواءمة الخطة مع المعايير النمائية اليومية.",str:"خطة أنشطة متدرجة ومتكاملة."},
@@ -646,8 +718,6 @@ const BANK_IMPROVE={
   "تصميم أنشطة تعلم تلبي الفروق الفردية لكل متعلم":{imp:"خطط تفريد مبسطة ومسارات اختيار.",str:"تفريد ناجح يراعي الفروق."},
   "تنمية مهارات الاستقلال لدى المتعلمين":{imp:"روتين استقلالي يومي موثّق.",str:"استقلال متزايد في المهام."},
   "تطوير السلوكيات الإيجابية والقيم والمبادئ والاتجاهات":{imp:"تعزيزات اجتماعية وخطط سلوكية.",str:"سلوك إيجابي متسق."},
-
-  /* مختبر */
   "خطة المختبر اليومية":{imp:"جدولة التجارب مع تحقق جاهزية المواد.",str:"خطة تشغيل يومية واضحة."},
   "المعرفة بالأسس والمفاهيم الفنية":{imp:"دورات قصيرة وتوثيق أدلة التشغيل.",str:"تمكّن فني بالمفاهيم الأساسية."},
   "تجهيز المستلزمات":{imp:"قوائم جرد ومشتريات دورية.",str:"تجهيزات مكتملة ومحدّثة."},
@@ -656,8 +726,6 @@ const BANK_IMPROVE={
   "تسليم الأجهزة وتخزينها":{imp:"نظام استعارة وتتبع آلي.",str:"تسليم وتخزين وفق المعايير."},
   "تقرير أسبوعي للأنشطة":{imp:"نموذج موحد مع مؤشرات أداء.",str:"تقارير منتظمة تدعم القرار."},
   "تقارير حالة الأجهزة":{imp:"لوحة صيانة ودورة بلاغات.",str:"متابعة آنية لحالة الأجهزة."},
-
-  /* توجيه طلابي */
   "يقدم التدخلات المناسبة لتعزيز الانضباط":{imp:"خطة تدخلات متدرجة موثّقة.",str:"تدخلات فعّالة خفّضت المخالفات."},
   "تقديم برامج تربوية لتعزيز دافعية الطلبة للتعلم":{imp:"قياس الأثر عبر استبانات سريعة.",str:"برامج رفعت دافعية التعلم."},
   "إعداد خطة برامج التوجيه الطلابي":{imp:"تحديد مؤشرات إنجاز لكل برنامج.",str:"خطة متوازنة تغطي الاحتياجات."},
@@ -668,8 +736,6 @@ const BANK_IMPROVE={
   "يعزز التفوق الدراسي":{imp:"خطط إثرائية للمتفوقين.",str:"رعاية فعالة للمتفوقين."},
   "يتابع تدخلات تربوية للمتعثرين دراسيًا وسلوكيًا":{imp:"خرائط تدخل فردية ومراجعات.",str:"تحسن ملاحظ لدى المتعثرين."},
   "توعية المتعلمين وأولياء أمورهم بقواعد السلوك والمواظبة":{imp:"مواد توعوية مختصرة ودورية.",str:"وعي مرتفع بالانضباط."},
-
-  /* مدير/وكيل */
   "مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة":{imp:"خطط بديلة وسيناريوهات تشغيل.",str:"مرونة تشغيلية عالية."},
   "يدعم ويشارك في المبادرات النوعية":{imp:"تحديد معايير اختيار المبادرات.",str:"مبادرات ذات أثر ملحوظ."},
   "يتخذ إجراءات تربوية تحقق الانضباط المدرسي":{imp:"مصفوفة إجراءات تناسب المخالفة.",str:"انضباط محسّن بإجراءات عادلة."},
@@ -696,6 +762,15 @@ const BANK_IMPROVE={
   "يوظف المنصات الرقمية وتطبيقاتها التعليمية في دعم عمليات التعليم والتعلم":{imp:"خطط تشغيل واضحة وتدريب.",str:"تكامل تقني داعم للتعلم."},
   "يعزز السلوك الإيجابي للطلاب":{imp:"مجتمعات صفية للتحفيز.",str:"سلوك إيجابي مستدام."}
 };
+
+/* مستويات التقدير العام (لصف التقدير أسفل الجدول) */
+const GENERAL_LEVELS = [
+  {min:90, max:100, desc:"مثالي", label:"5", cls:"lv5"},
+  {min:80, max:89.999, desc:"يتخطى التوقعات", label:"4", cls:"lv4"},
+  {min:70, max:79.999, desc:"يوافق التوقعات", label:"3", cls:"lv3"},
+  {min:60, max:69.999, desc:"بحاجة إلى تطوير", label:"2", cls:"lv2"},
+  {min:0,  max:59.999, desc:"غير مرضي", label:"1", cls:"lv1"}
+];
 
 /* تتبّع التحرير اليدوي */
 let editedStrengths=false, editedImproves=false;
@@ -728,6 +803,16 @@ function findByCurrentPerson(){
   return db.find(x=>x._key===key);
 }
 
+/* دالة تسمية المرحلة في الهيدر */
+function stageHeaderLabel(key){
+  switch(key){
+    case 'first':  return 'مرحلة التخطيط للأداء';
+    case 'second': return 'مرحلة المراجعة النصف سنوية';
+    case 'final':  return 'مرحلة تقييم الأداء الوظيفي النهائي';
+    default:       return 'مرحلة التقييم';
+  }
+}
+
 /* بناء الجدول */
 function build(){
   const key=$('#model').value, arr=RUBRICS[key]||[]; const tb=$('#rows'); tb.innerHTML=''; let ws=0;
@@ -740,6 +825,7 @@ function build(){
   });
   $('#sumW').textContent=ws+'%';
   $('#mdlTxt').textContent='نموذج التقييم: '+$('#model').selectedOptions[0].textContent;
+  $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
 
   if($('#stage').value==='first'){ autoFillGoals(); }
   renderGoalChips();
@@ -769,7 +855,7 @@ function toggleStageLock(){
   $('#gapBtn').disabled=false; $('#archBtn').disabled=false;
 }
 
-/* الحساب + القوة/التحسين (مفعّل من البنك) */
+/* الحساب + القوة/التحسين + صف مستوى التقدير العام */
 function recalc(){
   let total=0, ws=0, n=0,d=0;
   const strengths=[], improves=[];
@@ -794,12 +880,30 @@ function recalc(){
   $('#kR').textContent=`مجموع الأوزان: ${ws}%`;
   $('#sigT').textContent=$('#tName').value||'—';
 
+  /* صف مستوى التقدير العام للأداء */
+  const pill = $('#overallPill');
+  const clsList = ['lv1','lv2','lv3','lv4','lv5'];
+  clsList.forEach(c=>pill.classList.remove(c));
+
+  let level = GENERAL_LEVELS.find(l=> total>=l.min && total<=l.max);
+  if(!level && total>0){ level = GENERAL_LEVELS[GENERAL_LEVELS.length-1]; }
+
+  if(level){
+    pill.classList.add(level.cls);
+    $('#overallClass').textContent = level.label;
+    $('#overallDesc').textContent  = 'مستوى التقدير العام للأداء — ' + level.desc;
+  }else{
+    $('#overallClass').textContent = '—';
+    $('#overallDesc').textContent  = 'مستوى التقدير العام للأداء';
+  }
+  $('#overallPercent').textContent = 'الدرجة النسبية: ' + total.toFixed(0) + '%';
+  $('#overallAvg').textContent     = 'متوسط ' + avg.toFixed(2) + ' / 5';
+
   if(!editedStrengths){
     const s = joinSlashLine(strengths);
     $('#strengths').textContent = s || (cleanText($('#strengths').textContent)||'—');
   }
 
-  // 🔹 تفعيل بنك مجالات التطوير مع دمج ما كتبه المعلم
   const currentImp = cleanText($('#improves').textContent);
   const sourceList = (editedImproves && currentImp && currentImp!=='—')
     ? [currentImp, ...improves]
@@ -928,7 +1032,7 @@ function renderPeople(filter=''){
 function loadRecordIntoForm(rec){
   if(!rec) return;
   if($('#model').value!==rec.modelKey){ $('#model').value=rec.modelKey; build(); }
-  if($('#stage').value!==rec.stageKey){ $('#stage').value=rec.stageKey; toggleStageLock(); }
+  if($('#stage').value!==rec.stageKey){ $('#stage').value=rec.stageKey; toggleStageLock(); $('#stageTxt').textContent=stageHeaderLabel($('#stage').value); }
   $('#tName').value = rec.name || '';
   $('#tId').value   = rec.id || '';
   $('#tSpec').value = rec.spec || '';
@@ -988,7 +1092,13 @@ $('#clearPeople').onclick=()=>{ if(confirm('مسح قائمة الأسماء ا�
 document.addEventListener('change',e=>{
   if(e.target.classList.contains('g')){recalc();snap();}
   if(e.target.id==='model'){build(); renderPeople($('#searchBox').value||'');}
-  if(e.target.id==='stage'){toggleStageLock(); if(e.target.value==='first'){autoFillGoals();} snap(); renderPeople($('#searchBox').value||'');}
+  if(e.target.id==='stage'){
+    toggleStageLock();
+    $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
+    if(e.target.value==='first'){autoFillGoals();}
+    snap();
+    renderPeople($('#searchBox').value||'');
+  }
   if(['g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t'].includes(e.target.id)){ renderGoalsPrint(); snap(); }
 });
 
@@ -1042,9 +1152,10 @@ $('#clearBtn').onclick=()=>{
 (function init(){
   $('#stage').value='first';
   if(!$('#tTitle').value) $('#tTitle').value='معلم ممارس';
+  $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
   build(); recalc(); renderGoalsPrint(); snap();
   loadPeople();
-  updateGoalsToggleLabel(); // الأهداف مخفية افتراضيًا
+  updateGoalsToggleLabel();
 })();
 </script>
 </body>
