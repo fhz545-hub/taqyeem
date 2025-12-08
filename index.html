@@ -473,6 +473,8 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
         </label>
         <span id="lensInfo" class="badge">لا توجد بيانات مستوردة بعد</span>
         <button class="row-btn" id="clearPeople" type="button">مسح الأسماء المحفوظة</button>
+        <!-- زر تحميل قالب عدسة الأسماء -->
+        <button class="row-btn" id="downloadTemplate" type="button">⬇️ تحميل قالب الأسماء (Excel/CSV)</button>
       </div>
 
       <div id="dropZone" class="drop">اسحب الملف هنا أو استخدم زر الاستعراض</div>
@@ -1054,6 +1056,27 @@ function loadRecordIntoForm(rec){
   recalc(); snap();
 }
 
+/* إنشاء وتحميل قالب عدسة الأسماء (CSV) */
+function downloadPeopleTemplate(){
+  const headers = ['الاسم','رقم الهوية','التخصص','المسمى'];
+  // إضافة صف مثال واحد اختياري (يمكن حذفه في الملف)
+  const example = ['مثال: محمد أحمد','1023456789','رياضيات','معلم ممارس'];
+  const lines = [
+    headers.join(','),
+    example.join(',')
+  ];
+  const csvContent = '\ufeff' + lines.join('\r\n'); // BOM لدعم العربية
+  const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'قالب عدسة الأسماء - Excel.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 /* أحداث عدسة الأسماء */
 function openLens(){ toggleLens(true); }
 function toggleLens(show){ const m=$('#lens'); m.classList.toggle('show',!!show); m.setAttribute('aria-hidden', show?'false':'true'); }
@@ -1087,6 +1110,10 @@ $('#peopleTbl').addEventListener('click',e=>{
 
 /* مسح الأسماء */
 $('#clearPeople').onclick=()=>{ if(confirm('مسح قائمة الأسماء المحفوظة؟')){ PEOPLE=[]; savePeople(); renderPeople(); } };
+
+/* ربط زر تحميل القالب */
+const tplBtn = $('#downloadTemplate');
+if(tplBtn){ tplBtn.onclick = downloadPeopleTemplate; }
 
 /* أحداث عامة */
 document.addEventListener('change',e=>{
