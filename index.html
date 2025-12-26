@@ -50,6 +50,29 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 }
 .help-fab:hover{transform:translateY(-1px)}
 
+/* ✅ زر الهوم الجديد بجوار علامة الاستفهام (بدون التأثير على أي عنصر) */
+@keyframes pulseHome{
+  0%{box-shadow:0 0 0 0 rgba(30,138,121,.45);}
+  70%{box-shadow:0 0 0 14px rgba(30,138,121,0);}
+  100%{box-shadow:0 0 0 0 rgba(30,138,121,0);}
+}
+.home-fab{
+  position:absolute; left:42px; bottom:-6px; /* بجوار ? مباشرة */
+  width:28px;height:28px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid #bdebe5;
+  background:linear-gradient(180deg,#eafffb,#ffffff);
+  color:#0b6e68;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 4px 14px rgba(30,138,121,.18);
+  transition:transform .2s ease, filter .2s ease;
+  animation:pulseHome 1.8s infinite;
+  text-decoration:none;
+}
+.home-fab:hover{transform:translateY(-1px);filter:brightness(1.02)}
+.home-fab svg{width:16px;height:16px;display:block;filter:drop-shadow(0 0 10px rgba(15,179,176,.35))}
+
 /* الأدوات */
 .toolbar{
   display:flex;gap:8px;align-items:center;flex-wrap:wrap;
@@ -296,7 +319,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 
 /* طباعة — شد/ضغط A4 وصف بيانات بلا التفاف */
 @media print{
-  .toolbar,.tip::after,[data-hide-on-print],.modal,.help-fab,.lens-mini,.pen,#goalsToggle{display:none!important}
+  .toolbar,.tip::after,[data-hide-on-print],.modal,.help-fab,.home-fab,.lens-mini,.pen,#goalsToggle{display:none!important}
   #page{padding:0}
   @page{size:A4;margin:10mm}
   html,body{font-size:12.6px;line-height:1.55}
@@ -334,6 +357,14 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
       <div class="line" id="dateTxt"></div>
       <div class="line" id="mdlTxt">نموذج التقييم: —</div>
       <div class="line" id="stageTxt">مرحلة التخطيط للأداء</div>
+
+      <!-- ✅ زر الهوم الجديد (بجوار ?) -->
+      <a id="homeFab" class="home-fab noprint" href="https://fhz545-hub.github.io/Teachers/" target="_self" title="العودة للمنصة" aria-label="العودة للمنصة">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M12 3.2l9 7.4a1 1 0 0 1-1.26 1.56L19 11.6V20a1.8 1.8 0 0 1-1.8 1.8H6.8A1.8 1.8 0 0 1 5 20v-8.4l-.74.56A1 1 0 0 1 3 10.6l9-7.4Zm5 10.1-5-4.1-5 4.1V19.8h3.4v-4.2a1 1 0 0 1 1-1h1.2a1 1 0 0 1 1 1v4.2H17v-6.5Z"/>
+        </svg>
+      </a>
+
       <button id="helpFab" class="help-fab noprint" title="الشرح">?</button>
     </div>
   </div>
