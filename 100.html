@@ -1,4 +1,3 @@
-<!-- ============ PART 1 / 3 ============ -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -15,23 +14,34 @@
 html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-size:15px;line-height:1.8}
 #page{width:min(1120px,100%);margin:0 auto;padding:12px 14px 48px}
 
-/* هيدر */
+/* ====== الهيدر (ثابت كتلة واحدة بدون التفاف) ====== */
 .header{
   display:grid;
   grid-template-columns:1fr auto 1fr;
   align-items:center;
   text-align:center;
   margin-bottom:8px;
-  position:relative
+  position:relative;
+  gap:10px;
+  font-size:clamp(11.5px, 1.8vw, 15px);
 }
-.hcol{display:flex;flex-direction:column;gap:2px;align-items:center}
-.hcol .line{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--moe-d)}
+.hcol{display:flex;flex-direction:column;gap:2px;align-items:center;min-width:0}
+.hcol .line{
+  display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--moe-d);
+  white-space:nowrap; /* ✅ منع الالتفاف */
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 .pen{border:none;background:transparent;color:var(--moe-d);cursor:pointer;font-size:13px;line-height:1}
 .pen:hover{opacity:.8}
 .noprint{display:inline-flex}
-/* شعار */
-#moe{width:min(180px,32vw);object-fit:contain}
-@media print{ #moe{width:150px} }
+
+/* ✅ شعار الوزارة متناسق تلقائياً للجوال */
+#moe{
+  width:clamp(78px, 18vw, 140px);
+  object-fit:contain;
+}
 
 /* أيقونة الشرح */
 @keyframes pulseHelp{
@@ -76,36 +86,41 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 
 /* الأدوات */
 .toolbar{
-  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  display:flex;gap:8px;align-items:center;flex-wrap:nowrap; /* ✅ بدون التفاف */
   white-space:nowrap;margin:6px 0;
   overflow-x:auto;padding-bottom:4px
 }
 .toolbar::-webkit-scrollbar{height:4px}
 .toolbar::-webkit-scrollbar-track{background:transparent}
 .toolbar::-webkit-scrollbar-thumb{background:#cde6df;border-radius:999px}
-.select{appearance:none;height:36px;padding:0 30px 0 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-weight:800;color:#0b3a34;cursor:pointer;font-size:13px}
-.sel{position:relative;display:inline-block}
+.select{appearance:none;height:36px;padding:0 30px 0 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-weight:800;color:#0b3a34;cursor:pointer;font-size:13px;flex:0 0 auto}
+.sel{position:relative;display:inline-block;flex:0 0 auto}
 .sel>span{position:absolute;right:10px;top:8px;pointer-events:none}
 .btn{
   --g1: var(--moe); --g2: var(--moe-d);
   border:1px solid #bfe7df;border-radius:999px;padding:8px 14px;font-weight:800;cursor:pointer;
   background:linear-gradient(180deg,var(--g1),var(--g2)); color:#fff;
   box-shadow:0 2px 0 rgba(0,0,0,.05), inset 0 -2px 0 rgba(255,255,255,.28);
-  white-space:nowrap;
+  white-space:nowrap;flex:0 0 auto
 }
 .btn.secondary{--g1:#eafffb;--g2:#ffffff;color:#0b6e68;border-color:#bdebe5}
 .btn.warn{--g1:#ffe3e3;--g2:#ffd4d4;color:#8b0000;border-color:#f3caca}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 
-/* صف بيانات الموظف */
+/* ✅ بيانات الموظف كتلة واحدة — بدون التفاف، مع تمرير أفقي عند الحاجة */
 .grid4{
   display:grid;
   grid-template-columns:2fr 1fr 1fr 1fr;
   gap:8px;
   align-items:center;
   white-space:nowrap;
+  overflow-x:auto;
+  padding-bottom:2px;
 }
-.field{position:relative}
+.grid4::-webkit-scrollbar{height:4px}
+.grid4::-webkit-scrollbar-thumb{background:#cde6df;border-radius:999px}
+
+.field{position:relative;min-width:220px}
 .lens-mini{
   position:absolute; left:6px; top:50%; transform:translateY(-50%);
   border:1px solid #cde6df; background:#fff; color:#0c594e; border-radius:8px; padding:2px 6px; font-weight:800; cursor:pointer;
@@ -113,6 +128,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .lined{
   height:40px;border:none;border-radius:0;padding:0 8px;background:transparent;outline:none;
   font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-appearance:none;
+  min-width:160px;
 }
 .lined::placeholder{color:#7b8d88;font-weight:400}
 
@@ -139,7 +155,7 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .kpi{margin:8px 0}
 .kbar{height:16px;border-radius:999px;border:1px solid #d6ece8;overflow:hidden;position:relative}
 .kfill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e,#10b981);opacity:.95;transition:width .4s}
-.kline{display:flex;gap:8px;justify-content:space-between;font-size:12px;color:#415b56}
+.kline{display:flex;gap:8px;justify-content:space-between;font-size:12px;color:#415b56;flex-wrap:wrap}
 
 /* جدول التقييم */
 .table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -186,10 +202,10 @@ tr.evid-row td{padding:10px}
   padding:6px 10px;border-radius:14px;border:1px solid var(--line);background:#f9fffd;
   position:relative;overflow:hidden
 }
-.overall-main{display:flex;align-items:center;gap:8px;font-weight:800}
+.overall-main{display:flex;align-items:center;gap:8px;font-weight:800;min-width:0}
 .overall-class{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:26px;border-radius:999px;background:#0c594e;color:#fff;font-weight:900;font-size:14px}
-.overall-desc{font-weight:800;color:#0b3f43;white-space:nowrap}
-.overall-stats{display:flex;align-items:center;gap:10px;font-size:12px;flex-wrap:wrap}
+.overall-desc{font-weight:800;color:#0b3f43;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65ch}
+.overall-stats{display:flex;align-items:center;gap:10px;font-size:12px;flex-wrap:wrap;white-space:nowrap}
 .overall-percent{font-weight:900;font-size:13px;color:#0b3f43}
 .overall-avg{color:#546b66;font-size:12px}
 .overall-pill.lv1{background:linear-gradient(90deg,#fee2e2,#fff);border-color:#fecaca}
@@ -256,17 +272,7 @@ tr.evid-row td{padding:10px}
 .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0c594e;color:#fff;padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
 
-/* تجاودية */
-@media (max-width:920px){
-  .grid4{grid-template-columns:1fr 1fr;gap:6px}
-  .toolbar{gap:6px}
-}
-@media (max-width:720px){
-  .header{grid-template-columns:1fr;row-gap:6px}
-  .hcol{align-items:center}
-  #moe{margin:4px auto}
-  .kline{flex-direction:column;align-items:flex-start}
-}
+/* ✅ تجاودية بدون تغيير هوية: فقط ضبط صِغر */
 @media (max-width:600px){
   html,body{font-size:14px}
   #page{padding:10px 10px 36px}
@@ -275,17 +281,13 @@ tr.evid-row td{padding:10px}
   .modal-card{width:94vw}
   .duo{grid-template-columns:1fr}
   .signs{grid-template-columns:1fr}
-  .toolbar{justify-content:flex-start}
   .overall-pill{flex-direction:column;align-items:flex-start}
-  .overall-stats{align-items:flex-start}
-  .evid-grid{grid-template-columns:1fr}
 }
 @media (max-width:480px){
   #page{padding:10px 8px 30px}
-  .grid4{grid-template-columns:1fr;white-space:normal}
-  .lined{white-space:normal}
   .btn{padding:7px 10px;font-size:12px}
   .goals-toggle{font-size:11px;padding:5px 10px}
+  .evid-grid{grid-template-columns:1fr}
 }
 
 /* طباعة */
@@ -303,7 +305,7 @@ tr.evid-row td{padding:10px}
   .duo .box{padding:8px}
   #goalsBody{max-height:none!important;overflow:visible!important}
 
-  /* ✅ الأهم: إخفاء الشواهد في الطباعة بالكامل */
+  /* ✅ إخفاء الشواهد في الطباعة بالكامل */
   .ev-toggle, tr.evid-row{display:none!important}
 }
 </style>
@@ -324,7 +326,9 @@ tr.evid-row td{padding:10px}
         <button class="pen noprint" id="editSch" title="تعديل">✎</button>
       </div>
     </div>
+
     <img id="moe" alt="وزارة التعليم" src="وزارة التعليم.png">
+
     <div class="hcol" style="position:relative">
       <div class="line" id="dayTxt"></div>
       <div class="line" id="dateTxt"></div>
@@ -379,7 +383,7 @@ tr.evid-row td{padding:10px}
     <input id="tSpec" class="lined" placeholder="التخصص" autocomplete="off">
     <input id="tTitle" class="lined" placeholder="المسمى" autocomplete="off" value="معلم ممارس">
   </div>
-<!-- ============ PART 2 / 3 ============ -->
+
   <section id="goals">
     <div class="goals-head">
       <h3>التخطيط للأداء <span class="hint">🔹 أهداف قابلة للقياس ومؤشرات واضحة</span></h3>
@@ -481,7 +485,7 @@ tr.evid-row td{padding:10px}
     </div>
   </div>
 </div>
-<!-- ============ PART 3 / 3 ============ -->
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
@@ -496,6 +500,10 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const K_P='PF_principal', K_DIR='PF_dir', K_SCH='PF_school';
 const K_DB='PF_db';
 const K_PEOPLE='PF_people';
+
+/* ✅ سياق نشط للربط الخوارزمي مع (الكشف/الفجوة) */
+const K_ACTIVE='PF_active';
+const K_ACTIVE_KEY='PF_active_key';
 
 /* تحميل/تعديل الإدارة والمدرسة */
 (function initOrg(){
@@ -578,7 +586,6 @@ RUBRICS.teacher=[
   {name:"تحليل نتائج المتعلمين وتشخيص مستوياتهم",w:10},
   {name:"تنوع أساليب التقويم",w:10}
 ];
-/* (باقي النماذج كما هي) */
 RUBRICS.activity=[
   {name:"أداء الواجبات الوظيفية",w:10},{name:"التفاعل مع المجتمع المهني",w:10},{name:"التفاعل مع أولياء الأمور",w:10},
   {name:"التنوع في استراتيجيات التدريس",w:5},{name:"تحسين نتائج المتعلمين",w:5},{name:"إعداد وتنفيذ خطة التعلم",w:5},
@@ -674,6 +681,8 @@ function joinSlashLine(arr){const list=uniq(arr).map(bulletize); return list.len
 function dbGet(){ try{return JSON.parse(localStorage.getItem(K_DB)||'[]');}catch{return [];} }
 function dbSet(arr){ localStorage.setItem(K_DB,JSON.stringify(arr)); }
 function makeKey(school,modelKey,stageKey,idOrName){ return [school||'',modelKey||'',stageKey||'',(idOrName||'')].join('|'); }
+
+/* ✅ upsert يُرجع المفتاح لضمان الربط */
 function upsertRecord(rec){
   const db=dbGet();
   const key = makeKey(rec.school,rec.modelKey,rec.stageKey,(rec.id||rec.name||''));
@@ -681,7 +690,17 @@ function upsertRecord(rec){
   rec._key=key; rec.updatedAt=new Date().toISOString();
   if(i>=0){ db[i]=rec; } else { rec.createdAt=rec.updatedAt; db.push(rec); }
   dbSet(db);
+  return key;
 }
+
+/* ✅ حفظ السياق النشط (للكشف/الفجوة) */
+function setActiveContext(rec, key){
+  try{
+    localStorage.setItem(K_ACTIVE, JSON.stringify(rec));
+    localStorage.setItem(K_ACTIVE_KEY, key || rec?._key || '');
+  }catch(e){}
+}
+
 function stageHeaderLabel(key){
   switch(key){
     case 'first':  return 'مرحلة التخطيط للأداء';
@@ -864,10 +883,17 @@ function snap(){
   return data;
 }
 
-/* فتح الصفحات */
-function openGap(){ const snapData=snap(); upsertRecord(snapData); window.open('gap.html','_blank'); }
-function openArch(){ const snapData=snap(); upsertRecord(snapData); window.open('kashf.html','_blank'); }
-function openDlel(){ const snapData=snap(); upsertRecord(snapData); window.open('dlel.html','_blank'); }
+/* ✅ فتح صفحات مرتبطة مع نقل نفس السجل (خوارزمياً) */
+function openLinked(page){
+  const snapData = snap();
+  const key = upsertRecord(snapData);
+  setActiveContext(snapData, key);       // ✅ يضمن أن (الكشف/الفجوة) تقرأ نفس السجل
+  const url = `${page}?k=${encodeURIComponent(key)}`;
+  window.open(url,'_blank');
+}
+function openGap(){ openLinked('gap.html'); }
+function openArch(){ openLinked('kashf.html'); }
+function openDlel(){ openLinked('dlel.html'); }
 
 /* ===== عدسة الأسماء ===== */
 let PEOPLE = [];
@@ -980,9 +1006,7 @@ function loadRecordIntoForm(rec){
   $('#g2').value=gs[1]?.t||''; $('#g2i').value=gs[1]?.i||''; $('#g2t').value=gs[1]?.v||'';
   $('#g3').value=gs[2]?.t||''; $('#g3i').value=gs[2]?.i||''; $('#g3t').value=gs[2]?.v||'';
 
-  /* ✅ الشواهد لا تُسترجع لأنها غير محفوظة */
   initEvidenceBoxes();
-
   renderGoalsPrint();
   recalc();
 }
@@ -1036,6 +1060,10 @@ $('#peopleTbl').addEventListener('click',e=>{
 $('#clearPeople').onclick=()=>{ if(confirm('مسح قائمة الأسماء المحفوظة؟')){ PEOPLE=[]; savePeople(); renderPeople(); } };
 
 /* ✅ أحداث الشواهد (عرض فقط) */
+function initEvidenceBoxesSafeClose(){
+  $$('#rows tr.evid-row').forEach(er=>{ er.style.display='none'; });
+  $$('.ev-toggle .chev').forEach(c=>c.textContent='▾');
+}
 document.addEventListener('click',e=>{
   const t = e.target.closest('.ev-toggle');
   if(!t) return;
@@ -1076,7 +1104,9 @@ function showToast(msg){
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1400);
 }
 $('#saveBtn').onclick=()=>{
-  const data=snap(); upsertRecord(data);
+  const data=snap();
+  const key = upsertRecord(data);
+  setActiveContext(data, key);     /* ✅ حتى بعد الحفظ يصبح هو السياق النشط */
   renderPeople($('#searchBox').value||'');
   showToast('تم الحفظ ✅');
 };
@@ -1105,9 +1135,7 @@ $('#clearBtn').onclick=()=>{
   editedStrengths=false; editedImproves=false;
   $$('.g').forEach(s=>s.value='3');
 
-  /* إعادة إغلاق الشواهد (عرض فقط) */
-  $$('#rows tr.evid-row').forEach(er=>{ er.style.display='none'; });
-  $$('.ev-toggle .chev').forEach(c=>c.textContent='▾');
+  initEvidenceBoxesSafeClose();
   initEvidenceBoxes();
 
   ['tName','tId','tSpec','tTitle','g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t']
