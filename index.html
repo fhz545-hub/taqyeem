@@ -322,12 +322,13 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 /* ===== شرح عناصر تقييم المعلم (Modal Guide) ===== */
 
 /* تفعيل “مؤشر الضغط” على عناوين العناصر (للمعلم فقط) */
-body.isTeacher #tbl .item{
+#tbl .item{
   cursor:pointer;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
-body.isTeacher #tbl .item:hover{ color:#0c594e; }
+#tbl .item:hover{ color:#0c594e; }
+
 
 /* رأس المحتوى داخل نافذة الشرح */
 .guide-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:2px 0 8px}
@@ -724,7 +725,7 @@ const TEACHER_GUIDES = {
     brief: "يقيس الالتزام بالأنظمة والدوام وجودة تنفيذ المهام الصفية والمدرسية والتكليفات.",
     rows: [
       {e:"التقيد بالأنظمة", d:"سجل المتابعة وسجل الملاحظات"},
-      {e:"الالتزام بالدوام الرسمي وأخلاقيات المهنة", d:"منصة حضوري والمتابعة"},
+      {e:"الالتزام بالدوام الرسمي وأخلاقيات المهنة", d:"سجل الدوام والمتابعة"},
       {e:"تأدية الحصص الدراسية حسب الجدول", d:"جدول الحصص وسجل المتابعة"},
       {e:"إعداد الدروس والتحضير الذهني المسبق", d:"نموذج التحضير وخطة المنهج على منصة مدرستي"},
       {e:"تصحيح الواجبات والاختبارات", d:"نماذج مصححة من الواجبات والاختبارات"},
@@ -932,43 +933,117 @@ const closeGuideBtn = $('#closeGuide');
 if(closeGuideBtn) closeGuideBtn.onclick = ()=>toggleGuide(false);
 $('#guide')?.addEventListener('click', (e)=>{ if(e.target && e.target.id === 'guide') toggleGuide(false); });
 document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') toggleGuide(false); });
+function getRubricWeight(modelKey, title){
+  const arr = (RUBRICS && RUBRICS[modelKey]) ? RUBRICS[modelKey] : [];
+  const it = arr.find(x => (x.name||'').trim() === (title||'').trim());
+  return it ? it.w : null;
+}
 
+const DEFAULT_EVIDENCE_BY_MODEL = {
+  principal: ["الخطة التشغيلية/خطة التحسين", "محاضر لجان/اجتماعات", "مؤشرات أداء وتقارير متابعة", "خطابات وتكليفات موثقة"],
+  vp:        ["سجلات المتابعة اليومية", "تقارير تنفيذ اللجان", "متابعة الانضباط والغياب", "مراسلات وإحالات موثقة"],
+  counselor: ["سجل الحالات", "خطط التدخل", "برامج إرشادية وتوثيقها", "سجل تواصل مع الأسرة"],
+  activity:  ["الخطة الزمنية للنشاط", "تقارير الفعاليات", "نسب مشاركة الطلاب", "شراكات ومبادرات"],
+  health:    ["خطة البرامج الصحية", "حصر الحالات", "تقارير زيارات/توعية", "نماذج متابعة"],
+  lab:       ["سجل التشغيل", "قوائم الجرد", "سجلات السلامة", "تقارير الصيانة"],
+  kg:        ["خطط التعلم/الأنشطة", "سجلات النمو والتقويم", "تواصل الأسرة", "توثيق بيئة التعلم"],
+  teacher:   ["تحاضير/خطط", "نماذج تقويم", "تحليل نتائج", "شواهد توظيف التقنية"]
+};
+
+function defaultEvidence(modelKey, title){
+  const base = [
+    "سجل/محضر متابعة مؤرّخ",
+    "خطة/نموذج معتمد مرتبط بالعنصر",
+    "عينات شواهد (صور/ملفات/روابط)",
+    "مؤشر قبل/بعد أو نتائج مرتبطة بالأثر",
+    "تغذية راجعة/ملاحظات إشرافية"
+  ];
+  const role = DEFAULT_EVIDENCE_BY_MODEL[modelKey] || [];
+  // دمج بدون تكرار
+  const out = [];
+  [...role, ...base].forEach(x => { if(x && !out.includes(x)) out.push(x); });
+  return out;
+}
 /* بناء HTML للنافذة */
-function guideBuildHTML(title){
-  const g = TEACHER_GUIDES[title];
-  if(!g) return `<p style="color:#678">لا يوجد محتوى لهذا العنصر.</p>`;
+function guideBuildHTML(title, modelKey){
+  // استخدم TEACHER_GUIDES كمرجع مشترك للعناصر العامة (إن وجدت)
+  const common = (typeof TEACHER_GUIDES !== 'undefined') ? TEACHER_GUIDES : {};
+  const bank = common; // يمكنك لاحقًا إنشاء بنك لكل نموذج إن رغبت
 
-  const bodyRows = (g.rows||[]).map((r)=>(
-    `<tr>
-      <td style="text-align:right">${r.e}</td>
-      <td style="text-align:right">${r.d}</td>
-    </tr>`
-  )).join('');
+  const g = bank[title]; // إن وجد شرح تفصيلي للعنصر
+  const w = getRubricWeight(modelKey, title);
+  const weightText = (w !== null && w !== undefined) ? `${w}%` : "—";
 
-  const notes = (g.notes||[]).map(t=>`<li>${t}</li>`).join('');
+  const brief =
+    (g && g.brief) ? g.brief :
+    (BANK_IMPROVE && BANK_IMPROVE[title] && (BANK_IMPROVE[title].str || BANK_IMPROVE[title].imp)) ? (BANK_IMPROVE[title].str || BANK_IMPROVE[title].imp) :
+    "شرح مختصر للعنصر مع شواهد مقترحة للتوثيق.";
+
+  // إن كان لديه تفصيل rows نعرضه، وإلا نعرض شواهد افتراضية مناسبة للنموذج
+  let bodyHTML = "";
+
+  if(g && Array.isArray(g.rows) && g.rows.length){
+    const bodyRows = g.rows.map(r=>(
+      `<tr>
+        <td style="text-align:right">${r.e}</td>
+        <td style="text-align:right">${r.d}</td>
+      </tr>`
+    )).join('');
+
+    bodyHTML = `
+      <table class="table guideTbl">
+        <thead>
+          <tr>
+            <th style="text-align:right">العنصر المراد تقييمه</th>
+            <th style="text-align:right">الشواهد والأدلة الداعمة</th>
+          </tr>
+        </thead>
+        <tbody>${bodyRows}</tbody>
+      </table>
+    `;
+  } else {
+    const ev = defaultEvidence(modelKey, title);
+    bodyHTML = `
+      <table class="table guideTbl">
+        <thead>
+          <tr>
+            <th style="text-align:right">العنصر</th>
+            <th style="text-align:right">شواهد مقترحة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:right">${title}</td>
+            <td style="text-align:right">
+              <ul style="margin:0;padding:0 18px;line-height:1.8">
+                ${ev.map(x=>`<li>${x}</li>`).join('')}
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  }
+
+  const notes = (g && g.notes && g.notes.length) ? g.notes : [
+    "اربط الشاهد بتاريخ واضح ونتيجة/أثر مختصر.",
+    "اجعل التوثيق مختصرًا (ما حدث؟ ما الإجراء؟ ما النتيجة؟).",
+    "احفظ نسخة إلكترونية منظمة (ملف واحد أو مجلد باسم العنصر)."
+  ];
 
   return `
     <div class="guide-top">
-      <span class="badge">الوزن النسبي: ${g.w}%</span>
-      <p class="guide-brief">${g.brief||''}</p>
+      <span class="badge">الوزن النسبي: ${weightText}</span>
+      <span class="badge">النموذج: ${document.getElementById('model').selectedOptions[0].textContent}</span>
+      <p class="guide-brief">${brief}</p>
     </div>
 
-    <table class="table guideTbl">
-      <thead>
-        <tr>
-          <th style="text-align:right">العنصر المراد تقييمه</th>
-          <th style="text-align:right">الشواهد والأدلة الداعمة</th>
-        </tr>
-      </thead>
-      <tbody>${bodyRows}</tbody>
-    </table>
+    ${bodyHTML}
 
     <div class="guide-note">
       <h4>ملاحظات توثيق سريعة</h4>
-      <ul>${notes}</ul>
+      <ul>${notes.map(t=>`<li>${t}</li>`).join('')}</ul>
     </div>
-
-    ${g.img ? `<img class="guide-img" src="${g.img}" alt="دليل العنصر">` : ``}
   `;
 }
 /* ✅ فتح نافذة شرح العنصر عند الضغط على اسم العنصر داخل الجدول */
@@ -978,13 +1053,11 @@ if (tbl) {
     const itemEl = e.target.closest('.item');
     if (!itemEl) return;
 
-    // يعمل فقط عند اختيار "المعلّم"
-    if (document.getElementById('model').value !== 'teacher') return;
-
     const title = itemEl.textContent.trim();
 
     document.getElementById('guideTitle').textContent = 'شرح العنصر: ' + title;
-    document.getElementById('guideContent').innerHTML = guideBuildHTML(title);
+const modelKey = document.getElementById('model').value;
+document.getElementById('guideContent').innerHTML = guideBuildHTML(title, modelKey);
     toggleGuide(true);
   });
 }
