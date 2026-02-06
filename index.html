@@ -281,7 +281,41 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   display:inline-block; font-size:11px; padding:2px 6px; border-radius:999px; margin-right:6px;
   background:#eafff7; border:1px solid #bdebe5; color:#0c6a62; font-weight:800;
 }
+/* ✅ منع التفاف أدوات العدسة + سكرول أفقي لطيف (بدون تخريب) */
+.lens-tools{
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.lens-tools::-webkit-scrollbar{height:4px}
+.lens-tools::-webkit-scrollbar-track{background:transparent}
+.lens-tools::-webkit-scrollbar-thumb{background:#cde6df;border-radius:999px}
 
+/* ✅ تجميع زرَي الاستيراد/التصدير في صف واحد دائمًا */
+.io-pack{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+}
+
+/* ✅ تنسيق جذاب لزرَي التصدير/الاستيراد (بنفس هوية التصميم) */
+.row-btn.export-all{
+  border-color:#bdebe5;
+  background:linear-gradient(180deg,#eafffb,#ffffff);
+  color:#0b534b;
+  font-weight:900;
+}
+.row-btn.import-all{
+  border-color:#c7d2fe;
+  background:linear-gradient(180deg,#eef2ff,#ffffff);
+  color:#1e3a8a;
+  font-weight:900;
+}
+.row-btn.export-all:hover{background:#f1fffb}
+.row-btn.import-all:hover{background:#f3f5ff}
 /* Toast */
 .toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0c594e;color:#fff;padding:10px 14px;border-radius:999px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
@@ -506,6 +540,12 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
         <button class="row-btn" id="clearPeople" type="button">مسح الأسماء المحفوظة</button>
         <!-- زر تحميل قالب عدسة الأسماء -->
         <button class="row-btn" id="downloadTemplate" type="button">⬇️ تحميل قالب الأسماء (Excel/CSV)</button>
+<!-- ✅ تصدير/استيراد جميع بيانات الأداة -->
+<span class="io-pack">
+  <button class="row-btn export-all" id="exportAllData" type="button">⬇️ تصدير بيانات الأداة</button>
+  <button class="row-btn import-all" id="importAllDataBtn" type="button">⬆️ استيراد بيانات الأداة</button>
+  <input id="importAllInput" type="file" accept=".json,application/json" style="display:none"/>
+</span>
       </div>
 
       <div id="dropZone" class="drop">اسحب الملف هنا أو استخدم زر الاستعراض</div>
@@ -1107,7 +1147,149 @@ function downloadPeopleTemplate(){
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+/* ===== تصدير/استيراد جميع بيانات الأداة (كل مفاتيح PF_) ===== */
+function pad2(n){ return String(n).padStart(2,'0'); }
 
+function toAsciiDigits(str){
+  return String(str||'')
+    .replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)])
+    .replace(/[۰-۹]/g, d => '0123456789'['۰۱۲۳۴۵۶۷۸۹'.indexOf(d)]);
+}
+
+function getHijriStamp(){
+  try{
+    const fmt = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {year:'numeric',month:'2-digit',day:'2-digit'});
+    const h = fmt.format(new Date());
+    return toAsciiDigits(h).replace(/[\/.]/g,'-').replace(/\s+/g,'');
+  }catch{
+    return '';
+  }
+}
+
+function getLocalStamp(){
+  const d=new Date();
+  const y=d.getFullYear();
+  const m=pad2(d.getMonth()+1);
+  const da=pad2(d.getDate());
+  const hh=pad2(d.getHours());
+  const mm=pad2(d.getMinutes());
+  return `${y}-${m}-${da}_${hh}${mm}`;
+}
+
+function exportAllPF(){
+  const data = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('PF_')){
+      data[k] = localStorage.getItem(k);
+    }
+  }
+  const payload = {
+    app: "Performance-Eval-Tool",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    hijri: getHijriStamp(),
+    localStamp: getLocalStamp(),
+    data
+  };
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+
+  const hijri = payload.hijri ? `-${payload.hijri}` : '';
+  const fileName = `نسخة بيانات نموذج تقييم الأداء-${payload.localStamp}${hijri}.json`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('تم تصدير بيانات الأداة ✅');
+}
+
+function hardResetPFKeys(){
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k && k.startsWith('PF_')) keys.push(k);
+  }
+  keys.forEach(k=>localStorage.removeItem(k));
+}
+
+function refreshUIAfterImport(){
+  const dirSaved=localStorage.getItem(K_DIR);
+  const schSaved=localStorage.getItem(K_SCH);
+  const pSaved=localStorage.getItem(K_P);
+
+  if(dirSaved) $('#dirTxt').textContent = dirSaved;
+  if(schSaved) $('#schTxt').textContent = schSaved;
+  if(pSaved)   $('#sigP').textContent   = pSaved;
+
+  loadPeople();
+
+  try{
+    const s = JSON.parse(localStorage.getItem(K_SESSION)||'null');
+    if(s){
+      loadRecordIntoForm(s);
+    }else{
+      build(); recalc(); renderGoalsPrint(); snap();
+    }
+  }catch{
+    build(); recalc(); renderGoalsPrint(); snap();
+  }
+
+  renderPeople($('#searchBox')?.value || '');
+  showToast('تم الاستيراد بنجاح ✅');
+}
+
+function importAllPF(file){
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const txt = e.target.result;
+      const payload = JSON.parse(txt);
+
+      if(!payload || typeof payload !== 'object' || !payload.data || typeof payload.data !== 'object'){
+        alert('ملف غير صالح: لا يحتوي على بيانات قابلة للاستيراد.');
+        return;
+      }
+
+      const ok = confirm('سيتم استبدال بيانات الأداة الحالية بالكامل ببيانات الملف المستورد. هل تريد المتابعة؟');
+      if(!ok) return;
+
+      hardResetPFKeys();
+
+      for(const [k,v] of Object.entries(payload.data)){
+        if(k && k.startsWith('PF_')){
+          localStorage.setItem(k, (v===null || v===undefined) ? '' : String(v));
+        }
+      }
+
+      refreshUIAfterImport();
+    }catch(err){
+      alert('تعذر استيراد الملف. تأكد أنه ملف JSON صحيح.\n' + err.message);
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+/* ربط أزرار التصدير/الاستيراد داخل عدسة الأسماء */
+const exportBtn = $('#exportAllData');
+const importBtn = $('#importAllDataBtn');
+const importInp = $('#importAllInput');
+
+if(exportBtn) exportBtn.onclick = exportAllPF;
+if(importBtn && importInp){
+  importBtn.onclick = ()=> importInp.click();
+  importInp.addEventListener('change', e=>{
+    const f = e.target.files?.[0];
+    if(f) importAllPF(f);
+    importInp.value = '';
+  });
+}
 /* أحداث عدسة الأسماء */
 function openLens(){ toggleLens(true); }
 function toggleLens(show){ const m=$('#lens'); m.classList.toggle('show',!!show); m.setAttribute('aria-hidden', show?'false':'true'); }
