@@ -117,9 +117,6 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .grid4 > *{min-width:0;}
 .grid4 .lined{width:100%;}
 
-.lined{white-space:nowrap}
-.field .lined{padding-left:44px;}
-
 .field{position:relative}
 .field .lined{padding-left:44px;}
 
@@ -128,10 +125,11 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   border:1px solid #cde6df; background:#fff; color:#0c594e; border-radius:8px; padding:2px 6px; font-weight:800; cursor:pointer;
 }
 .lined{
-  height:40px;border:none;border-radius:0;padding:0 8px 0 44px;background:transparent;outline:none;
+  height:40px;border:none;border-radius:0;padding:0 8px;background:transparent;outline:none;
   font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-appearance:none;
 }
 .lined::placeholder{color:#7b8d88;font-weight:400}
+
 
 /* التخطيط للأداء (قابل للطي) */
 #goals{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fcfffe;margin:8px 0;break-inside:avoid}
