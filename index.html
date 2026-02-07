@@ -98,12 +98,13 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 
 /* صف بيانات الموظف — صف واحد بلا التفاف */
 .grid4{
-  display:grid;
   grid-template-columns:2fr 1fr 1fr 1fr;
-  gap:8px;
-  align-items:center;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
   white-space:nowrap;
 }
+.lined{white-space:nowrap}
+
 .field{position:relative}
 .lens-mini{
   position:absolute; left:6px; top:50%; transform:translateY(-50%);
@@ -365,11 +366,34 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   .toolbar{gap:6px}
 }
 @media (max-width:720px){
-  .header{grid-template-columns:1fr;row-gap:6px}
-  .hcol{align-items:center}
-  #moe{margin:4px auto}
+
+  /* ✅ الهيدر يبقى 3 أعمدة مثل سطح المكتب (يمين نصوص + وسط شعار + يسار تاريخ/نموذج) */
+  .header{
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    row-gap:0;
+    column-gap:12px;
+  }
+
+  /* ✅ تصغير الشعار للجوال بدون تغيير ترتيب الهيدر */
+  #moe{
+    width:min(140px,26vw);
+    margin:0 auto;
+  }
+
+  /* ✅ منع التفاف النصوص داخل الهيدر (مع قص لطيف عند الضيق بدل اللف) */
+  .hcol .line{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:clamp(12px,2.8vw,15px);
+    line-height:1.25;
+    max-width:100%;
+  }
+
+  /* يبقى كما هو */
   .kline{flex-direction:column;align-items:flex-start}
 }
+
 @media (max-width:600px){
   html,body{font-size:14px}
   #page{padding:10px 10px 36px}
@@ -377,8 +401,9 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   .lined{height:38px}
   .modal-card{width:94vw}
   .duo{grid-template-columns:1fr}
-  .signs{grid-template-columns:1fr}
-  .toolbar{justify-content:flex-start}
+.signs{grid-template-columns:1fr 1fr; gap:10px;}
+.toolbar{justify-content:flex-start; flex-wrap:nowrap;}
+.toolbar > *{flex:0 0 auto;}
   .overall-pill{flex-direction:column;align-items:flex-start}
   .overall-stats{align-items:flex-start}
 }
