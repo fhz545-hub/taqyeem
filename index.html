@@ -703,22 +703,15 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
     <div class="lens-body">
       <div class="lens-tools">
         <label class="filebox">
-<input id="fileInput" type="file"
-       accept=".xlsx,.xls,.xlsm,.xlsb,.xltx,.xltm,.ods,.csv,.tsv,.txt,
-               application/vnd.ms-excel,
-               application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-               application/vnd.ms-excel.sheet.macroEnabled.12,
-               application/vnd.ms-excel.sheet.binary.macroEnabled.12,
-               application/vnd.oasis.opendocument.spreadsheet,
-               text/csv,text/plain"
-       style="display:none"/>
+<input id="fileInput" type="file" accept=".xlsx,.xls,.xlsm,.xlsb,.xltx,.xltm,.ods,.csv,.tsv,.txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12,application/vnd.ms-excel.sheet.binary.macroEnabled.12,application/vnd.oasis.opendocument.spreadsheet,text/csv,text/plain" style="display:none"/>
+
           <span>📤 اختر ملف Excel/CSV</span>
           <button class="row-btn" id="pickFileBtn" type="button">استعراض</button>
         </label>
         <span id="lensInfo" class="badge">لا توجد بيانات مستوردة بعد</span>
         <button class="row-btn" id="clearPeople" type="button">مسح الأسماء المحفوظة</button>
         <!-- زر تحميل قالب عدسة الأسماء -->
-        <button class="row-btn" id="downloadTemplate" type="button">⬇️ تحميل قالب الأسماء (Excel/CSV)</button>
+<button class="row-btn" id="downloadTemplate" type="button">⬇️ تحميل قالب الأسماء (Excel)</button>
 <!-- ✅ تصدير/استيراد جميع بيانات الأداة -->
 <span class="io-pack">
   <button class="row-btn export-all" id="exportAllData" type="button">⬇️ تصدير بيانات الأداة</button>
@@ -754,26 +747,22 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
 </div>
 <!-- نافذة الفيديو العائمة (لا تمنع استخدام الصفحة) -->
 <div id="videoFloat" class="float-video" aria-hidden="true">
-<div class="fv-actions">
   <div class="fv-head">
     <span>🎬 شرح بالفيديو</span>
+
     <div class="fv-actions">
-  <button id="fvPop" class="fv-btn" type="button" title="فتح في تبويب جديد">فتح ↗</button>
+      <button id="fvPop" class="fv-btn" type="button" title="فتح في تبويب جديد">فتح ↗</button>
 
-  <!-- ✅ تكبير/تصغير واضح -->
-  <button id="fvSm"  class="fv-btn" type="button" title="تصغير النافذة">−</button>
-  <button id="fvLg"  class="fv-btn" type="button" title="تكبير النافذة">＋</button>
+      <button id="fvSm"  class="fv-btn" type="button" title="تصغير النافذة">−</button>
+      <button id="fvLg"  class="fv-btn" type="button" title="تكبير النافذة">＋</button>
 
-  <!-- ✅ تعليق/تحريك (Pin) -->
-  <button id="fvPin" class="fv-btn" type="button" title="تعليق/تحريك">📌</button>
+      <button id="fvPin" class="fv-btn" type="button" title="تعليق/تحريك">📌</button>
 
-  <!-- ✅ إعادة ضبط للمكان والحجم الافتراضي -->
-  <button id="fvReset" class="fv-btn" type="button" title="إعادة ضبط">↺</button>
+      <button id="fvReset" class="fv-btn" type="button" title="إعادة ضبط">↺</button>
 
-  <button id="fvMin" class="fv-btn" type="button" title="تصغير/إظهار">—</button>
-  <button id="fvClose" class="fv-btn" type="button" title="إغلاق">إغلاق ✕</button>
-</div>
-
+      <button id="fvMin" class="fv-btn" type="button" title="تصغير/إظهار">—</button>
+      <button id="fvClose" class="fv-btn" type="button" title="إغلاق">إغلاق ✕</button>
+    </div>
   </div>
 
   <iframe id="fvFrame"
@@ -781,6 +770,7 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
           allow="autoplay; fullscreen; picture-in-picture"
           allowfullscreen></iframe>
 </div>
+
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
