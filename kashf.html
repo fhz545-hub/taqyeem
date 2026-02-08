@@ -68,7 +68,7 @@ img{width:min(200px,34vw)}
     <div class="hcol">
       <div class="line" id="day"></div>
       <div class="line" id="date"></div>
-      <div class="line">كشف تقييم الأداء الوظيفي ١٤٤٧هـ</div>
+<div class="line" id="repTitle">كشف تقييم الأداء الوظيفي ١٤٤٧هـ</div>
     </div>
   </div>
 
@@ -138,7 +138,33 @@ function saveDB(db){localStorage.setItem(DB_KEY,JSON.stringify(db));}
 const sess=JSON.parse(localStorage.getItem('PF_session')||'{}');
 dir.textContent=sess.dir||localStorage.getItem('PF_dir')||'—';
 sch.textContent=sess.school||localStorage.getItem('PF_school')||'—';
+/* انعكاس نوع المرحلة على عنوان الكشف */
+function resolveStageLabel(s){
+  const raw = (s.stageLabel || s.stageName || s.stageText || s.stage || s.stageKey || '').toString().trim();
 
+  // 1) لو كانت الصفحة الرئيسية تحفظ النص بالعربية (أفضل حالة)
+  if (/نصف\s*سنوي|المراجعة\s*النصف\s*سنوية|مراجعة/i.test(raw)) return 'مرحلة المراجعة النصف سنوية';
+  if (/نهائي|النهائية|ختامي|التقييم\s*النهائي/i.test(raw)) return 'مرحلة تقييم الأداء الوظيفي النهائي';
+  if (/تخطيط/i.test(raw)) return 'مرحلة التخطيط';
+
+  // 2) لو كانت الصفحة الرئيسية تحفظ مفتاح/رقم
+  const k = raw.toLowerCase();
+  if (k === '2' || k.includes('stage2') || k.includes('mid') || k.includes('review') || k.includes('half')) return 'مرحلة المراجعة النصف سنوية';
+  if (k === '3' || k.includes('stage3') || k.includes('final') || k.includes('end')) return 'مرحلة تقييم الأداء الوظيفي النهائي';
+  if (k === '1' || k.includes('stage1') || k.includes('plan')) return 'مرحلة التخطيط';
+
+  // افتراضي
+  return 'تقييم الأداء الوظيفي';
+}
+
+const stageLabel = resolveStageLabel(sess);
+const reportTitle = `كشف ${stageLabel} ١٤٤٧هـ`;
+
+const rt = document.getElementById('repTitle');
+if (rt) rt.textContent = reportTitle;
+
+// (اختياري مفيد) يحدّث عنوان تبويب المتصفح أيضًا
+document.title = reportTitle;
 const db0=ensureDB();
 const principalName = sess.principal || localStorage.getItem('PF_principal') || db0.meta.principal || '—';
 db0.meta.principal = principalName; /* تخزين الاسم في قاعدة البيانات الداخلية */
