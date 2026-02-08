@@ -375,6 +375,60 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   border-radius:12px;
   margin-top:10px;
 }
+/* ===== نافذة الفيديو العائمة (CSS) ===== */
+.float-video{
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  width:min(92vw, 420px);
+  height:260px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 16px 40px rgba(0,0,0,.16);
+  z-index:1400;
+  overflow:hidden;
+  display:none;
+}
+.float-video.show{display:block}
+.float-video.min{height:44px}
+
+.fv-head{
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 10px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#e9f7f3,#fff);
+  color:#0c594e;
+  font-weight:900;
+}
+.fv-actions{display:flex;gap:6px;align-items:center}
+.fv-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:#0b534b;
+  border-radius:10px;
+  padding:4px 8px;
+  font-weight:900;
+  cursor:pointer;
+}
+.fv-btn:hover{background:#f6fbf9}
+
+#fvFrame{
+  width:100%;
+  height:calc(260px - 44px);
+  border:0;
+  display:block;
+}
+.float-video.min #fvFrame{display:none}
+
+@media print{
+  .float-video{display:none!important}
+}
+
 /* تجاودية */
 @media (max-width:920px){
   .grid4{grid-template-columns:1fr 1fr;gap:6px}
@@ -652,6 +706,23 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     </div>
   </div>
 </div>
+<!-- نافذة الفيديو العائمة (لا تمنع استخدام الصفحة) -->
+<div id="videoFloat" class="float-video" aria-hidden="true">
+  <div class="fv-head">
+    <span>🎬 شرح بالفيديو</span>
+    <div class="fv-actions">
+      <button id="fvPop" class="fv-btn" type="button" title="فتح في تبويب جديد">فتح ↗</button>
+      <button id="fvMin" class="fv-btn" type="button" title="تصغير/إظهار">—</button>
+      <button id="fvClose" class="fv-btn" type="button" title="إغلاق">إغلاق ✕</button>
+    </div>
+  </div>
+
+  <iframe id="fvFrame"
+          src=""
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen></iframe>
+</div>
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
@@ -737,11 +808,19 @@ const HELP_TEXT = `
     style="background:linear-gradient(90deg,#1e8a79,#23b8a2);color:#fff;padding:10px 18px;border:none;border-radius:10px;margin:4px;cursor:pointer;font-weight:800;">
     📘 الدليل الإرشادي لإدارة الأداء الوظيفي
   </button>
+
   <button onclick="window.open('https://drive.google.com/file/d/1dr09uQ7u5hdlghwrtpLGzFsjR35XTZfP/view','_blank')"
     style="background:linear-gradient(90deg,#0fb3b0,#16a34a);color:#fff;padding:10px 18px;border:none;border-radius:10px;margin:4px;cursor:pointer;font-weight:800;">
     🧩 الدليل الإرشادي للجدارات المهنية
   </button>
+
+  <!-- ✅ زر فيديو الشرح (هنا بالضبط) -->
+  <button id="openHelpVideo"
+    style="background:linear-gradient(90deg,#0c594e,#1e8a79);color:#fff;padding:10px 18px;border:none;border-radius:10px;margin:4px;cursor:pointer;font-weight:900;">
+    🎬 فيديو الشرح
+  </button>
 </div>
+
 
 <p style="text-align:center;margin-top:12px;font-size:14px;">
   <span style="display:inline-block;margin:6px;">
@@ -757,6 +836,50 @@ const HELP_TEXT = `
 `;
 
 $('#helpContent').innerHTML = HELP_TEXT;
+/* ===== فيديو الشرح (نافذة عائمة غير حاجبة) ===== */
+const DRIVE_VIEW_URL = "https://drive.google.com/file/d/1Z4X6_WRtB9CbDMZvfZRPelK7dO7L_JIa/view?usp=sharing";
+const DRIVE_PREVIEW_URL = "https://drive.google.com/file/d/1Z4X6_WRtB9CbDMZvfZRPelK7dO7L_JIa/preview";
+
+function openFloatVideo(){
+  const box = $('#videoFloat');
+  const frame = $('#fvFrame');
+  if(!box || !frame) return;
+
+  if(frame.getAttribute('src') !== DRIVE_PREVIEW_URL) frame.src = DRIVE_PREVIEW_URL;
+
+  box.classList.add('show');
+  box.classList.remove('min');
+  box.setAttribute('aria-hidden','false');
+}
+
+function closeFloatVideo(){
+  const box = $('#videoFloat');
+  const frame = $('#fvFrame');
+  if(!box || !frame) return;
+
+  box.classList.remove('show');
+  box.classList.remove('min');
+  box.setAttribute('aria-hidden','true');
+frame.removeAttribute('src');
+}
+
+function toggleMinVideo(){
+  const box = $('#videoFloat');
+  if(!box) return;
+  box.classList.toggle('min');
+}
+
+/* زر الفيديو داخل نافذة الشرح (لأن HELP_TEXT يُحقن ديناميكياً) */
+document.addEventListener('click', (e)=>{
+  if(e.target && (e.target.id === 'openHelpVideo' || e.target.closest('#openHelpVideo'))){
+    openFloatVideo();
+  }
+});
+
+$('#fvClose')?.addEventListener('click', closeFloatVideo);
+$('#fvMin')?.addEventListener('click', toggleMinVideo);
+$('#fvPop')?.addEventListener('click', ()=> window.open(DRIVE_VIEW_URL, '_blank'));
+
 /* ===== ربط عناوين عناصر تقييم المعلم بنافذة شرح ===== */
 
 const TEACHER_GUIDES = {
@@ -1844,7 +1967,11 @@ $('#helpFab').onclick=()=>toggleHelp(true);
 $('#closeHelp').onclick=()=>toggleHelp(false);
 $('#help').addEventListener('click',e=>{ if(e.target.id==='help') toggleHelp(false); });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ toggleHelp(false); toggleLens(false); }
+  if(e.key==='Escape'){
+    toggleHelp(false);
+    toggleLens(false);
+    closeFloatVideo();
+  }
 });
 
 /* زر "مسح" للنموذج */
