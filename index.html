@@ -287,6 +287,7 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 .input{height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff;font-weight:700;outline:none}
 .filebox{display:flex;align-items:center;gap:8px;border:1px dashed #cce7e2;background:#f8fffd;padding:8px 10px;border-radius:12px}
 .drop{border:2px dashed #b6e9df;background:#f3fffb;border-radius:12px;padding:14px;text-align:center;color:#0b534b}
+.drop.hover{border-color:var(--accent); background:#eafffb;}
 .table-wrap{border:1px solid var(--line);border-radius:12px;overflow:auto}
 .tbl{width:100%;border-collapse:collapse}
 .tbl th,.tbl td{border-bottom:1px solid var(--line);padding:8px}
@@ -338,12 +339,14 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 /* ===== شرح عناصر تقييم المعلم (Modal Guide) ===== */
 
 /* تفعيل “مؤشر الضغط” على عناوين العناصر (للمعلم فقط) */
-#tbl .item{
+/* تفعيل “مؤشر الضغط” على عناوين العناصر (للمعلم فقط) */
+body.isTeacher #tbl .item{
   cursor:pointer;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
-#tbl .item:hover{ color:#0c594e; }
+body.isTeacher #tbl .item:hover{ color:#0c594e; }
+
 
 
 /* رأس المحتوى داخل نافذة الشرح */
@@ -380,19 +383,46 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   position:fixed;
   right:14px;
   bottom:14px;
-  width:min(92vw, 420px);
-  height:260px;
+
+  /* ✅ حجم أوضح افتراضيًا */
+  width:min(92vw, 560px);
+  height:320px;
+
+  /* ✅ حدود دنيا/عليا للتكبير/التصغير */
+  min-width:280px;
+  min-height:180px;
+  max-width:96vw;
+  max-height:90vh;
+
   background:#fff;
   border:1px solid var(--line);
   border-radius:16px;
   box-shadow:0 16px 40px rgba(0,0,0,.16);
   z-index:1400;
+
   overflow:hidden;
   display:none;
+
+  /* ✅ تكبير/تصغير بالسحب (سطح مكتب) */
+  resize: both;
 }
 .float-video.show{display:block}
-.float-video.min{height:44px}
 
+/* ✅ عند التصغير نخفي الإطار ونوقف تغيير الحجم */
+.float-video.min{
+  height:44px;
+  resize:none;
+}
+
+/* ✅ وضع “مُعلّق/مثبّت”: يبقى في الركن ولا يتحرك */
+.float-video.pinned{
+  right:14px;
+  bottom:14px;
+  left:auto !important;
+  top:auto !important;
+}
+
+/* الرأس قابل للسحب للتحريك */
 .fv-head{
   height:44px;
   display:flex;
@@ -404,7 +434,14 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
   background:linear-gradient(180deg,#e9f7f3,#fff);
   color:#0c594e;
   font-weight:900;
+
+  cursor:move;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
 }
+.float-video.pinned .fv-head{cursor:default}
+
 .fv-actions{display:flex;gap:6px;align-items:center}
 .fv-btn{
   border:1px solid var(--line);
@@ -419,9 +456,10 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 
 #fvFrame{
   width:100%;
-  height:calc(260px - 44px);
+  height:calc(100% - 44px); /* ✅ يتكيّف مع أي تغيير حجم */
   border:0;
   display:block;
+  background:#000;          /* ✅ يوضح الفيديو */
 }
 .float-video.min #fvFrame{display:none}
 
@@ -665,7 +703,15 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
     <div class="lens-body">
       <div class="lens-tools">
         <label class="filebox">
-          <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" style="display:none"/>
+<input id="fileInput" type="file"
+       accept=".xlsx,.xls,.xlsm,.xlsb,.xltx,.xltm,.ods,.csv,.tsv,.txt,
+               application/vnd.ms-excel,
+               application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+               application/vnd.ms-excel.sheet.macroEnabled.12,
+               application/vnd.ms-excel.sheet.binary.macroEnabled.12,
+               application/vnd.oasis.opendocument.spreadsheet,
+               text/csv,text/plain"
+       style="display:none"/>
           <span>📤 اختر ملف Excel/CSV</span>
           <button class="row-btn" id="pickFileBtn" type="button">استعراض</button>
         </label>
@@ -708,13 +754,26 @@ tr.r1{background:linear-gradient(90deg,#fee2e2 0,#fff 60%)} tr.r2{background:lin
 </div>
 <!-- نافذة الفيديو العائمة (لا تمنع استخدام الصفحة) -->
 <div id="videoFloat" class="float-video" aria-hidden="true">
+<div class="fv-actions">
   <div class="fv-head">
     <span>🎬 شرح بالفيديو</span>
     <div class="fv-actions">
-      <button id="fvPop" class="fv-btn" type="button" title="فتح في تبويب جديد">فتح ↗</button>
-      <button id="fvMin" class="fv-btn" type="button" title="تصغير/إظهار">—</button>
-      <button id="fvClose" class="fv-btn" type="button" title="إغلاق">إغلاق ✕</button>
-    </div>
+  <button id="fvPop" class="fv-btn" type="button" title="فتح في تبويب جديد">فتح ↗</button>
+
+  <!-- ✅ تكبير/تصغير واضح -->
+  <button id="fvSm"  class="fv-btn" type="button" title="تصغير النافذة">−</button>
+  <button id="fvLg"  class="fv-btn" type="button" title="تكبير النافذة">＋</button>
+
+  <!-- ✅ تعليق/تحريك (Pin) -->
+  <button id="fvPin" class="fv-btn" type="button" title="تعليق/تحريك">📌</button>
+
+  <!-- ✅ إعادة ضبط للمكان والحجم الافتراضي -->
+  <button id="fvReset" class="fv-btn" type="button" title="إعادة ضبط">↺</button>
+
+  <button id="fvMin" class="fv-btn" type="button" title="تصغير/إظهار">—</button>
+  <button id="fvClose" class="fv-btn" type="button" title="إغلاق">إغلاق ✕</button>
+</div>
+
   </div>
 
   <iframe id="fvFrame"
@@ -847,10 +906,12 @@ function openFloatVideo(){
 
   if(frame.getAttribute('src') !== DRIVE_PREVIEW_URL) frame.src = DRIVE_PREVIEW_URL;
 
+  restoreFV(); // ✅ استرجاع الحجم/المكان/التعليق
   box.classList.add('show');
   box.classList.remove('min');
   box.setAttribute('aria-hidden','false');
 }
+
 
 function closeFloatVideo(){
   const box = $('#videoFloat');
@@ -860,8 +921,10 @@ function closeFloatVideo(){
   box.classList.remove('show');
   box.classList.remove('min');
   box.setAttribute('aria-hidden','true');
-frame.removeAttribute('src');
+
+  frame.removeAttribute('src');
 }
+
 
 function toggleMinVideo(){
   const box = $('#videoFloat');
@@ -879,7 +942,177 @@ document.addEventListener('click', (e)=>{
 $('#fvClose')?.addEventListener('click', closeFloatVideo);
 $('#fvMin')?.addEventListener('click', toggleMinVideo);
 $('#fvPop')?.addEventListener('click', ()=> window.open(DRIVE_VIEW_URL, '_blank'));
+/* ===== تحكم نافذة الفيديو: تحريك + تعليق + تكبير/تصغير + حفظ ===== */
+const K_FV = 'PF_videoFloat';
 
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+function readFV(){
+  try{ return JSON.parse(localStorage.getItem(K_FV) || '{}') || {}; }
+  catch{ return {}; }
+}
+function saveFV(state){
+  localStorage.setItem(K_FV, JSON.stringify(state||{}));
+}
+
+function currentFV(){
+  const box = $('#videoFloat');
+  const s = readFV();
+  if(!box) return s;
+
+  const r = box.getBoundingClientRect();
+  return {
+    pinned: box.classList.contains('pinned'),
+    w: Math.round(r.width),
+    h: Math.round(r.height),
+    left: box.style.left ? Math.round(parseFloat(box.style.left)) : null,
+    top:  box.style.top  ? Math.round(parseFloat(box.style.top))  : null
+  };
+}
+
+function applyPinned(on){
+  const box = $('#videoFloat');
+  const pinBtn = $('#fvPin');
+  if(!box) return;
+
+  if(on){
+    box.classList.add('pinned');
+    box.style.left = '';
+    box.style.top  = '';
+    box.style.right = '14px';
+    box.style.bottom = '14px';
+    if(pinBtn) pinBtn.textContent = '📌';
+  }else{
+    box.classList.remove('pinned');
+    const r = box.getBoundingClientRect();
+    box.style.left = clamp(r.left, 6, window.innerWidth - r.width - 6) + 'px';
+    box.style.top  = clamp(r.top,  6, window.innerHeight - r.height - 6) + 'px';
+    box.style.right = 'auto';
+    box.style.bottom = 'auto';
+    if(pinBtn) pinBtn.textContent = '🧷';
+  }
+  saveFV(currentFV());
+}
+
+function restoreFV(){
+  const box = $('#videoFloat');
+  if(!box) return;
+
+  const s = readFV();
+
+  if(s.w) box.style.width  = clamp(s.w, 280, Math.min(window.innerWidth - 12, 900)) + 'px';
+  if(s.h) box.style.height = clamp(s.h, 180, Math.min(window.innerHeight - 12, 900)) + 'px';
+
+  applyPinned(!!s.pinned);
+
+  if(!s.pinned && s.left!=null && s.top!=null){
+    const r = box.getBoundingClientRect();
+    box.style.left = clamp(s.left, 6, window.innerWidth - r.width - 6) + 'px';
+    box.style.top  = clamp(s.top,  6, window.innerHeight - r.height - 6) + 'px';
+    box.style.right = 'auto';
+    box.style.bottom = 'auto';
+  }
+}
+
+function resizeStep(dw, dh){
+  const box = $('#videoFloat');
+  if(!box || box.classList.contains('min')) return;
+
+  const r = box.getBoundingClientRect();
+  const nw = clamp(r.width + dw, 280, window.innerWidth - 12);
+  const nh = clamp(r.height + dh, 180, window.innerHeight - 12);
+  box.style.width  = Math.round(nw) + 'px';
+  box.style.height = Math.round(nh) + 'px';
+  saveFV(currentFV());
+}
+
+function resetFV(){
+  const box = $('#videoFloat');
+  if(!box) return;
+
+  box.style.width = '';
+  box.style.height = '';
+  applyPinned(true);
+  saveFV(currentFV());
+}
+
+$('#fvLg')?.addEventListener('click', ()=> resizeStep(+80, +60));
+$('#fvSm')?.addEventListener('click', ()=> resizeStep(-80, -60));
+$('#fvReset')?.addEventListener('click', resetFV);
+$('#fvPin')?.addEventListener('click', ()=>{
+  const box = $('#videoFloat');
+  if(!box) return;
+  const pinned = box.classList.contains('pinned');
+  applyPinned(!pinned);
+});
+
+/* تحريك النافذة بالسحب من الرأس */
+(function enableDrag(){
+  const box = $('#videoFloat');
+  const head = box?.querySelector('.fv-head');
+  if(!box || !head) return;
+
+  let dragging=false, offX=0, offY=0;
+
+  head.addEventListener('pointerdown', (e)=>{
+    if(e.target.closest('.fv-actions')) return;
+    if(box.classList.contains('pinned')) return;
+    if(box.classList.contains('min')) return;
+
+    dragging = true;
+    head.setPointerCapture?.(e.pointerId);
+
+    const r = box.getBoundingClientRect();
+    offX = e.clientX - r.left;
+    offY = e.clientY - r.top;
+
+    box.style.left = r.left + 'px';
+    box.style.top  = r.top  + 'px';
+    box.style.right = 'auto';
+    box.style.bottom = 'auto';
+
+    e.preventDefault();
+  });
+
+  head.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const r = box.getBoundingClientRect();
+
+    const nx = clamp(e.clientX - offX, 6, window.innerWidth  - r.width  - 6);
+    const ny = clamp(e.clientY - offY, 6, window.innerHeight - r.height - 6);
+
+    box.style.left = Math.round(nx) + 'px';
+    box.style.top  = Math.round(ny) + 'px';
+
+    saveFV(currentFV());
+  });
+
+  head.addEventListener('pointerup', ()=>{
+    dragging=false;
+    saveFV(currentFV());
+  });
+})();
+
+/* حفظ تلقائي عند تغيير الحجم بالسحب */
+(function watchResize(){
+  const box = $('#videoFloat');
+  if(!box || typeof ResizeObserver === 'undefined') return;
+
+  const ro = new ResizeObserver(()=>{
+    if(box.classList.contains('min')) return;
+    saveFV(currentFV());
+  });
+  ro.observe(box);
+})();
+
+window.addEventListener('resize', ()=>{
+  const box = $('#videoFloat');
+  if(!box || box.classList.contains('pinned')) return;
+  const r = box.getBoundingClientRect();
+  box.style.left = clamp(r.left, 6, window.innerWidth  - r.width  - 6) + 'px';
+  box.style.top  = clamp(r.top,  6, window.innerHeight - r.height - 6) + 'px';
+  saveFV(currentFV());
+});
 /* ===== ربط عناوين عناصر تقييم المعلم بنافذة شرح ===== */
 
 const TEACHER_GUIDES = {
@@ -1651,21 +1884,49 @@ function toArray(workbook){
   return rows;
 }
 function parseFile(file){
-  const reader=new FileReader();
-  reader.onload=e=>{
+  const reader = new FileReader();
+
+  const ext = (file.name || '').split('.').pop().toLowerCase();
+  const isText = ['csv','tsv','txt'].includes(ext) || /csv|text\/plain/i.test(file.type || '');
+
+  reader.onload = (e) => {
     try{
-      const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, {type:'array'});
+      let wb;
+
+      if(isText){
+        // CSV/TSV/TXT => قراءة نصية
+        let text = String(e.target.result || '');
+
+        // إزالة BOM إن وجد (مهم مع العربية في CSV)
+        if(text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+
+        const opts = { type:'string' };
+        // TSV: فصل بعلامة تبويب
+        if(ext === 'tsv') opts.FS = '\t';
+
+        wb = XLSX.read(text, opts);
+      }else{
+        // Excel بأنواعه => قراءة ثنائية
+        const data = new Uint8Array(e.target.result);
+        wb = XLSX.read(data, { type:'array' });
+      }
+
       const arr = toArray(wb);
       PEOPLE = arr;
       savePeople();
       renderPeople();
     }catch(err){
-      alert('تعذر قراءة الملف. تأكد من الصيغة والأعمدة.\n'+err.message);
+      alert('تعذر قراءة الملف. تأكد من الصيغة والأعمدة.\n' + (err?.message || err));
     }
   };
-  reader.readAsArrayBuffer(file);
+
+  if(isText){
+    reader.readAsText(file, 'utf-8');
+  }else{
+    reader.readAsArrayBuffer(file);
+  }
 }
+
 function hasSavedForPerson(p){
   const db=dbGet();
   const key=makeKey($('#schTxt').textContent.trim(), $('#model').value, $('#stage').value, (p.id||p.name||''));
@@ -1698,6 +1959,8 @@ function renderPeople(filter=''){
 }
 function loadRecordIntoForm(rec){
   if(!rec) return;
+  // ✅ ضمان وجود صفوف الجدول قبل تحميل القيم
+  if(!document.querySelector('#rows tr')){ build(); }
   if($('#model').value!==rec.modelKey){ $('#model').value=rec.modelKey; build(); }
   if($('#stage').value!==rec.stageKey){ $('#stage').value=rec.stageKey; toggleStageLock(); $('#stageTxt').textContent=stageHeaderLabel($('#stage').value); }
   $('#tName').value = rec.name || '';
@@ -1723,24 +1986,24 @@ function loadRecordIntoForm(rec){
 
 /* إنشاء وتحميل قالب عدسة الأسماء (CSV) */
 function downloadPeopleTemplate(){
-  const headers = ['الاسم','رقم الهوية','التخصص','المسمى'];
-  // إضافة صف مثال واحد اختياري (يمكن حذفه في الملف)
-  const example = [' فهد حامد','1234567890','رياضيات','معلم ممارس'];
-  const lines = [
-    headers.join(','),
-    example.join(',')
+  // قالب Excel (XLSX) — يعمل على جميع برامج الجداول ويمكن حفظه بأي امتداد لاحقًا
+  const aoa = [
+    ['الاسم','رقم الهوية','التخصص','المسمى'],
+    ['فهد حامد','1234567890','رياضيات','معلم ممارس']
   ];
-  const csvContent = '\ufeff' + lines.join('\r\n'); // BOM لدعم العربية
-  const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'قالب عدسة الأسماء - Excel.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+  // تحسينات بسيطة للعرض (اختياري وآمن)
+  ws['!cols'] = [{wch:26},{wch:16},{wch:18},{wch:16}];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'الأسماء');
+
+  // تنزيل ملف XLSX
+  XLSX.writeFile(wb, 'قالب عدسة الأسماء.xlsx', {bookType:'xlsx', compression:true});
 }
+
 /* ===== تصدير/استيراد جميع بيانات الأداة (كل مفاتيح PF_) ===== */
 function pad2(n){ return String(n).padStart(2,'0'); }
 
@@ -1893,6 +2156,31 @@ $('#pickFileBtn').onclick=()=>$('#fileInput').click();
 $('#fileInput').addEventListener('change',e=>{
   const f=e.target.files?.[0]; if(f) parseFile(f);
 });
+/* ✅ تفعيل السحب والإفلات لمنطقة #dropZone */
+const dz = $('#dropZone');
+if(dz){
+  ['dragenter','dragover'].forEach(ev=>{
+    dz.addEventListener(ev, (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      dz.classList.add('hover');
+    });
+  });
+
+  ['dragleave','drop'].forEach(ev=>{
+    dz.addEventListener(ev, (e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      dz.classList.remove('hover');
+    });
+  });
+
+  dz.addEventListener('drop', (e)=>{
+    const f = e.dataTransfer?.files?.[0];
+    if(f) parseFile(f);
+  });
+}
+
 $('#searchBox').addEventListener('input',e=>renderPeople(e.target.value));
 $('#peopleTbl').addEventListener('click',e=>{
   const btn=e.target.closest('button.row-btn'); if(!btn) return;
@@ -1925,7 +2213,16 @@ if(tplBtn){ tplBtn.onclick = downloadPeopleTemplate; }
 /* أحداث عامة */
 document.addEventListener('change',e=>{
   if(e.target.classList.contains('g')){recalc();snap();}
-  if(e.target.id==='model'){build(); renderPeople($('#searchBox').value||'');}
+if(e.target.id==='model'){
+  // ✅ منع ترحيل نصوص القوة/التحسين من نموذج سابق
+  editedStrengths=false; 
+  editedImproves=false;
+  $('#strengths').textContent='—';
+  $('#improves').textContent='—';
+
+  build();
+  renderPeople($('#searchBox').value||'');
+}
   if(e.target.id==='stage'){
     toggleStageLock();
     $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
