@@ -66,8 +66,8 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
     </div>
     <img src="وزارة التعليم.png" alt="">
     <div class="hcol">
-      <div class="line" id="day"></div>
-      <div class="line" id="date"></div>
+      <div class="line" id="daydate"></div>
+
 <div class="line" id="repTitle">كشف تقييم الأداء الوظيفي ١٤٤٧هـ</div>
     </div>
   </div>
@@ -119,8 +119,8 @@ const $=s=>document.querySelector(s);
 
 /* رأس الصفحة */
 const now=new Date(),days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-day.textContent=days[now.getDay()];
-date.textContent=now.toLocaleDateString('ar-SA');
+document.getElementById('daydate').textContent = `${days[now.getDay()]} — ${now.toLocaleDateString('ar-SA')}`;
+
 
 /* قاعدة بيانات موحّدة */
 const DB_KEY='PF_DB';
