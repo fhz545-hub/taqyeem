@@ -657,7 +657,7 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
     </div>
     <input id="tId" class="lined" inputmode="numeric" placeholder="رقم الهوية" autocomplete="off">
     <input id="tSpec" class="lined" placeholder="التخصص" autocomplete="off">
-    <input id="tTitle" class="lined" placeholder="المرتبة" autocomplete="off" value="معلم ممارس">
+    <input id="tTitle" class="lined" placeholder="الرتبة" autocomplete="off" value="معلم ممارس">
   </div>
 <!-- ✅ بيانات الموظف للطباعة بشكل رسمي (لا تؤثر على عدسة الأسماء) -->
 <div id="empPrint" class="emp-print" aria-hidden="true"></div>
@@ -771,7 +771,7 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
       <div class="table-wrap" style="margin-top:10px">
         <table class="tbl" id="peopleTbl" aria-label="قائمة الأسماء">
           <thead>
-            <tr><th>الاسم</th><th>الهوية</th><th>التخصص</th><th>المسمى</th><th>الحالة</th><th>اختيار</th></tr>
+            <tr><th>الاسم</th><th>الهوية</th><th>التخصص</th><th>الرتبة</th><th>الحالة</th><th>اختيار</th></tr>
           </thead>
           <tbody id="peopleBody"><tr><td colspan="6" style="text-align:center;color:#678">— لا توجد بيانات —</td></tr></tbody>
         </table>
@@ -1786,7 +1786,7 @@ function renderEmpPrint(){
       <span class="sep">|</span>
       <span class="hdr">التخصص:</span> <span class="val">${spec}</span>
       <span class="sep">|</span>
-      <span class="hdr">المرتبة:</span> <span class="val">${title}</span>
+      <span class="hdr">الرتبة:</span> <span class="val">${title}</span>
     </div>
   `;
 }
@@ -1914,8 +1914,7 @@ function mapHeaders(cols){
     name:['الاسم','اسم','اسم المعلم','اسم الموظف','name','full name'],
     id:['الهوية','رقم الهوية','السجل المدني','id','national id'],
     spec:['التخصص','المادة','التخصص الدراسي','specialty','subject','major'],
-    title:['المسمى','المسمى الوظيفي','الوظيفة','job title','title']
-  };
+title:['الرتبة','الرتبة الوظيفي','الوظيفة','الرتبة','الرتبة الوظيفية','job title','title']  };
   const idx={name:-1,id:-1,spec:-1,title:-1};
   cols.forEach((h,i)=>{
     const k=norm(h);
@@ -2047,9 +2046,9 @@ function loadRecordIntoForm(rec){
 function downloadPeopleTemplate(){
   // قالب Excel (XLSX) — يعمل على جميع برامج الجداول ويمكن حفظه بأي امتداد لاحقًا
   const aoa = [
-    ['الاسم','رقم الهوية','التخصص','المسمى'],
-    ['فهد حامد','1234567890','رياضيات','معلم ممارس']
-  ];
+  ['اسم الموظف','رقم الهوية','التخصص','الرتبة'],
+  ['فهد حامد','1234567890','رياضيات','معلم ممارس']
+];
 
   const ws = XLSX.utils.aoa_to_sheet(aoa);
 
