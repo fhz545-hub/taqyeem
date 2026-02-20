@@ -116,20 +116,61 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 /* ✅ ضروري حتى يعمل القص (...) داخل الشبكة بشكل صحيح */
 .grid4 > *{min-width:0;}
 .grid4 .lined{width:100%;}
+/* ✅ بطاقة بيانات الموظف للطباعة (سطر رسمي مضغوط بدون تجزئة) */
+.emp-print{
+  display:none;
+  margin:2px 0 6px;     /* ✅ حيز صغير جدًا */
+  padding:0;            /* ✅ بدون حشوات */
+  border:0;             /* ✅ بدون إطار */
+  background:transparent;
+}
 
+.emp-print .emp-line{
+  font-size:12px;
+  line-height:1.35;
+  white-space:normal;   /* ✅ يسمح بالالتفاف كسطر واحد عند الحاجة بدون مربعات */
+}
+
+.emp-print .hdr{
+  font-weight:900;
+  color:#0c594e;
+}
+
+.emp-print .val{
+  font-weight:800;
+  color:var(--ink);
+}
+
+.emp-print .sep{
+  color:#7b8d88;
+  font-weight:800;
+  margin:0 6px;
+}
+/* ✅ إعادة تنسيق عدسة الأسماء (لا علاقة له بالطباعة) */
 .field{position:relative}
 .field .lined{padding-left:44px;}
 
 .lens-mini{
-  position:absolute; left:6px; top:50%; transform:translateY(-50%);
-  border:1px solid #cde6df; background:#fff; color:#0c594e; border-radius:8px; padding:2px 6px; font-weight:800; cursor:pointer;
+  position:absolute;
+  left:6px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:5;               /* ✅ مهم */
+  border:1px solid #cde6df;
+  background:#fff;
+  color:#0c594e;
+  border-radius:8px;
+  padding:2px 6px;
+  font-weight:800;
+  cursor:pointer;
 }
+
+/* ✅ هنا يبدأ تنسيق الحقل بشكل طبيعي */
 .lined{
   height:40px;border:none;border-radius:0;padding:0 8px;background:transparent;outline:none;
   font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-appearance:none;
 }
 .lined::placeholder{color:#7b8d88;font-weight:400}
-
 
 /* التخطيط للأداء (قابل للطي) */
 #goals{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fcfffe;margin:8px 0;break-inside:avoid}
@@ -528,7 +569,8 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
   #page{padding:0}
   @page{size:A4;margin:10mm}
   html,body{font-size:12.6px;line-height:1.55}
-  .grid4{gap:6px; grid-template-columns:2fr 1fr 1fr 1fr !important; white-space:nowrap}
+    .emp-print{display:block}
+  .grid4{display:none!important}
   .lined{height:28px;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #goals .goalrow, #goalChips, #goals .hint{display:none!important}
   .goals-print{display:block}
@@ -610,14 +652,15 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
   <!-- بيانات الموظف -->
   <div class="grid4">
     <div class="field">
-      <input id="tName" class="lined" placeholder="اسم شاغل الوظيفة" autocomplete="off">
+      <input id="tName" class="lined" placeholder="اسم الموظف" autocomplete="off">
       <button id="lensMini" class="lens-mini noprint" type="button" title="عدسة الأسماء">🔎</button>
     </div>
     <input id="tId" class="lined" inputmode="numeric" placeholder="رقم الهوية" autocomplete="off">
     <input id="tSpec" class="lined" placeholder="التخصص" autocomplete="off">
-    <input id="tTitle" class="lined" placeholder="المسمى" autocomplete="off" value="معلم ممارس">
+    <input id="tTitle" class="lined" placeholder="المرتبة" autocomplete="off" value="معلم ممارس">
   </div>
-
+<!-- ✅ بيانات الموظف للطباعة بشكل رسمي (لا تؤثر على عدسة الأسماء) -->
+<div id="empPrint" class="emp-print" aria-hidden="true"></div>
   <!-- التخطيط للأداء (قابل للطي) -->
   <section id="goals">
     <div class="goals-head">
@@ -1725,7 +1768,29 @@ function build(){
   toggleStageLock();
   recalc(); snap();
 }
+/* ✅ بطاقة بيانات الموظف للطباعة (رسمية بعناوين ثابتة) */
+function renderEmpPrint(){
+  const box = document.querySelector('#empPrint');
+  if(!box) return;
 
+  const name  = cleanText(document.querySelector('#tName').value)  || '—';
+  const id    = cleanText(document.querySelector('#tId').value)    || '—';
+  const spec  = cleanText(document.querySelector('#tSpec').value)  || '—';
+  const title = cleanText(document.querySelector('#tTitle').value) || '—';
+
+    box.innerHTML = `
+    <div class="emp-line">
+      <span class="hdr">اسم الموظف:</span> <span class="val">${name}</span>
+      <span class="sep">|</span>
+      <span class="hdr">رقم الهوية:</span> <span class="val">${toAsciiDigits(id)}</span>
+      <span class="sep">|</span>
+      <span class="hdr">التخصص:</span> <span class="val">${spec}</span>
+      <span class="sep">|</span>
+      <span class="hdr">المرتبة:</span> <span class="val">${title}</span>
+    </div>
+  `;
+}
+window.addEventListener('beforeprint', renderEmpPrint);
 /* شريط عرض الأهداف للطباعة */
 function readGoal(n){ return {t:$('#g'+n).value.trim(), i:$('#g'+n+'i').value.trim(), v:$('#g'+n+'t').value.trim()}; }
 function renderGoalsPrint(){
@@ -1808,6 +1873,7 @@ function recalc(){
 /* حفظ لقطة */
 function snap(){
   renderGoalsPrint();
+renderEmpPrint();
   const rows=$$('#rows tr').map(tr=>({name:tr.querySelector('.item').textContent,w:+tr.dataset.w,v:+tr.querySelector('.g').value}));
   const data={
     dir:$('#dirTxt').textContent.trim(), school:$('#schTxt').textContent.trim(),
@@ -2246,6 +2312,7 @@ $('#dlelBtn').onclick=openDlel;
 function smartPrint(){
   const g = document.querySelector('.grid4');
   g.style.gridTemplateColumns='2fr 1fr 1fr 1fr';
+  renderEmpPrint();
   snap();
   window.print();
 }
