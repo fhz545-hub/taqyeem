@@ -20,8 +20,46 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   grid-template-columns:1fr auto 1fr;
   align-items:center;
   text-align:center;
-  margin-bottom:8px;
-  position:relative
+  margin-bottom:10px;   /* مسافة بعد الهيدر */
+  padding-bottom:10px;  /* مساحة للخط */
+  position:relative;
+}
+/* ✅ خط أفقي مستقيم طويل تحت الهيدر (من اليمين إلى اليسار) */
+.header::after{
+  content:"";
+  position:absolute;
+  right:0;
+  left:0;
+  bottom:0;
+  height:2px;              /* نحيف جدًا */
+  background:var(--moe);   /* نفس هوية الوزارة */
+  opacity:.95;
+}
+
+/* للجوال */
+@media (max-width:600px){
+  .header-vline{
+    width:1px;
+    height:42px;
+    margin:0 auto 8px;
+  }
+}
+
+@media print{
+  .header-vline{
+    width:1.5px;
+    height:26px;
+    margin:0 auto 6px;
+  }
+}
+
+/* للطباعة */
+@media print{
+  .header-vline{
+    width:3px;
+    height:18px;
+    margin:0 auto 6px;
+  }
 }
 .hcol{display:flex;flex-direction:column;gap:2px;align-items:center}
 .hcol .line{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--moe-d)}
@@ -638,7 +676,7 @@ body.isTeacher #tbl .item:hover{ color:#0c594e; }
       <button id="helpFab" class="help-fab noprint" title="الشرح">?</button>
     </div>
   </div>
-
+  <div class="header-vline" aria-hidden="true"></div>
   <!-- الأدوات -->
   <div class="toolbar">
     <div class="sel">
