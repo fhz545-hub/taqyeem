@@ -40,7 +40,9 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   max-width:44px;
   text-align:center;
   font-weight:800;
-}/* تذييل: في الوسط + خط متقطع تحت الاسم */
+}
+
+/* تذييل: في الوسط + خط متقطع تحت الاسم */
 .approver{margin-top:16px;text-align:center}
 .approver .title{color:var(--moe-d);font-weight:800}
 .pname{font-weight:800;color:var(--moe-d)}
@@ -199,36 +201,55 @@ function delOne(key){
 }
 
 function render(){
-  const a=box(), tb=body; tb.innerHTML='';
-a.forEach((r,i)=>{
-    const tr=document.createElement('tr');
-   tr.innerHTML=`
-  <td class="w-seq">${i+1}</td>
-  <td>${r.name}</td>
-      <td class="w-id">${r.id||''}</td>
-      <td>${r.spec||''}</td>
+  const a = box();
+  const tb = document.getElementById('body');
+  tb.innerHTML = '';
+
+  a.forEach((r, i) => {
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td class="w-seq">${i + 1}</td>
+      <td>${r.name}</td>
+      <td class="w-id">${r.id || ''}</td>
+      <td>${r.spec || ''}</td>
       <td style="text-align:center">${(+r.avg).toFixed(2)}</td>
       <td style="text-align:center">${(+r.total).toFixed(0)}%</td>
       <td><div class="sign"></div></td>
       <td class="no-print" style="text-align:center">
         <button class="btn warn" data-k="${r.key}">حذف</button>
-      </td>`;
+      </td>
+    `;
+
     tb.appendChild(tr);
   });
 
   // أحداث الحذف الفردي
-  tb.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>delOne(b.getAttribute('data-k')));
+  tb.querySelectorAll('button[data-k]').forEach(b => {
+    b.onclick = () => delOne(b.getAttribute('data-k'));
+  });
 
   // ملخص
-  document.getElementById('c_all').textContent=a.length;
-  const cnt={1:0,2:0,3:0,4:0,5:0}; let sA=0,sP=0;
-  a.forEach(r=>{const g=Math.max(1,Math.min(5,Math.round(+r.avg)));cnt[g]++; sA+=+r.avg; sP+=+r.total;});
-  const avg=a.length? sA/a.length : 0, pct=a.length? Math.round(sP/a.length) : 0;
-  document.getElementById('avg').textContent=avg.toFixed(2)+' / 5';
-  document.getElementById('avgPct').textContent=pct+'%';
-  document.getElementById('c5').textContent=cnt[5];
-  document.getElementById('c4').textContent=cnt[4];
-  document.getElementById('c321').textContent=`${cnt[3]}/${cnt[2]}/${cnt[1]}`;
+  document.getElementById('c_all').textContent = a.length;
+
+  const cnt = {1:0, 2:0, 3:0, 4:0, 5:0};
+  let sA = 0, sP = 0;
+
+  a.forEach(r => {
+    const g = Math.max(1, Math.min(5, Math.round(+r.avg)));
+    cnt[g]++;
+    sA += +r.avg;
+    sP += +r.total;
+  });
+
+  const avg = a.length ? sA / a.length : 0;
+  const pct = a.length ? Math.round(sP / a.length) : 0;
+
+  document.getElementById('avg').textContent = avg.toFixed(2) + ' / 5';
+  document.getElementById('avgPct').textContent = pct + '%';
+  document.getElementById('c5').textContent = cnt[5];
+  document.getElementById('c4').textContent = cnt[4];
+  document.getElementById('c321').textContent = `${cnt[3]}/${cnt[2]}/${cnt[1]}`;
 }
 
 document.getElementById('add').onclick=addFromSession;
