@@ -35,8 +35,12 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
 .table th{background:var(--moe);color:#fff}
 .w-id{width:130px;max-width:130px}
 .sign{height:26px;border-bottom:1px dashed #a9c5bf}
-
-/* تذييل: في الوسط + خط متقطع تحت الاسم */
+.w-seq{
+  width:44px;
+  max-width:44px;
+  text-align:center;
+  font-weight:800;
+}/* تذييل: في الوسط + خط متقطع تحت الاسم */
 .approver{margin-top:16px;text-align:center}
 .approver .title{color:var(--moe-d);font-weight:800}
 .pname{font-weight:800;color:var(--moe-d)}
@@ -92,16 +96,17 @@ html,body{margin:0;background:#fff;color:var(--ink);font-family:"Tajawal";font-s
   <!-- جدول الكشف -->
   <table class="table" id="tbl">
     <thead>
-      <tr>
-        <th>الاسم</th>
-        <th class="w-id">الهوية</th>
-        <th>التخصص</th>
-        <th>مستوى الأداء (من 5)</th>
-        <th>مؤشر الإنجاز %</th>
-        <th>توقيع المعلم</th>
-        <th class="no-print">حذف</th>
-      </tr>
-    </thead>
+  <tr>
+    <th class="w-seq">م</th>
+    <th>الاسم</th>
+    <th class="w-id">الهوية</th>
+    <th>التخصص</th>
+    <th>مستوى الأداء (من 5)</th>
+    <th>مؤشر الإنجاز %</th>
+    <th>توقيع المعلم</th>
+    <th class="no-print">حذف</th>
+  </tr>
+</thead>
     <tbody id="body"></tbody>
   </table>
 
@@ -195,10 +200,11 @@ function delOne(key){
 
 function render(){
   const a=box(), tb=body; tb.innerHTML='';
-  a.forEach(r=>{
+a.forEach((r,i)=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${r.name}</td>
+   tr.innerHTML=`
+  <td class="w-seq">${i+1}</td>
+  <td>${r.name}</td>
       <td class="w-id">${r.id||''}</td>
       <td>${r.spec||''}</td>
       <td style="text-align:center">${(+r.avg).toFixed(2)}</td>
