@@ -2787,13 +2787,26 @@ function recalc(){
     $('#strengths').textContent = s || (cleanText($('#strengths').textContent)||'—');
   }
 
-  const currentImp = cleanText($('#improves').textContent);
-  const sourceList = (editedImproves && currentImp && currentImp!=='—')
-    ? [currentImp, ...improves]
-    : improves;
-  const mergedImp = joinSlashLine(sourceList);
-  $('#improves').textContent = mergedImp || (currentImp || '—');
+ const maxImproveItems =
+  total >= 90 ? 1 :
+  total >= 80 ? 2 :
+  total >= 70 ? 3 :
+  5;
+
+const autoImproves = improves.slice(0, maxImproveItems);
+
+if(!editedImproves){
+  const mergedImp = joinSlashLine(autoImproves);
+
+  $('#improves').textContent =
+    (mergedImp && mergedImp !== '—')
+      ? mergedImp
+      : (total >= 80
+          ? '• لا توجد فجوات أداء جوهرية، ويُوصى بالاستمرار في التطوير المهني وفق احتياج المعلم.'
+          : '—');
 }
+
+} // ✅ إغلاق دالة recalc هنا
 
 /* حفظ لقطة */
 function snap(){
