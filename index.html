@@ -3227,10 +3227,39 @@ $('#peopleTbl').addEventListener('click',e=>{
   const db=dbGet();
   const key=makeKey($('#schTxt').textContent.trim(), $('#model').value, $('#stage').value, (p.id||p.name||''));
   const rec = db.find(x=>x._key===key);
-  if(rec){ loadRecordIntoForm(rec); }
-  else { recalc(); snap(); }
 
-  toggleLens(false);
+if(rec){
+  loadRecordIntoForm(rec);
+}else{
+  // ✅ تصفير التقويم عند اختيار معلم لا يوجد له سجل محفوظ
+  editedStrengths = false;
+  editedImproves  = false;
+
+  $$('.g').forEach(s => s.value = '3');
+
+  $('#strengths').textContent = '—';
+  $('#improves').textContent  = '—';
+
+  $('#g1').value  = '';
+  $('#g1i').value = '';
+  $('#g1t').value = '';
+  $('#g2').value  = '';
+  $('#g2i').value = '';
+  $('#g2t').value = '';
+  $('#g3').value  = '';
+  $('#g3i').value = '';
+  $('#g3t').value = '';
+
+  if($('#stage').value === 'first'){
+    autoFillGoals();
+  }
+
+  renderGoalsPrint();
+  recalc();
+  snap();
+}
+
+toggleLens(false);
 });
 
 /* مسح الأسماء */
