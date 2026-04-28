@@ -2782,10 +2782,10 @@ function recalc(){
   $('#overallPercent').textContent = 'الدرجة النسبية: ' + total.toFixed(0) + '%';
   $('#overallAvg').textContent     = 'متوسط ' + avg.toFixed(2) + ' / 5';
 
-  if(!editedStrengths){
-    const s = joinSlashLine(strengths);
-    $('#strengths').textContent = s || (cleanText($('#strengths').textContent)||'—');
-  }
+ if(!editedStrengths){
+  const s = joinSlashLine(strengths);
+  $('#strengths').textContent = s || '—';
+}
 
  const maxImproveItems =
   total >= 90 ? 1 :
@@ -2806,7 +2806,7 @@ if(!editedImproves){
           : '—');
 }
 
-} // ✅ إغلاق دالة recalc هنا
+} // ✅ إغلاق دالة recalc
 
 /* حفظ لقطة */
 function snap(){
@@ -2828,10 +2828,44 @@ renderEmpPrint();
   return data;
 }
 
-/* فتح الصفحات */
-function openGap(){ const snapData=snap(); upsertRecord(snapData); window.open('gap.html','_blank'); }
-function openArch(){ const snapData=snap(); upsertRecord(snapData); window.open('kashf.html','_blank'); }
-function openDlel(){ const snapData=snap(); upsertRecord(snapData); window.open('dlel.html','_blank'); }
+/* التحقق من وجود اسم أو هوية قبل أي حفظ أو فتح صفحة مرتبطة */
+function ensureEmployeeIdentity(){
+  const name = $('#tName').value.trim();
+  const id   = $('#tId').value.trim();
+
+  if(!name && !id){
+    alert('يرجى إدخال اسم الموظف أو رقم الهوية قبل المتابعة.');
+    $('#tName').focus();
+    return false;
+  }
+
+  return true;
+}
+
+/* فتح الصفحات المرتبطة بعد التحقق */
+function openGap(){
+  if(!ensureEmployeeIdentity()) return;
+
+  const snapData = snap();
+  upsertRecord(snapData);
+  window.open('gap.html','_blank');
+}
+
+function openArch(){
+  if(!ensureEmployeeIdentity()) return;
+
+  const snapData = snap();
+  upsertRecord(snapData);
+  window.open('kashf.html','_blank');
+}
+
+function openDlel(){
+  if(!ensureEmployeeIdentity()) return;
+
+  const snapData = snap();
+  upsertRecord(snapData);
+  window.open('dlel.html','_blank');
+}
 
 /* ===== عدسة الأسماء ===== */
 let PEOPLE = [];
@@ -3219,13 +3253,18 @@ if(e.target.id==='model'){
   build();
   renderPeople($('#searchBox').value||'');
 }
-  if(e.target.id==='stage'){
-    toggleStageLock();
-    $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
-    if(e.target.value==='first'){autoFillGoals();}
-    snap();
-    renderPeople($('#searchBox').value||'');
+ if(e.target.id==='stage'){
+  toggleStageLock();
+  $('#stageTxt').textContent = stageHeaderLabel($('#stage').value);
+
+  if(e.target.value==='first'){
+    autoFillGoals();
+    showToast('مرحلة التخطيط للأداء: لا يتم تعديل درجات التقييم في هذه المرحلة.');
   }
+
+  snap();
+  renderPeople($('#searchBox').value||'');
+}
   if(['g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t'].includes(e.target.id)){ renderGoalsPrint(); snap(); }
 });
 
@@ -3235,7 +3274,17 @@ function showToast(msg){
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1400);
 }
 $('#saveBtn').onclick=()=>{
-  const data=snap(); upsertRecord(data);
+  const name = $('#tName').value.trim();
+  const id   = $('#tId').value.trim();
+
+  if(!name && !id){
+    alert('يرجى إدخال اسم الموظف أو رقم الهوية قبل الحفظ.');
+    $('#tName').focus();
+    return;
+  }
+
+  const data = snap();
+  upsertRecord(data);
   renderPeople($('#searchBox').value||'');
   showToast('تم الحفظ وإبراز الاسم في العدسة ✅');
 };
