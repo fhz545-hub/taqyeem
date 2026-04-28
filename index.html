@@ -3210,28 +3210,8 @@ if(dz){
     if(f) parseFile(f);
   });
 }
-
-$('#searchBox').addEventListener('input',e=>renderPeople(e.target.value));
-$('#peopleTbl').addEventListener('click',e=>{
-  const btn=e.target.closest('button.row-btn'); if(!btn) return;
-  const i=+btn.dataset.i;
-  const q=norm($('#searchBox').value);
-  const rows = PEOPLE.filter(p=>{
-    if(!q) return true;
-    return norm(p.name).includes(q) || norm(p.id).includes(q) || norm(p.spec).includes(q) || norm(p.title).includes(q);
-  });
-  const p=rows[i]; if(!p) return;
-
-  $('#tName').value=p.name||''; $('#tId').value=p.id||''; $('#tSpec').value=p.spec||''; $('#tTitle').value=p.title||'معلم ممارس';
-
-  const db=dbGet();
-  const key=makeKey($('#schTxt').textContent.trim(), $('#model').value, $('#stage').value, (p.id||p.name||''));
-  const rec = db.find(x=>x._key===key);
-
-if(rec){
-  loadRecordIntoForm(rec);
-}else{
-  // ✅ تصفير التقويم عند اختيار معلم لا يوجد له سجل محفوظ
+/* ✅ تصفير التقويم عند اختيار معلم لا يوجد له سجل محفوظ */
+function resetEvaluationForNewPerson(){
   editedStrengths = false;
   editedImproves  = false;
 
@@ -3240,15 +3220,10 @@ if(rec){
   $('#strengths').textContent = '—';
   $('#improves').textContent  = '—';
 
-  $('#g1').value  = '';
-  $('#g1i').value = '';
-  $('#g1t').value = '';
-  $('#g2').value  = '';
-  $('#g2i').value = '';
-  $('#g2t').value = '';
-  $('#g3').value  = '';
-  $('#g3i').value = '';
-  $('#g3t').value = '';
+  ['g1','g1i','g1t','g2','g2i','g2t','g3','g3i','g3t'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
 
   if($('#stage').value === 'first'){
     autoFillGoals();
@@ -3256,12 +3231,52 @@ if(rec){
 
   renderGoalsPrint();
   recalc();
-  snap();
 }
 
-toggleLens(false);
-});
+$('#searchBox').addEventListener('input',e=>renderPeople(e.target.value));
 
+$('#peopleTbl').addEventListener('click',e=>{
+  const btn = e.target.closest('button.row-btn');
+  if(!btn) return;
+
+  const i = +btn.dataset.i;
+  const q = norm($('#searchBox').value);
+
+  const rows = PEOPLE.filter(p=>{
+    if(!q) return true;
+    return norm(p.name).includes(q) ||
+           norm(p.id).includes(q) ||
+           norm(p.spec).includes(q) ||
+           norm(p.title).includes(q);
+  });
+
+  const p = rows[i];
+  if(!p) return;
+
+  $('#tName').value  = p.name  || '';
+  $('#tId').value    = p.id    || '';
+  $('#tSpec').value  = p.spec  || '';
+  $('#tTitle').value = p.title || 'معلم ممارس';
+
+  const db = dbGet();
+  const key = makeKey(
+    $('#schTxt').textContent.trim(),
+    $('#model').value,
+    $('#stage').value,
+    (p.id || p.name || '')
+  );
+
+  const rec = db.find(x=>x._key===key);
+
+  if(rec){
+    loadRecordIntoForm(rec);
+  }else{
+    resetEvaluationForNewPerson();
+    snap();
+  }
+
+  toggleLens(false);
+});
 /* مسح الأسماء */
 $('#clearPeople').onclick=()=>{ if(confirm('مسح قائمة الأسماء المحفوظة؟')){ PEOPLE=[]; savePeople(); renderPeople(); } };
 
