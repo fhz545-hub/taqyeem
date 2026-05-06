@@ -2069,7 +2069,22 @@ const LEADERS_GUIDES = {
       "يُفضّل إظهار المتابعة المستمرة لا الإجراء لمرة واحدة."
     ]
   }
-};const TEACHER_GUIDES = {
+};
+
+Object.assign(LEADERS_GUIDES, {
+  "يشارك في إعداد خطة للتطوير المهني": LEADERS_GUIDES["يشارك في إعداد خطة التطوير المهني"],
+  "يقدم التغذية الراجعة ويتابع تحقق مؤشرات الأداء الوظيفي": LEADERS_GUIDES["يتابع التغذية الراجعة ونتائج تحقق مؤشرات الأداء الوظيفي"],
+  "يهيئ بيئة مدرسية آمنة ومحفزة على التعلم": LEADERS_GUIDES["تهيئة بيئة مدرسية آمنة ومحفزة على التعلم"],
+  "ينفذ إجراءات عملية لتحسين نتائج التعلم": LEADERS_GUIDES["ينفذ إجراءات علمية لتحسين نتائج التعلم"],
+  "يسهم في تحسين مستوى أداء المدرسة": LEADERS_GUIDES["يساهم في رفع مستوى أداء المدرسة"],
+  "يشارك في إعداد الخطط المدرسية اللازمة": LEADERS_GUIDES["يشارك في إعداد الخطط المدرسية"],
+  "يتابع تنفيذ الخطط المدرسية بمختلف أنواعها": LEADERS_GUIDES["يتابع تنفيذ الخطط المدرسية"],
+  "يهيئ الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية": LEADERS_GUIDES["يوفر الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية"],
+  "يوظف المنصات الرقمية وتطبيقاتها المعتمدة في دعم عمليات التعليم والتعلم": LEADERS_GUIDES["يوظف المنصات الرقمية وتطبيقاتها التعليمية في دعم عمليات التعليم والتعلم"],
+  "يتابع تعزيز السلوك الإيجابي للطلاب": LEADERS_GUIDES["يعزز السلوك الإيجابي للطلاب"]
+});
+
+const TEACHER_GUIDES = {
   "أداء الواجبات الوظيفية": {
     w: 10,
     brief: "يقيس الالتزام بالأنظمة والدوام وجودة تنفيذ المهام الصفية والمدرسية والتكليفات.",
@@ -2535,14 +2550,25 @@ RUBRICS.principal=[
   {name:"متابعة تنفيذ الخطط",w:5},{name:"المشاركة في الأنشطة",w:5},{name:"توظيف المنصات الرقمية",w:5},{name:"تعزيز السلوك الإيجابي",w:5},{name:"تهيئة بيئة مدرسية آمنة ومحصنة على التعلم",w:5}
 ];
 RUBRICS.vp=[
-  {name:"أداء الواجبات الوظيفية",w:5},{name:"التفاعل مع المجتمع المهني",w:5},{name:"التفاعل مع أولياء الأمور",w:5},
-  {name:"مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",w:5},{name:"يدعم ويشارك في المبادرات النوعية",w:5},{name:"يتخذ إجراءات تربوية تحقق الانضباط المدرسي",w:5},
-  {name:"يدير الموارد في المدرسة بكفاءة",w:5},{name:"يشارك في إعداد خطة التطوير المهني",w:5},{name:"يتابع التغذية الراجعة ونتائج تحقق مؤشرات الأداء الوظيفي",w:5},
-  {name:"يدعم تنفيذ برامج التطوير المهني",w:5},{name:"يقيم أداء منسوبي المدرسة",w:5},{name:"ينفذ إجراءات علمية لتحسين نتائج التعلم",w:10},
-  {name:"يساهم في رفع مستوى أداء المدرسة",w:5},{name:"يشارك في إعداد الخطط المدرسية",w:5},{name:"يتابع تنفيذ الخطط المدرسية",w:5},
-  {name:"يوفر الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية",w:5},
-  {name:"يوظف المنصات الرقمية وتطبيقاتها التعليمية في دعم عمليات التعليم والتعلم",w:5},
-  {name:"يعزز السلوك الإيجابي للطلاب",w:5},{name:"تهيئة بيئة مدرسية آمنة ومحفزة على التعلم",w:5}
+  {code:"vp_duties",name:"أداء الواجبات الوظيفية",w:5},
+  {code:"vp_professional_community",name:"التفاعل مع المجتمع المهني",w:5},
+  {code:"vp_parents",name:"التفاعل مع أولياء الأمور",w:5},
+  {code:"vp_flexibility",name:"مرن وقادر على تنفيذ أعماله في ظل ظروف العمل المختلفة",w:5},
+  {code:"vp_initiatives",name:"يدعم ويشارك في المبادرات النوعية",w:10},
+  {code:"vp_discipline",name:"يتخذ إجراءات تربوية تحقق الانضباط المدرسي",w:5},
+  {code:"vp_resources",name:"يدير الموارد في المدرسة بكفاءة",w:5},
+  {code:"vp_pd_plan",name:"يشارك في إعداد خطة للتطوير المهني",w:5},
+  {code:"vp_feedback_indicators",name:"يقدم التغذية الراجعة ويتابع تحقق مؤشرات الأداء الوظيفي",w:5},
+  {code:"vp_pd_programs",name:"يدعم تنفيذ برامج التطوير المهني",w:5},
+  {code:"vp_safe_env_1",name:"يهيئ بيئة مدرسية آمنة ومحفزة على التعلم",w:5},
+  {code:"vp_learning_results",name:"ينفذ إجراءات عملية لتحسين نتائج التعلم",w:5},
+  {code:"vp_school_performance",name:"يسهم في تحسين مستوى أداء المدرسة",w:5},
+  {code:"vp_school_plans_prepare",name:"يشارك في إعداد الخطط المدرسية اللازمة",w:5},
+  {code:"vp_school_plans_follow",name:"يتابع تنفيذ الخطط المدرسية بمختلف أنواعها",w:5},
+  {code:"vp_activities_opportunities",name:"يهيئ الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية",w:5},
+  {code:"vp_digital_platforms",name:"يوظف المنصات الرقمية وتطبيقاتها المعتمدة في دعم عمليات التعليم والتعلم",w:5},
+  {code:"vp_positive_behavior",name:"يتابع تعزيز السلوك الإيجابي للطلاب",w:5},
+  {code:"vp_safe_env_2",name:"يهيئ بيئة مدرسية آمنة ومحفزة على التعلم",w:5}
 ];
 
 /* بنك القوة/التحسين */
@@ -2624,6 +2650,19 @@ const BANK_IMPROVE={
   "يعزز السلوك الإيجابي للطلاب":{imp:"مجتمعات صفية للتحفيز.",str:"سلوك إيجابي مستدام."}
 };
 
+Object.assign(BANK_IMPROVE, {
+  "يشارك في إعداد خطة للتطوير المهني":{imp:"مصفوفة احتياجات مبنية على بيانات.",str:"مساهمة نوعية في التخطيط."},
+  "يقدم التغذية الراجعة ويتابع تحقق مؤشرات الأداء الوظيفي":{imp:"سجل ملاحظات وتحسينات دورية.",str:"تطوير مستمر بناءً على التغذية الراجعة."},
+  "يهيئ بيئة مدرسية آمنة ومحفزة على التعلم":{imp:"فحص دوري لمخاطر السلامة وتحسين البيئة المدرسية.",str:"بيئة مدرسية آمنة ومحفزة للتعلم."},
+  "ينفذ إجراءات عملية لتحسين نتائج التعلم":{imp:"تحليل نتائج التعلم وبناء إجراءات علاجية قابلة للمتابعة.",str:"تحسينات عملية مرتبطة بنواتج التعلم."},
+  "يسهم في تحسين مستوى أداء المدرسة":{imp:"مشروعات تحسين قصيرة الأمد مرتبطة بمؤشرات.",str:"إسهام واضح في تحسين الأداء المدرسي."},
+  "يشارك في إعداد الخطط المدرسية اللازمة":{imp:"مواءمة الخطط المدرسية مع الاحتياج والمؤشرات.",str:"مشاركة فاعلة في إعداد الخطط."},
+  "يتابع تنفيذ الخطط المدرسية بمختلف أنواعها":{imp:"تقارير متابعة منتظمة لنسب الإنجاز والتعثرات.",str:"متابعة منظمة لتنفيذ الخطط."},
+  "يهيئ الفرص والإمكانات الداعمة لمشاركة الطلاب في الأنشطة الصفية وغير الصفية":{imp:"توسيع الفرص والإمكانات الداعمة للمشاركة الطلابية.",str:"تهيئة فعالة تعزز مشاركة الطلاب."},
+  "يوظف المنصات الرقمية وتطبيقاتها المعتمدة في دعم عمليات التعليم والتعلم":{imp:"خطط تشغيل للمنصات المعتمدة وتدريب ومتابعة.",str:"توظيف رقمي فاعل يدعم التعليم والتعلم."},
+  "يتابع تعزيز السلوك الإيجابي للطلاب":{imp:"متابعة برامج السلوك الإيجابي وقياس أثرها.",str:"متابعة فاعلة لتعزيز السلوك الإيجابي."}
+});
+
 /* مستويات التقدير العام (لصف التقدير أسفل الجدول) */
 const GENERAL_LEVELS = [
   {min:90, max:100, desc:"مثالي", label:"5", cls:"lv5"},
@@ -2677,7 +2716,11 @@ function stageHeaderLabel(key){
 /* بناء الجدول */
 function build(){
   const key=$('#model').value, arr=RUBRICS[key]||[]; const tb=$('#rows'); tb.innerHTML=''; let ws=0;
-  arr.forEach((it,i)=>{ws+=it.w;const tr=document.createElement('tr');tr.dataset.w=it.w;
+  arr.forEach((it,i)=>{
+  ws+=it.w;
+  const tr=document.createElement('tr');
+  tr.dataset.w=it.w;
+  tr.dataset.code=it.code || `${it.name}|${i}`;
     tr.innerHTML=`<td style="text-align:right"><b style="color:#0c594e">${i+1}</b> — <span class="item">${it.name}</span></td>
       <td>${it.w}%</td>
       <td style="text-align:center"><select class="select-mini g"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></td>
@@ -2812,7 +2855,12 @@ if(!editedImproves){
 function snap(){
   renderGoalsPrint();
 renderEmpPrint();
-  const rows=$$('#rows tr').map(tr=>({name:tr.querySelector('.item').textContent,w:+tr.dataset.w,v:+tr.querySelector('.g').value}));
+  const rows=$$('#rows tr').map((tr,i)=>({
+  code:tr.dataset.code || `${tr.querySelector('.item').textContent.trim()}|${i}`,
+  name:tr.querySelector('.item').textContent.trim(),
+  w:+tr.dataset.w,
+  v:+tr.querySelector('.g').value
+}));
   const data={
     dir:$('#dirTxt').textContent.trim(), school:$('#schTxt').textContent.trim(),
     model:$('#model').selectedOptions[0].textContent, modelKey:$('#model').value,
@@ -2997,12 +3045,19 @@ function loadRecordIntoForm(rec){
   $('#tId').value   = rec.id || '';
   $('#tSpec').value = rec.spec || '';
   $('#tTitle').value= rec.title || 'معلم ممارس';
-  const map = new Map(rec.rows.map(r=>[r.name, r.v]));
-  $$('#rows tr').forEach(tr=>{
-    const item = tr.querySelector('.item').textContent.trim();
-    const val = map.get(item);
-    if(val) tr.querySelector('.g').value = String(val);
-  });
+ const savedRows = Array.isArray(rec.rows) ? rec.rows : [];
+const mapByCode = new Map(savedRows.map((r,i)=>[r.code || `${(r.name||'').trim()}|${i}`, r.v]));
+const mapByName = new Map(savedRows.map(r=>[(r.name||'').trim(), r.v]));
+
+$$('#rows tr').forEach((tr,i)=>{
+  const item = tr.querySelector('.item').textContent.trim();
+  const code = tr.dataset.code || `${item}|${i}`;
+  const val = mapByCode.has(code) ? mapByCode.get(code) : mapByName.get(item);
+
+  if(val !== undefined && val !== null){
+    tr.querySelector('.g').value = String(val);
+  }
+});
   editedStrengths = true; editedImproves = true;
   $('#strengths').textContent = rec.strengths || '—';
   $('#improves').textContent  = rec.improves  || '—';
